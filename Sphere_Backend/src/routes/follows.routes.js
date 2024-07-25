@@ -1,16 +1,21 @@
 import { Router } from "express";
-import { createFollower, deleteFollower, getfollowed, getfollowers } from "../controllers/follows.controllers.js";
+import {
+  createFollower,
+  deleteFollower,
+  FollowController,
+  getfollowers,
+} from "../controllers/follows.controllers.js";
 
 const router = Router();
 
 //router.get("/follows", getFollows);
 
-router.get('/followed/:id', getfollowed )
+router.get("/followed/:id", FollowController.getFollowed);
 
-router.get('/follows/:id', getfollowers )
+router.get("/follows/:id", getfollowers);
 
-router.post('/follows', createFollower)
+router.post("/follows", createFollower);
 
-router.put('/follows', deleteFollower)
+router.put("/follows", deleteFollower);
 
 export default router;

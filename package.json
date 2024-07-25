@@ -1,11 +1,11 @@
 {
-  "name": "primer-api",
+  "name": "sphere_backend",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --env-file .env --watch src/index.js"
+    "dev": "node --env-file Sphere_Backend/.env --watch Sphere_Backend/src/index.js"
   },
   "keywords": [],
   "author": "",
