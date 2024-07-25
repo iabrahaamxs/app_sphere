@@ -1,4 +1,5 @@
 import { poll } from "../db.js";
+import { FollowModel } from "../models/follows.models.js";
 
 /*export const getFollows = async (req, res) => {
     console.log("hola munod");
@@ -10,18 +11,17 @@ import { poll } from "../db.js";
   };*/
 
 // personas que sigue un usuario
-export const getfollowed = async (req, res) => {
+const getFollowed = async (req, res) => {
   const { id } = req.params;
-  const { rows } = await poll.query(
-    "SELECT followers.follow_id, followers.follower_user, users.user_name, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.followed_user = users.user_id WHERE follower_user = $1 AND follow_deleted_at IS NULL",
-    [id]
-  );
 
-  if (rows.length === 0) {
+  const users = await FollowModel.getFollowed(id);
+  console.log (users)
+
+  if (!users.length > 0) {
     return res.status(404).json({ menssage: "User does not have followed" });
   }
 
-  res.json(rows);
+  res.json(users);
 };
 
 // personas que siguen a un usuario
@@ -63,4 +63,8 @@ export const deleteFollower = async (req, res) => {
     [data.follower_user, data.followed_user]
   );
   return res.json(rows);
+};
+
+export const FollowController = {
+  getFollowed,
 };
