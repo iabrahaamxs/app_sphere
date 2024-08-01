@@ -1,2 +1,5 @@
 Sphere_Backend/node_modules
 Sphere_Backend/.env
+
+Sphere_Frontend/node_modules/
+Sphere_Frontend/.expo/
