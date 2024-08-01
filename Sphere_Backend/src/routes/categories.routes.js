@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { createUserCategorie, getCategories } from "../controllers/categories.controllers.js"
+import { CategorieController } from "../controllers/categories.controllers.js";
 
-const router = Router()
+const router = Router();
 
-router.post('/categorie', createUserCategorie)
-router.get('/categorie/:id', getCategories)
-
+router.post("/categorie", CategorieController.createUserCategorie);
+router.get("/categorie/:id", CategorieController.getCategories);
+router.put("/categorie", CategorieController.updateCategories);
 
 export default router;
