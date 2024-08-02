@@ -6,13 +6,16 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link } from "expo-router";
-import { Eye_Off, LockIcon, MailIcon, UserIcon } from "./Icons";
+import { Eye, Eye_Off, LockIcon, MailIcon, UserIcon } from "./Icons";
 const icon = require("../assets/sphereColor.png");
 
 export function Login() {
   const insets = useSafeAreaInsets();
+  const [showPassword, setShowPassword] = useState(true);
+
   return (
     <View>
       <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
@@ -48,9 +51,16 @@ export function Login() {
               style={styles.input}
               placeholder="Contraseña"
               keyboardType="default"
+              secureTextEntry={showPassword} 
             />
             <View className="absolute right-6">
-              <Eye_Off />
+              <Pressable
+                onPress={() => {
+                  showPassword ? setShowPassword(false) : setShowPassword(true);
+                }}
+              >
+                {showPassword ? <Eye_Off /> : <Eye />}
+              </Pressable>
             </View>
           </View>
 
