@@ -4,7 +4,7 @@ import { View } from "react-native";
 
 export default function Index() {
   return (
-    <View>
+    <View className="flex-1 bg-white">
       <Bubbles />
       <Login />
     </View>

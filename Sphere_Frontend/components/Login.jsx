@@ -17,7 +17,6 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(true);
 
   return (
-    <View>
       <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
         <View className="flex-row ml-8 mt-10 items-center">
           <Text className="text-xl font-bold">Iniciar sesion</Text>
@@ -91,7 +90,7 @@ export function Login() {
           </View>
         </View>
       </View>
-    </View>
+    
   );
 }
 
@@ -101,5 +100,7 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 0.5,
     padding: 10,
+    borderRadius: 6
+    
   },
 });
