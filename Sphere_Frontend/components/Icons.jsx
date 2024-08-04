@@ -1,7 +1,6 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
-import { getUrlWithReactNavigationConcessions } from "expo-router/build/fork/getStateFromPath";
 
 export const UserIcon = (props) => (
   <FontAwesome name="user-o" size={24} color="black" {...props} />
@@ -9,6 +8,10 @@ export const UserIcon = (props) => (
 
 export const Gender = (props) => (
   <FontAwesome name="transgender" size={24} color="black" {...props} />
+);
+
+export const Pencil = (props) => (
+  <FontAwesome name="pencil-square-o" size={24} color="black" {...props} />
 );
 
 export const MailIcon = (props) => (
@@ -33,6 +36,10 @@ export const Phone = (props) => (
 
 export const UserName = (props) => (
   <Feather name="users" size={24} color="black" {...props} />
+);
+
+export const Calendar = (props) => (
+  <Feather name="calendar" size={24} color="black" {...props} />
 );
 
 export const Earth = (props) => (

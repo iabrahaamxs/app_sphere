@@ -9,6 +9,7 @@ import {
   Gender,
 } from "../components/Icons";
 import SelectDropdown from "react-native-select-dropdown";
+import { useRouter } from "expo-router";
 
 export default function SignUp() {
   const genders = [
@@ -22,6 +23,8 @@ export default function SignUp() {
     { title: "Ecuador", id: 3 },
     { title: "Perú", id: 4 },
   ];
+
+  const router = useRouter();
 
   return (
     <View className="flex-1 pl-1 bg-white">
@@ -133,21 +136,24 @@ export default function SignUp() {
           showsVerticalScrollIndicator={false}
         />
       </View>
+      <Link href="/signUp2" asChild>
+        <Pressable
+          style={
+            {
+              backgroundColor: false ? "#513Ab1" : "#462E84",
+              height: 40,
+              margin: 8,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 8,
+            }
+          }
+        >
+          <Text className="text-white">Continuar</Text>
+        </Pressable>
+      </Link>
 
-      <Pressable
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed ? "#513Ab1" : "#462E84",
-            height: 40,
-            margin: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 8,
-          },
-        ]}
-      >
-        <Text className="text-white">Continuar</Text>
-      </Pressable>
+     
 
       <View className="flex-row justify-center mt-4">
         <Text>¿Ya tiene una cuenta?</Text>
