@@ -42,6 +42,18 @@ export const Calendar = (props) => (
   <Feather name="calendar" size={24} color="black" {...props} />
 );
 
+export const Camera = (props) => (
+  <Feather name="camera" size={24} color="black" {...props} />
+);
+
+export const Left = (props) => (
+  <Feather name="arrow-left" size={20} color="black" {...props} />
+);
+
 export const Earth = (props) => (
   <FontAwesome6 name="earth-americas" size={24} color="black" {...props} />
+);
+
+export const LockBold = (props) => (
+  <FontAwesome6 name="lock" size={22} color="black" {...props} />
 );

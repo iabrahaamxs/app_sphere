@@ -9,13 +9,14 @@ import {
 import { Link, Stack } from "expo-router";
 import { useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import RadioGroup from "../components/RadioButton";
 import {
-  UserIcon,
   LockIcon,
   Pencil,
   Eye,
   Eye_Off,
   Calendar,
+  Camera,
 } from "../components/Icons";
 
 const User_icon = require("../assets/User_icon.png");
@@ -47,6 +48,29 @@ export default function SignUp2() {
     showMode("date");
   };
 
+  // radio button
+
+  const [selectedValues, setSelectedValues] = useState([]);
+
+  const handleValueChange = (value) => {
+    setSelectedValues((prevSelectedValues) =>
+      prevSelectedValues.includes(value)
+        ? prevSelectedValues.filter((v) => v !== value)
+        : [...prevSelectedValues, value]
+    );
+  };
+
+  const options = [
+    { value: "1", label: "Acción" },
+    { value: "2", label: "Aventura" },
+    { value: "3", label: "Arcade" },
+    { value: "4", label: "Deporte" },
+    { value: "5", label: "Estrategía" },
+    { value: "6", label: "Simulación" },
+    { value: "7", label: "Mesa" },
+    { value: "8", label: "Musicales" },
+  ];
+
   return (
     <View className="flex-1 pl-1 bg-white">
       <Stack.Screen
@@ -57,11 +81,11 @@ export default function SignUp2() {
           headerShadowVisible: false,
         }}
       />
-      <Text className="ml-4">
+      <Text className="ml-4 pb-2">
         Crea una cuenta completando el siguiente formulario
       </Text>
 
-      <View className="items-center justify-center w-[100%] h-[170]">
+      <View className="items-center justify-center self-center">
         <Image
           source={User_icon}
           style={{
@@ -73,7 +97,9 @@ export default function SignUp2() {
             borderColor: "#462E84",
           }}
         />
-        <Text>Foto de perfil</Text>
+        <View className="w-8 h-8 absolute right-1.5	bottom-1 bg-white rounded-full items-center justify-center">
+          <Camera />
+        </View>
       </View>
 
       <View className="flex-row items-center ml-3">
@@ -130,9 +156,21 @@ export default function SignUp2() {
         </View>
       </View>
 
-      <Text>Selecciona las categorias de tus juegos favoritos</Text>
+      <Text className="self-center mb-2 text-[17px]	opacity-60">
+        Selecciona las categorias de tus juegos favoritos
+      </Text>
+
+      <View>
+        <RadioGroup
+          options={options}
+          selectedValues={selectedValues}
+          onValueChange={handleValueChange}
+        />
+        {/* Puedes usar selectedOption en el resto de tu app */}
+      </View>
 
       <Pressable
+        onPress={() => console.log(selectedValues)}
         style={({ pressed }) => [
           {
             backgroundColor: pressed ? "#513Ab1" : "#462E84",
@@ -146,13 +184,6 @@ export default function SignUp2() {
       >
         <Text className="text-white">Crear Cuenta</Text>
       </Pressable>
-
-      <View className="flex-row justify-center mt-4">
-        <Text>¿Ya tiene una cuenta?</Text>
-        <Link href="/" className="pl-1">
-          <Text className="font-bold">Inicia sesión</Text>
-        </Link>
-      </View>
     </View>
   );
 }

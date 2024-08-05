@@ -61,7 +61,11 @@ export default function SignUp() {
 
       <View className="flex-row items-center ml-3">
         <Phone />
-        <TextInput style={styles.input} placeholder="Numero de telefono" />
+        <TextInput
+          style={styles.input}
+          placeholder="Numero de telefono"
+          keyboardType="number-pad"
+        />
       </View>
 
       <View className="flex-row items-center ml-3">
@@ -138,22 +142,18 @@ export default function SignUp() {
       </View>
       <Link href="/signUp2" asChild>
         <Pressable
-          style={
-            {
-              backgroundColor: false ? "#513Ab1" : "#462E84",
-              height: 40,
-              margin: 8,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 8,
-            }
-          }
+          style={{
+            backgroundColor: false ? "#513Ab1" : "#462E84",
+            height: 40,
+            margin: 8,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 8,
+          }}
         >
           <Text className="text-white">Continuar</Text>
         </Pressable>
       </Link>
-
-     
 
       <View className="flex-row justify-center mt-4">
         <Text>¿Ya tiene una cuenta?</Text>

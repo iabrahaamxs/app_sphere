@@ -4,13 +4,13 @@
     "slug": "Sphere_Frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/iconSphere.png",
     "userInterfaceStyle": "light",
     "scheme": "sphere",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#462E84"
     },
     "ios": {
       "supportsTablet": true
