@@ -5,7 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 export default function App() {
   return (
     <SafeAreaProvider>
-      <View ClassName="bg-slate-700">
+      <View >
         <StatusBar style="auto" />
       </View>
     </SafeAreaProvider>
