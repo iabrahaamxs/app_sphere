@@ -50,10 +50,30 @@ export const Left = (props) => (
   <Feather name="arrow-left" size={20} color="black" {...props} />
 );
 
+export const UserFollow = (props) => (
+  <Feather name="user-check" size={24} color="black" {...props} />
+);
+
+export const UserUnfollow = (props) => (
+  <Feather name="user-x" size={24} color="black" {...props} />
+);
+
+export const Share = (props) => (
+  <Feather name="share-2" size={24} color="black" {...props} />
+);
+
 export const Earth = (props) => (
   <FontAwesome6 name="earth-americas" size={24} color="black" {...props} />
 );
 
 export const LockBold = (props) => (
   <FontAwesome6 name="lock" size={22} color="black" {...props} />
+);
+
+export const Location = (props) => (
+  <FontAwesome6 name="location-dot" size={24} color="black" {...props} />
+);
+
+export const Compass = (props) => (
+  <FontAwesome6 name="compass" size={24} color="black" {...props} />
 );
