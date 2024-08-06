@@ -54,6 +54,11 @@ export const UserCheck = (props) => (
   <Feather name="user-check" size={24} color="black" {...props} />
 );
 
+export const Share = (props) => (
+  <Feather name="share-2" size={24} color="black" {...props} />
+);
+
+
 export const Earth = (props) => (
   <FontAwesome6 name="earth-americas" size={24} color="black" {...props} />
 );
