@@ -7,19 +7,24 @@ import {
   ScrollView,
 } from "react-native";
 import { Link } from "expo-router";
+import { useState } from "react";
+import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
-  UserCheck,
   Location,
   Calendar,
   Compass,
   Left,
   Share,
+  UserFollow,
+  UserUnfollow,
 } from "../components/Icons";
 const User_icon = require("../assets/User_icon.png");
 
 export default function App() {
   const insets = useSafeAreaInsets();
+  const [user, setUser] = useState("MadeleineToussaint");
+  const [follow, setFollow] = useState(false);
 
   const posts = [
     {
@@ -110,6 +115,10 @@ export default function App() {
     },
   ];
 
+  const copyToClipboard = async (text) => {
+    await Clipboard.setStringAsync(text);
+  };
+
   return (
     <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -117,7 +126,9 @@ export default function App() {
           <Link href="/">
             <Left color="white" />
           </Link>
-          <Share color="white" />
+          <Pressable onPress={() => copyToClipboard("@" + user)}>
+            <Share color="white" />
+          </Pressable>
         </View>
         <Image
           source={User_icon}
@@ -142,15 +153,34 @@ export default function App() {
           />
 
           <Text className="text-xl">Madeleine Toussaint</Text>
-          <Text className="text-sm mt-1">@MadeleineToussaint</Text>
+          <Text className="text-sm mt-1">{"@" + user}</Text>
           <Text className="text-sm p-2">
             Mi primera cuenta en esta app! Aqui puede ir mas texto que pasa si
             sobre pasas chevereee
           </Text>
 
-          <Pressable className="bg-[#462E84] flex-row p-1.5 rounded-lg ">
-            <UserCheck className="ml-2" color="white" />
-            <Text className="text-white ml-3 mr-2 text-base ">Seguir</Text>
+          <Pressable
+            className=" flex-row p-1.5 rounded-lg "
+            onPress={() => {
+              follow ? setFollow(false) : setFollow(true);
+            }}
+            style={{
+              backgroundColor: follow ? "#BBBBBB" : "#462E84",
+            }}
+          >
+            {follow ? (
+              <>
+                <UserUnfollow className="ml-2" color="white" />
+                <Text className="text-white ml-3 mr-2 text-base ">
+                  Dejar de seguir
+                </Text>
+              </>
+            ) : (
+              <>
+                <UserFollow className="ml-2" color="white" />
+                <Text className="text-white ml-3 mr-2 text-base ">Seguir</Text>
+              </>
+            )}
           </Pressable>
 
           <View className=" flex-row w-[100%] p-1 ml-2.5">
