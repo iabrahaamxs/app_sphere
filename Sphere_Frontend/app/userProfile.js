@@ -21,7 +21,7 @@ export default function App() {
           alignSelf: "center",
         }}
       />
-      <View className="w-[100%] h-[400] bg-white mt-[-6] rounded-t-xl items-center">
+      <View className="w-[100%] h-[410] bg-white mt-[-6] rounded-t-xl items-center">
         <Image
           className="mt-[-65]"
           source={User_icon}
@@ -54,8 +54,8 @@ export default function App() {
           <Calendar />
           <Text className="ml-1.5">Se unió en agosto del 2024</Text>
         </View>
-       
-        <ScrollView className="mr-auto pl-2 relative" horizontal={true}>
+
+        <ScrollView className="mr-auto pl-2 mt-1 relative" horizontal={true}>
           <View className="flex-row h-7">
             <Pressable className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1">
               <Compass className="ml-2" size={20} />
@@ -64,17 +64,16 @@ export default function App() {
           </View>
         </ScrollView>
 
-        <View className="flex-row">
-          <View className="">
-            <Text>200</Text>
+        <View className="flex-row  justify-between w-[80%] mb-5">
+          <View className="w-[120] border-2 rounded-lg p-1 items-center" >
+            <Text className="text-base font-bold">200</Text>
             <Text>Seguidos</Text>
           </View>
-          <View>
-            <Text>7300</Text>
+          <View className="w-[120] border-2 rounded-lg p-1 items-center">
+            <Text className="text-base font-bold">7300</Text>
             <Text>Seguidores</Text>
           </View>
         </View>
-       
       </View>
     </View>
   );
