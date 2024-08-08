@@ -7,9 +7,10 @@ import {
   Image,
 } from "react-native";
 import { Link, Stack } from "expo-router";
-import { useState } from "react";
+import React, { useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import RadioGroup from "../components/RadioButton";
+import * as ImagePicker from 'expo-image-picker'
 import {
   LockIcon,
   Pencil,
@@ -71,6 +72,24 @@ export default function SignUp2() {
     { value: "8", label: "Musicales" },
   ];
 
+  const [imagen, setImagen] = useState("")
+
+  const upImage = async () =>{
+    await ImagePicker.requestMediaLibraryPermissionsAsync();
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      //allowsMultipleSelection: false,
+      //selectionLimit: 5,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    })
+
+    if (!result.canceled) {
+      setImagen(result.assets[0].uri)
+    }
+  }
+
   return (
     <View className="flex-1 pl-1 bg-white">
       <Stack.Screen
@@ -86,8 +105,10 @@ export default function SignUp2() {
       </Text>
 
       <View className="items-center justify-center self-center">
-        <Image
-          source={User_icon}
+        
+        { 
+        imagen ? <Image
+          source={{uri: imagen}}
           style={{
             resizeMode: "contain",
             width: 130,
@@ -97,8 +118,21 @@ export default function SignUp2() {
             borderColor: "#462E84",
           }}
         />
+        :<Image
+          source={User_icon}
+          style={{
+            resizeMode: "contain",
+            width: 130,
+            height: 130,
+            borderRadius: 99999,
+            borderWidth: 2,
+            borderColor: "#462E84",
+          }}
+        />}
         <View className="w-8 h-8 absolute right-1.5	bottom-1 bg-white rounded-full items-center justify-center">
-          <Camera />
+          <Pressable onPress={upImage}>
+            <Camera />
+          </Pressable>
         </View>
       </View>
 
