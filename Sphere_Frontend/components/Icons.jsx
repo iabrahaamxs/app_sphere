@@ -62,6 +62,18 @@ export const Share = (props) => (
   <Feather name="share-2" size={24} color="black" {...props} />
 );
 
+export const Grid = (props) => (
+  <Feather name="grid" size={24} color="black" {...props} />
+);
+
+export const Bookmark = (props) => (
+  <Feather name="bookmark" size={24} color="black" {...props} />
+);
+
+export const Logout = (props) => (
+  <Feather name="log-out" size={24} color="black" {...props} />
+);
+
 export const Earth = (props) => (
   <FontAwesome6 name="earth-americas" size={24} color="black" {...props} />
 );
@@ -76,4 +88,32 @@ export const Location = (props) => (
 
 export const Compass = (props) => (
   <FontAwesome6 name="compass" size={24} color="black" {...props} />
+);
+
+export const Soccer = (props) => (
+  <FontAwesome6 name="soccer-ball" size={24} color="black" {...props} />
+);
+
+export const Heartpulse = (props) => (
+  <FontAwesome6 name="heart-pulse" size={24} color="black" {...props} />
+);
+
+export const Chess = (props) => (
+  <FontAwesome6 name="chess-knight" size={24} color="black" {...props} />
+);
+
+export const HandRock = (props) => (
+  <FontAwesome6 name="hand-rock" size={24} color="black" {...props} />
+);
+
+export const Explosion = (props) => (
+  <FontAwesome6 name="explosion" size={24} color="black" {...props} />
+);
+
+export const Lightbulb = (props) => (
+  <FontAwesome6 name="lightbulb" size={24} color="black" {...props} />
+);
+
+export const Guitar = (props) => (
+  <FontAwesome6 name="guitar" size={24} color="black" {...props} />
 );
