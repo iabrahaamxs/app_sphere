@@ -87,6 +87,9 @@ export function Login() {
             <Link href="/signUp" className="pl-1">
               <Text className="font-bold">Crear una cuenta</Text>
             </Link>
+            <Link href="/myProfile" className="pl-1">
+              <Text className="font-bold">My profile</Text>
+            </Link>
           </View>
         </View>
       </View>
