@@ -8,50 +8,16 @@ import {
 } from "react-native";
 import { Link, Stack } from "expo-router";
 import React, { useState } from "react";
-import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import RadioGroup from "../components/RadioButton";
 import * as ImagePicker from "expo-image-picker";
-import {
-  LockIcon,
-  Pencil,
-  Eye,
-  Eye_Off,
-  Calendar,
-  Camera,
-} from "../components/Icons";
+import { Pencil, Camera, UserName } from "../components/Icons";
 
 const User_icon = require("../assets/User_icon.png");
 
 export default function SignUp2() {
-  const [showPassword, setShowPassword] = useState(true);
-  const [showPassword2, setShowPassword2] = useState(true);
-
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
-    setShow(true);
-  };
-
-  const showMode = (currentMode) => {
-    DateTimePickerAndroid.open({
-      value: date,
-      onChange,
-      maximumDate: new Date(),
-      mode: currentMode,
-      is24Hour: false,
-    });
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
   // radio button
 
-  const [selectedValues, setSelectedValues] = useState([]);
+  const [selectedValues, setSelectedValues] = useState(["3", "5", "6"]);
 
   const handleValueChange = (value) => {
     setSelectedValues((prevSelectedValues) =>
@@ -72,7 +38,17 @@ export default function SignUp2() {
     { value: "8", label: "Musicales" },
   ];
 
-  const [imagen, setImagen] = useState("");
+  const [imagen, setImagen] = useState(
+    "https://variety.com/wp-content/uploads/2023/10/SuperMarioRunTA-e1697227587140.webp?w=1000&h=667&crop=1"
+  );
+
+  const User = {
+    userName: "abrahaam",
+    bio: "esta es mi bio actuaaaal, se puede editar en cualquier momento",
+  };
+
+  const [userName, setUserName] = useState(User.userName);
+  const [bio, setBio] = useState(User.bio);
 
   const upImage = async () => {
     await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -91,25 +67,22 @@ export default function SignUp2() {
   };
 
   return (
-    <View className="flex-1 pl-1 bg-white">
+    <View className="flex-1 pl-1 bg-white ">
       <Stack.Screen
         options={{
           headerShown: true,
           headerStyle: {},
-          headerTitle: "Crear cuenta",
+          headerTitle: "Configuración de cuenta",
           headerShadowVisible: false,
         }}
       />
-      <Text className="ml-4 pb-2">
-        Crea una cuenta completando el siguiente formulario
-      </Text>
 
       <View className="items-center justify-center self-center">
         {imagen ? (
           <Image
             source={{ uri: imagen }}
             style={{
-              resizeMode: "contain",
+              resizeMode: "cover",
               width: 130,
               height: 130,
               borderRadius: 99999,
@@ -136,62 +109,30 @@ export default function SignUp2() {
           </Pressable>
         </View>
       </View>
+      <Text className="self-center my-1">Editar foto de perfil</Text>
+
+      <View className="flex-row items-center ml-3">
+        <UserName />
+        <TextInput
+          style={[styles.input, { height: 40 }]}
+          placeholder="Nombre de usuario"
+          onChangeText={setUserName}
+          value={userName}
+        />
+      </View>
 
       <View className="flex-row items-center ml-3">
         <Pencil />
-        <TextInput style={styles.input} placeholder="Biografía" />
-      </View>
-
-      <View className="flex-row items-center ml-3">
-        <Calendar />
-        <Pressable style={styles.input} onPress={showDatepicker}>
-          {show ? (
-            <Text> {date.toLocaleDateString()}</Text>
-          ) : (
-            <Text className="opacity-50">Fecha de nacimiento</Text>
-          )}
-        </Pressable>
-      </View>
-
-      <View className="flex-row items-center ml-3">
-        <LockIcon />
         <TextInput
           style={styles.input}
-          placeholder="Contraseña"
-          keyboardType="default"
-          secureTextEntry={showPassword}
+          placeholder="Biografía"
+          multiline={true}
+          onChangeText={setBio}
+          value={bio}
         />
-        <View className="absolute right-8">
-          <Pressable
-            onPress={() => {
-              showPassword ? setShowPassword(false) : setShowPassword(true);
-            }}
-          >
-            {showPassword ? <Eye_Off /> : <Eye />}
-          </Pressable>
-        </View>
       </View>
 
-      <View className="flex-row items-center ml-3">
-        <LockIcon />
-        <TextInput
-          style={styles.input}
-          placeholder="Repite tu contraseña"
-          keyboardType="default"
-          secureTextEntry={showPassword2}
-        />
-        <View className="absolute right-8">
-          <Pressable
-            onPress={() => {
-              showPassword2 ? setShowPassword2(false) : setShowPassword2(true);
-            }}
-          >
-            {showPassword2 ? <Eye_Off /> : <Eye />}
-          </Pressable>
-        </View>
-      </View>
-
-      <Text className="self-center mb-2 text-[17px]	opacity-60">
+      <Text className="self-center my-2 text-[17px]	opacity-70">
         Selecciona las categorias de tus juegos favoritos
       </Text>
 
@@ -211,13 +152,14 @@ export default function SignUp2() {
             backgroundColor: pressed ? "#513Ab1" : "#462E84",
             height: 40,
             margin: 8,
+            marginTop: 50,
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 8,
           },
         ]}
       >
-        <Text className="text-white">Crear Cuenta</Text>
+        <Text className="text-white">Actualizar</Text>
       </Pressable>
     </View>
   );
@@ -226,7 +168,7 @@ export default function SignUp2() {
 const styles = StyleSheet.create({
   input: {
     width: "85%",
-    height: 40,
+    maxHeight: 120,
     margin: 12,
     borderWidth: 0.5,
     padding: 10,

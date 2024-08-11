@@ -74,6 +74,10 @@ export const Logout = (props) => (
   <Feather name="log-out" size={24} color="black" {...props} />
 );
 
+export const Chevrons = (props) => (
+  <Feather name="chevrons-right" size={24} color="black" {...props} />
+);
+
 export const Earth = (props) => (
   <FontAwesome6 name="earth-americas" size={24} color="black" {...props} />
 );
