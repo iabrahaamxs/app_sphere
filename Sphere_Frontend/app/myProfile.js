@@ -130,17 +130,16 @@ export default function MyProfile() {
     },
   ];
 
-  const categories =[
-    { value: 1, icon:"hand-rock", name:"Acción" },
-    { value: 2, icon:"heart-pulse", name:"Aventura" },
-    { value: 3, icon:"compass", name:"Arcade" },
-    { value: 4, icon:"soccer-ball", name:"Deporte" },
-    { value: 5, icon:"lightbulb", name:"Estrategia" },
-    { value: 6, icon:"explosion", name:"Simulación" },
-    { value: 7, icon:"chess-knight", name:"Mesa" },
-    { value: 8, icon:"guitar", name:"Musicales" },
-    
-  ]
+  const categories = [
+    { value: 1, icon: "hand-rock", name: "Acción" },
+    { value: 2, icon: "heart-pulse", name: "Aventura" },
+    { value: 3, icon: "compass", name: "Arcade" },
+    { value: 4, icon: "soccer-ball", name: "Deporte" },
+    { value: 5, icon: "lightbulb", name: "Estrategia" },
+    { value: 6, icon: "explosion", name: "Simulación" },
+    { value: 7, icon: "chess-knight", name: "Mesa" },
+    { value: 8, icon: "guitar", name: "Musicales" },
+  ];
 
   const ref = useRef();
 
@@ -226,12 +225,14 @@ export default function MyProfile() {
             showsHorizontalScrollIndicator={false}
           >
             <View className="flex-row h-7 pl-2 pr-2">
-            {categories.map((categorie) => (
-              <Pressable className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1" key={categorie.value}>
-                <Compass className="ml-2" size={20} name={categorie.icon} />
-                <Text className="ml-2 mr-2">{categorie.name}</Text>
-              </Pressable>
-                
+              {categories.map((categorie) => (
+                <Pressable
+                  className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1"
+                  key={categorie.value}
+                >
+                  <Compass className="ml-2" size={20} name={categorie.icon} />
+                  <Text className="ml-2 mr-2">{categorie.name}</Text>
+                </Pressable>
               ))}
             </View>
           </ScrollView>
