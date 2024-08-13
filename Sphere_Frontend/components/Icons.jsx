@@ -14,6 +14,10 @@ export const Pencil = (props) => (
   <FontAwesome name="pencil-square-o" size={24} color="black" {...props} />
 );
 
+export const Ellipsis = (props) => (
+  <FontAwesome name="ellipsis-v" size={24} color="black" {...props} />
+);
+
 export const MailIcon = (props) => (
   <Feather name="mail" size={24} color="black" {...props} />
 );
@@ -78,6 +82,10 @@ export const Chevrons = (props) => (
   <Feather name="chevrons-right" size={24} color="black" {...props} />
 );
 
+export const Heart = (props) => (
+  <Feather name="heart" size={24} color="black" {...props} />
+);
+
 export const Earth = (props) => (
   <FontAwesome6 name="earth-americas" size={24} color="black" {...props} />
 );
@@ -120,4 +128,8 @@ export const Lightbulb = (props) => (
 
 export const Guitar = (props) => (
   <FontAwesome6 name="guitar" size={24} color="black" {...props} />
+);
+
+export const Comment = (props) => (
+  <FontAwesome6 name="comment-alt" size={24} color="black" {...props} />
 );
