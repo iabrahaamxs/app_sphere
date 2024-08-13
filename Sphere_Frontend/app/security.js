@@ -3,7 +3,7 @@ import { Link, Stack } from "expo-router";
 import React, { useState } from "react";
 import { Eye, Eye_Off, LockIcon } from "../components/Icons";
 
-export default function SignUp2() {
+export default function Security() {
   const [showPassword, setShowPassword] = useState(true);
   const [showPassword2, setShowPassword2] = useState(true);
   const [showPassword3, setShowPassword3] = useState(true);
