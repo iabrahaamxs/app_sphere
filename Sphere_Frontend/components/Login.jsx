@@ -87,8 +87,8 @@ export function Login() {
           <Link href="/signUp" className="pl-1">
             <Text className="font-bold">Crear una cuenta</Text>
           </Link>
-          <Link href="/search" className="pl-1">
-            <Text className="font-bold">buscar</Text>
+          <Link href="/home" className="pl-1">
+            <Text className="font-bold">Homee</Text>
           </Link>
         </View>
       </View>
