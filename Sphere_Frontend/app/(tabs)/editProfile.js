@@ -1,7 +1,7 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { Link, Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Chevrons } from "../components/Icons";
+import { Chevrons } from "../../components/Icons";
 
 export default function EditProfile() {
   const insets = useSafeAreaInsets();
@@ -42,7 +42,7 @@ export default function EditProfile() {
           <Chevrons />
         </Pressable>
       </Link>
-      <Link href="/" asChild>
+      <Link href="/security" asChild>
         <Pressable
           style={styles.pressable}
           className="flex-row bg-white w-[75%] h-[60] self-center justify-between items-center px-8"

@@ -67,28 +67,24 @@ export function Login() {
           <Text>Olvidaste tu contraseña?</Text>
         </Link>
 
-        <Pressable
-          style={({ pressed }) => [
-            {
-              backgroundColor: pressed ? "#513Ab1" : "#462E84",
+        <Link href="/home" asChild>
+          <Pressable
+            style={{
+              backgroundColor: false ? "#513Ab1" : "#462E84",
               height: 40,
               margin: 8,
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 8,
-            },
-          ]}
-        >
-          <Text className="text-white">Iniciar Sesión</Text>
-        </Pressable>
-
+            }}
+          >
+            <Text className="text-white">Iniciar Sesión</Text>
+          </Pressable>
+        </Link>
         <View className="flex-row justify-center mt-4">
           <Text>¿Aún no te has registrado?</Text>
           <Link href="/signUp" className="pl-1">
             <Text className="font-bold">Crear una cuenta</Text>
-          </Link>
-          <Link href="/search" className="pl-1">
-            <Text className="font-bold">buscar</Text>
           </Link>
         </View>
       </View>

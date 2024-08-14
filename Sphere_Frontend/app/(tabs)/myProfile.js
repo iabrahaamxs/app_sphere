@@ -16,14 +16,14 @@ import {
   Grid,
   Bookmark,
   Logout,
-} from "../components/Icons";
+} from "../../components/Icons";
 import { Link } from "expo-router";
 import { useRef, useState } from "react";
 import PagerView from "react-native-pager-view";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const User_icon = require("../assets/User_icon.png");
+const User_icon = require("../../assets/User_icon.png");
 
 export default function MyProfile() {
   const insets = useSafeAreaInsets();
@@ -165,10 +165,7 @@ export default function MyProfile() {
   return (
     <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-between">
-          <Link href="/">
-            <Left color="white" />
-          </Link>
+        <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-end	">
           <Link href="/">
             <Logout color="white" />
           </Link>
