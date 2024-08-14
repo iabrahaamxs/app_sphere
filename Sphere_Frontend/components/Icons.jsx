@@ -86,6 +86,14 @@ export const Heart = (props) => (
   <Feather name="heart" size={24} color="black" {...props} />
 );
 
+export const LupaIcon = (props) => (
+  <Feather name="search" size={24} color="black" {...props} />
+);
+
+export const Settings = (props) => (
+  <Feather name="settings" size={24} color="black" {...props} />
+);
+
 export const Earth = (props) => (
   <FontAwesome6 name="earth-americas" size={24} color="black" {...props} />
 );
@@ -132,4 +140,8 @@ export const Guitar = (props) => (
 
 export const Comment = (props) => (
   <FontAwesome6 name="comment-alt" size={24} color="black" {...props} />
+);
+
+export const House = (props) => (
+  <FontAwesome6 name="house" size={24} color="black" {...props} />
 );

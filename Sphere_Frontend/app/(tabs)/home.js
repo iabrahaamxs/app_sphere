@@ -1,14 +1,15 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { FlatList, Image, Text, View } from "react-native";
-import Post from "../components/Post";
+import Post from "../../components/Post";
 import { getPosts } from "./search";
 
 export default function Home() {
   const posts = getPosts();
   return (
     <View>
-      <StatusBar style="light" />
+      <StatusBar style="auto" />
+
       <Stack.Screen
         options={{
           headerShown: true,
@@ -18,14 +19,14 @@ export default function Home() {
           headerTitle: "",
           headerShadowVisible: false,
           headerLeft: () => (
-            <View className="w-[96%] h-10 items-center justify-center flex-row">
+            <View className="w-[130%] h-10 items-center justify-center flex-row">
               <Image
                 style={{
                   resizeMode: "contain",
                   width: 30,
                   height: 30,
                 }}
-                source={require("../assets/logoTipoWhite.png")}
+                source={require("../../assets/logoTipoWhite.png")}
               />
               <Text className="text-white ml-1 text-base">PHERE</Text>
             </View>
@@ -34,9 +35,9 @@ export default function Home() {
       />
 
       <FlatList
-        className="pt-2 "
+        className="pt-2 bg-white "
         data={posts}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <View>
             <Post item={item} />
           </View>

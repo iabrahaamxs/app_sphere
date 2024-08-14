@@ -2,15 +2,17 @@ import { Stack } from "expo-router";
 import React, { useState } from "react";
 import {
   FlatList,
-  Image,
   Pressable,
-  ScrollView,
+  StatusBar,
   Text,
+  TextInput,
   View,
 } from "react-native";
-import SearchUser from "../components/SearchUser";
-import SearchTag from "../components/SearchTag";
-import Post from "../components/Post";
+import SearchUser from "../../components/SearchUser";
+import SearchTag from "../../components/SearchTag";
+import Post from "../../components/Post";
+
+import { LupaIcon } from "../../components/Icons";
 
 export default function Search() {
   const [text, setText] = useState("");
@@ -50,6 +52,11 @@ export default function Search() {
 
   const posts = getPosts();
 
+  const onChangeSearch = (txt) => {
+    setText(txt);
+    searchFilter(txt, filterType);
+  };
+
   const pressAccount = () => {
     setFilterType("account");
     searchFilter(text, "account");
@@ -85,11 +92,11 @@ export default function Search() {
       });
       setFilteredData(newData);
     } else if (text && type === "tag") {
-      const regex = new RegExp(`#${text}\\w*`, "g");
+      const regex = new RegExp(`#${text.toLocaleLowerCase()}\\w*`, "g");
       const tagCounts = {};
 
       posts.forEach((post) => {
-        const tags = post.description.match(regex);
+        const tags = post.description.toLocaleLowerCase().match(regex);
 
         if (tags) {
           tags.forEach((tag) => {
@@ -109,25 +116,43 @@ export default function Search() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white"> 
+      {<StatusBar style="dark" />}
       <Stack.Screen
         options={{
+          headerRight: () => (
+            <View className="flex-1 p-3">
+              <TextInput
+                style={{
+                  height: 40,
+                  width: 380,
+                  backgroundColor: "#f3f3f3",
+                  padding: 10,
+                  paddingStart: 40,
+                  borderRadius: 5,
+                }}
+                placeholder="Buscar"
+                onChangeText={(text) => onChangeSearch(text)}
+              />
+              <LupaIcon className="absolute p-5 opacity-40" />
+            </View>
+          ),
           headerShown: true,
           headerStyle: {},
-          headerTitle: "Buscar",
+          headerTitle: "",
           headerShadowVisible: false,
-          headerSearchBarOptions: {
-            autoFocus: true,
-            placeholder: "buscar",
-            onChangeText: (e) => {
-              setText(e.nativeEvent.text);
-              searchFilter(e.nativeEvent.text, filterType);
-            },
-          },
+          //headerSearchBarOptions: {
+          //  autoFocus: true,
+          //  placeholder: "buscar",
+          //  onChangeText: (e) => {
+          //    setText(e.nativeEvent.text);
+          //    searchFilter(e.nativeEvent.text, filterType);
+          //  },
+          //},
         }}
       />
 
-      <View className="flex-row justify-between	w-[90%] self-end px-3 mt-2">
+      <View className="flex-row justify-between	w-[90%] self-center px-3 mt-2">
         <Pressable onPress={pressAccount}>
           <Text
             style={{
@@ -164,6 +189,7 @@ export default function Search() {
       </View>
 
       <FlatList
+       className="pt-2"
         data={filteredData}
         renderItem={({ item, index }) => (
           <View>
@@ -205,7 +231,7 @@ export function getPosts() {
       id: "3",
       userName: "Pedroo",
       date: "10/08/2024",
-      description: "tresss post #tress #ucla",
+      description: "tresss post #tressSS #ucla",
       photo:
         "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
     },
