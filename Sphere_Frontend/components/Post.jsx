@@ -1,24 +1,29 @@
 import { Image, Pressable, Text, View } from "react-native";
 import { Bookmark, Comment, Ellipsis, Heart } from "./Icons";
+import { Link } from "expo-router";
 
 const Post = ({ item }) => {
   return (
     <View className="mb-2">
       <View className="flex-row items-center px-2 ">
-        <Image
-          source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKmDZfsJe6TJPmkiuGQsyD8e0UyJJmZCKIfg&s",
-          }}
-          style={{
-            resizeMode: "contain",
-            width: 50,
-            height: 50,
-            borderRadius: 999999,
-            borderWidth: 1,
-            borderColor: "#462E84",
-          }}
-        />
-        <Text className="text-base mx-2 ">{item.userName} ·</Text>
+        <Link href={`/user/${item.userId}`} asChild>
+          <Pressable className="flex-row items-center">
+            <Image
+              source={{
+                uri: "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
+              }}
+              style={{
+                resizeMode: "contain",
+                width: 50,
+                height: 50,
+                borderRadius: 999999,
+                borderWidth: 1,
+                borderColor: "#462E84",
+              }}
+            />
+            <Text className="text-base mx-2 ">{item.userName} ·</Text>
+          </Pressable>
+        </Link>
         <Text className="text-xs leading-8	">{item.date}</Text>
         <Ellipsis className="absolute right-3" />
       </View>

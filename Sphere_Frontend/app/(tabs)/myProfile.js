@@ -26,6 +26,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const User_icon = require("../../assets/User_icon.png");
 
 export default function MyProfile() {
+  //react-native-tab-view para post y fav
   const insets = useSafeAreaInsets();
   const [viewPost, setViewPost] = useState(true);
   const [user, setUser] = useState("Abrahaaam");

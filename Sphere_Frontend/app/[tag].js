@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { getPosts } from "./(tabs)/search";

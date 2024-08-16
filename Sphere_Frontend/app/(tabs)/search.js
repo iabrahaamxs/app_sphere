@@ -19,37 +19,7 @@ export default function Search() {
   const [filteredData, setFilteredData] = useState([]);
   const [filterType, setFilterType] = useState("account");
 
-  const users = [
-    {
-      id: "1",
-      name: "Luis",
-      userName: "luiss1",
-      photo:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKmDZfsJe6TJPmkiuGQsyD8e0UyJJmZCKIfg&s",
-    },
-    {
-      id: "2",
-      name: "Maria",
-      userName: "Mariaa1",
-      photo:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKmDZfsJe6TJPmkiuGQsyD8e0UyJJmZCKIfg&s",
-    },
-    {
-      id: "3",
-      name: "Carlos",
-      userName: "carloss1",
-      photo:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKmDZfsJe6TJPmkiuGQsyD8e0UyJJmZCKIfg&s",
-    },
-    {
-      id: "4",
-      name: "Juan",
-      userName: "juann1",
-      photo:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKmDZfsJe6TJPmkiuGQsyD8e0UyJJmZCKIfg&s",
-    },
-  ];
-
+  const users = getUser();
   const posts = getPosts();
 
   const onChangeSearch = (txt) => {
@@ -116,7 +86,7 @@ export default function Search() {
   };
 
   return (
-    <View className="flex-1 bg-white"> 
+    <View className="flex-1 bg-white">
       {<StatusBar style="dark" />}
       <Stack.Screen
         options={{
@@ -189,7 +159,7 @@ export default function Search() {
       </View>
 
       <FlatList
-       className="pt-2"
+        className="pt-2"
         data={filteredData}
         renderItem={({ item, index }) => (
           <View>
@@ -212,6 +182,7 @@ export function getPosts() {
   return [
     {
       id: "1",
+      userId: "1",
       userName: "Luiss",
       date: "11/08/2024",
       description: "primer post #primero #ucla",
@@ -220,6 +191,7 @@ export function getPosts() {
     },
     {
       id: "2",
+      userId: "2",
       userName: "Maria",
       date: "11/08/2024",
       description:
@@ -229,6 +201,7 @@ export function getPosts() {
     },
     {
       id: "3",
+      userId: "5",
       userName: "Pedroo",
       date: "10/08/2024",
       description: "tresss post #tressSS #ucla",
@@ -237,6 +210,7 @@ export function getPosts() {
     },
     {
       id: "4",
+      userId: "1",
       userName: "Luiss",
       date: "10/08/2024",
       description: "primer post tambieeen #primero #ucla",
@@ -245,6 +219,7 @@ export function getPosts() {
     },
     {
       id: "5",
+      userId: "3",
       userName: "Carlosss",
       date: "09/08/2024",
       description: "primer post tambieeen #primera #ucla",
@@ -253,11 +228,57 @@ export function getPosts() {
     },
     {
       id: "0",
+      userId: "4",
       userName: "Juann",
       date: "08/08/2024",
       description: "primer post #prim #ucla",
       photo:
         "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
+    },
+  ];
+}
+
+export function getUser() {
+  return [
+    {
+      id: "1",
+      name: "Luis",
+      userName: "luiss1",
+      bio: "esta es la cuenta de Luis",
+      photo:
+        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
+    },
+    {
+      id: "2",
+      name: "Maria",
+      userName: "Mariaa1",
+      bio: "esta es la cuenta de maria",
+      photo:
+        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
+    },
+    {
+      id: "3",
+      name: "Carlos",
+      userName: "carloss1",
+      bio: "esta es la cuenta de carlos",
+      photo:
+        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
+    },
+    {
+      id: "4",
+      name: "Juan",
+      userName: "juann1",
+      bio: "esta es la cuenta de Juan",
+      photo:
+        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
+    },
+    {
+      id: "5",
+      name: "Pedroo",
+      userName: "pedrooo1999",
+      bio: "esta es la cuenta de pedro",
+      photo:
+        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
     },
   ];
 }
