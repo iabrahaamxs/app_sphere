@@ -2,10 +2,9 @@ import { Link } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 
 const SearchTag = ({ item }) => {
-  const route = item[0].slice(1)
+  const route = item[0].slice(1);
   return (
     <Link href={`/${route}`} asChild>
-      
       <Pressable className="flex-row ml-2 mb-1 ">
         <Image
           source={{

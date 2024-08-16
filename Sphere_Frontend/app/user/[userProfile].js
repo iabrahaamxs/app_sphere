@@ -5,9 +5,10 @@ import {
   Text,
   Pressable,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import { Link } from "expo-router";
-import { useState } from "react";
+import { Link, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -18,12 +19,15 @@ import {
   Share,
   UserFollow,
   UserUnfollow,
-} from "../components/Icons";
-const User_icon = require("../assets/User_icon.png");
+} from "../../components/Icons";
+import { getUser } from "../(tabs)/search";
+//const User_icon = require("../../assets/User_icon.png");
 
 export default function UserProfile() {
+  const { userProfile } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
-  const [user, setUser] = useState("MadeleineToussaint");
+  const [user, setUser] = useState(null);
+  const users = getUser();
   const [follow, setFollow] = useState(false);
 
   const posts = [
@@ -115,122 +119,132 @@ export default function UserProfile() {
     },
   ];
 
+  useEffect(() => {
+    if (userProfile) {
+      const newUser = users.find((user) => user.id === userProfile);
+      setUser(newUser);
+    }
+  }, [userProfile]);
+
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
   };
 
   return (
     <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-between">
-          <Link href="/">
-            <Left color="white" />
-          </Link>
-          <Pressable onPress={() => copyToClipboard("@" + user)}>
-            <Share color="white" />
-          </Pressable>
-        </View>
-        <Image
-          source={User_icon}
-          style={{
-            resizeMode: "cover",
-            width: "110%",
-            height: 140,
-            alignSelf: "center",
-          }}
-        />
-        <View className="w-[100%] h-[410] bg-white mt-[-6] rounded-t-xl items-center z-20">
+      {user === null ? (
+        <ActivityIndicator />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-between">
+            <Link href="/">
+              <Left color="white" />
+            </Link>
+            <Pressable onPress={() => copyToClipboard("@" + user.userName)}>
+              <Share color="white" />
+            </Pressable>
+          </View>
           <Image
-            className="mt-[-65]"
-            source={User_icon}
+            source={{ uri: user.photo }}
             style={{
-              resizeMode: "contain",
-              width: 130,
-              height: 130,
-              borderRadius: 99999,
-              shadowColor: "#000",
+              resizeMode: "cover",
+              width: "110%",
+              height: 140,
+              alignSelf: "center",
             }}
           />
+          <View className="w-[100%] h-[410] bg-white mt-[-6] rounded-t-xl items-center z-20">
+            <Image
+              className="mt-[-65]"
+              source={{ uri: user.photo }}
+              style={{
+                resizeMode: "contain",
+                width: 130,
+                height: 130,
+                borderRadius: 99999,
+                shadowColor: "#000",
+              }}
+            />
 
-          <Text className="text-xl">Madeleine Toussaint</Text>
-          <Text className="text-sm mt-1">{"@" + user}</Text>
-          <Text className="text-sm p-2">
-            Mi primera cuenta en esta app! Aqui puede ir mas texto que pasa si
-            sobre pasas chevereee
-          </Text>
+            <Text className="text-xl">{user.name}</Text>
+            <Text className="text-sm mt-1">{"@" + user.userName}</Text>
+            <Text className="text-sm p-2">{user.bio}</Text>
 
-          <Pressable
-            className=" flex-row p-1.5 rounded-lg "
-            onPress={() => {
-              follow ? setFollow(false) : setFollow(true);
-            }}
-            style={{
-              backgroundColor: follow ? "#BBBBBB" : "#462E84",
-            }}
-          >
-            {follow ? (
-              <>
-                <UserUnfollow className="ml-2" color="white" />
-                <Text className="text-white ml-3 mr-2 text-base ">
-                  Dejar de seguir
-                </Text>
-              </>
-            ) : (
-              <>
-                <UserFollow className="ml-2" color="white" />
-                <Text className="text-white ml-3 mr-2 text-base ">Seguir</Text>
-              </>
-            )}
-          </Pressable>
+            <Pressable
+              className=" flex-row p-1.5 rounded-lg "
+              onPress={() => {
+                follow ? setFollow(false) : setFollow(true);
+              }}
+              style={{
+                backgroundColor: follow ? "#BBBBBB" : "#462E84",
+              }}
+            >
+              {follow ? (
+                <>
+                  <UserUnfollow className="ml-2" color="white" />
+                  <Text className="text-white ml-3 mr-2 text-base ">
+                    Dejar de seguir
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <UserFollow className="ml-2" color="white" />
+                  <Text className="text-white ml-3 mr-2 text-base ">
+                    Seguir
+                  </Text>
+                </>
+              )}
+            </Pressable>
 
-          <View className=" flex-row w-[100%] p-1 ml-2.5">
-            <Location />
-            <Text className="ml-2">Venezuela</Text>
-          </View>
-          <View className=" flex-row w-[100%] p-1 ml-1">
-            <Calendar />
-            <Text className="ml-1.5">Se unió en agosto del 2024</Text>
-          </View>
-
-          <ScrollView
-            className="mr-auto pl-2 mt-1 relative"
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          >
-            <View className="flex-row h-7">
-              <Pressable className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1">
-                <Compass className="ml-2" size={20} />
-                <Text className="ml-2 mr-2">Arcade</Text>
-              </Pressable>
+            <View className=" flex-row w-[100%] p-1 ml-2.5">
+              <Location />
+              <Text className="ml-2">Venezuela</Text>
             </View>
-          </ScrollView>
+            <View className=" flex-row w-[100%] p-1 ml-1">
+              <Calendar />
+              <Text className="ml-1.5">Se unió en agosto del 2024</Text>
+            </View>
 
-          <View className="flex-row  justify-between w-[80%] mb-5">
-            <View className="w-[120] border-2 rounded-lg p-1 items-center">
-              <Text className="text-base font-bold">200</Text>
-              <Text>Seguidos</Text>
-            </View>
-            <View className="w-[120] border-2 rounded-lg p-1 items-center">
-              <Text className="text-base font-bold">7300</Text>
-              <Text>Seguidores</Text>
+            <ScrollView
+              className="mr-auto pl-2 mt-1 relative"
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              <View className="flex-row h-7">
+                <Pressable className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1">
+                  <Compass className="ml-2" size={20} />
+                  <Text className="ml-2 mr-2">Arcade</Text>
+                </Pressable>
+              </View>
+            </ScrollView>
+
+            <View className="flex-row  justify-between w-[80%] mb-5">
+              <View className="w-[120] border-2 rounded-lg p-1 items-center">
+                <Text className="text-base font-bold">200</Text>
+                <Text>Seguidos</Text>
+              </View>
+              <View className="w-[120] border-2 rounded-lg p-1 items-center">
+                <Text className="text-base font-bold">7300</Text>
+                <Text>Seguidores</Text>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.container}>
-          <Text className="p-2 text-base">Publicaciones</Text>
-          <View style={styles.grid}>
-            {posts.map((post) => (
-              <Image
-                key={post.value}
-                style={styles.box}
-                source={{
-                  uri: post.uri,
-                }}
-              />
-            ))}
+          <View style={styles.container}>
+            <Text className="p-2 text-base">Publicaciones</Text>
+            <View style={styles.grid}>
+              {posts.map((post) => (
+                <Image
+                  key={post.value}
+                  style={styles.box}
+                  source={{
+                    uri: post.uri,
+                  }}
+                />
+              ))}
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
     </View>
   );
 }
