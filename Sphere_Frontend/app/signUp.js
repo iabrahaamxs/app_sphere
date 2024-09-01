@@ -1,4 +1,13 @@
-import { Text, View, StyleSheet, TextInput, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Modal,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import { Link, Stack } from "expo-router";
 import {
   UserIcon,
@@ -10,21 +19,51 @@ import {
 } from "../components/Icons";
 import SelectDropdown from "react-native-select-dropdown";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getCountries } from "../api/countriesApi";
 
 export default function SignUp() {
   const genders = [
-    { title: "Masculino", icon: 1 },
-    { title: "Femenino", icon: 2 },
+    { title: "Masculino", id: 1 },
+    { title: "Femenino", id: 2 },
   ];
 
-  const countries = [
-    { title: "Venezuela", id: 1 },
-    { title: "Colombia", id: 2 },
-    { title: "Ecuador", id: 3 },
-    { title: "Perú", id: 4 },
-  ];
+  const [countries, setCountries] = useState([]);
+  const [countryTXT, setCountryTXT] = useState(null);
+
+  useEffect(() => {
+    async function fetchCountries() {
+      const res = await getCountries();
+      setCountries(res);
+    }
+
+    fetchCountries();
+  }, []);
 
   const router = useRouter();
+
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [userName, setUserName] = useState("");
+  const [country, setCountry] = useState(0);
+  const [gender, setGender] = useState("");
+
+  const NewUser = {};
+
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem("new-user", jsonValue);
+    } catch (e) {
+      console.log("error del storeData");
+    }
+  };
+
+  const [countryModal, setCountryModal] = useState(false);
+  const [genderModal, setGenderModal] = useState(false);
 
   return (
     <View className="flex-1 pl-1 bg-white">
@@ -42,12 +81,20 @@ export default function SignUp() {
 
       <View className="flex-row items-center ml-3">
         <UserIcon />
-        <TextInput style={styles.input} placeholder="Nombre" />
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre"
+          onChangeText={setName}
+        />
       </View>
 
       <View className="flex-row items-center ml-3">
         <UserIcon />
-        <TextInput style={styles.input} placeholder="Apellido" />
+        <TextInput
+          style={styles.input}
+          placeholder="Apellido"
+          onChangeText={setLastName}
+        />
       </View>
 
       <View className="flex-row items-center ml-3">
@@ -56,6 +103,7 @@ export default function SignUp() {
           style={styles.input}
           placeholder="Correo electronico"
           keyboardType="email-address"
+          onChangeText={setEmail}
         />
       </View>
 
@@ -65,83 +113,117 @@ export default function SignUp() {
           style={styles.input}
           placeholder="Numero de telefono"
           keyboardType="number-pad"
+          onChangeText={setPhone}
         />
       </View>
 
       <View className="flex-row items-center ml-3">
         <UserName />
-        <TextInput style={styles.input} placeholder="Nombre de usuario" />
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre de usuario"
+          onChangeText={setUserName}
+        />
       </View>
 
       <View className="flex-row items-center ml-3">
         <Earth className="opacity-80" />
-        <SelectDropdown
-          data={countries}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-          }}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.input}>
-                {selectedItem && selectedItem.title ? (
-                  <Text>{selectedItem.title}</Text>
-                ) : (
-                  <Text className="opacity-50">País</Text>
+        <Modal visible={countryModal} transparent={true}>
+          <View className="bg-[#000]/40 flex-1 justify-center	items-center">
+            <View className="w-[80%] h-[40%] bg-white">
+              <ScrollView>
+                {countries.map((country) => (
+                  <Pressable
+                    onPress={() => [
+                      setCountryModal(false),
+                      setCountryTXT(country.country),
+                      setCountry(country.country_id),
+                    ]}
+                    className="border-[0.5px] h-8 justify-center"
+                    key={country.country_id}
+                  >
+                    <Text className="self-center justify-center">
+                      {country.country}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+              {/* <FlatList
+                data={countries}
+                renderItem={({item}) => (
+                  <Pressable
+                    onPress={() => [
+                      setCountryModal(false),
+                      setCountryTXT(item.country),
+                      setCountry(item.country_id),
+                    ]}
+                    className="border-[0.5px] h-8 justify-center"
+                    key={item.country_id}
+                  >
+                    <Text className="self-center justify-center">
+                      {item.country}
+                    </Text>
+                  </Pressable>
                 )}
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && { backgroundColor: "#D2D9DF" }),
-                }}
-              >
-                <Text>{item.title}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-        />
+              /> */}
+            </View>
+          </View>
+        </Modal>
+        <Pressable style={styles.input} onPress={() => setCountryModal(true)}>
+          <View>
+            {!countryTXT ? (
+              <Text className="opacity-50">País</Text>
+            ) : (
+              <Text>{countryTXT}</Text>
+            )}
+          </View>
+        </Pressable>
       </View>
 
       <View className="flex-row items-center ml-3">
         <Gender />
-        <SelectDropdown
-          data={genders}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-          }}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.input}>
-                {selectedItem && selectedItem.title ? (
-                  <Text>{selectedItem.title}</Text>
-                ) : (
-                  <Text className="opacity-50">Género</Text>
-                )}
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && { backgroundColor: "#D2D9DF" }),
-                }}
-              >
-                <Text>{item.title}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-        />
+        <Modal visible={genderModal} transparent={true}>
+          <View className="bg-[#000]/40 flex-1 justify-center	items-center">
+            <View className="w-[80%] h-[auto] bg-white py-2">
+              {genders.map((gender) => (
+                <Pressable
+                  onPress={() => [
+                    setGenderModal(false),
+                    setGender(gender.title),
+                  ]}
+                  className="border-[0.5px] h-8 justify-center mb-1"
+                  key={gender.id}
+                >
+                  <Text className="self-center justify-center">
+                    {gender.title}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </Modal>
+        <Pressable style={styles.input} onPress={() => setGenderModal(true)}>
+          <View>
+            {!gender ? (
+              <Text className="opacity-50">Género</Text>
+            ) : (
+              <Text>{gender}</Text>
+            )}
+          </View>
+        </Pressable>
       </View>
       <Link href="/signUp2" asChild>
         <Pressable
+          onPress={() => [
+            (NewUser.name = name),
+            (NewUser.last_name = lastName),
+            (NewUser.phone = phone),
+            (NewUser.email = email.toLocaleLowerCase()),
+            (NewUser.user_name = userName),
+            (NewUser.country = country),
+            (NewUser.gender = gender),
+            storeData(NewUser),
+          ]}
           style={{
             backgroundColor: false ? "#513Ab1" : "#462E84",
             height: 40,

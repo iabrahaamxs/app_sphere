@@ -17,7 +17,10 @@ const createUser = async (req, res) => {
     if (user) {
       return res
         .status(400)
-        .json({ menssage: "User (email, user_name, phone) already exists" });
+        .json({
+          ok: false,
+          menssage: "User (email, user_name, phone) already exists",
+        });
     }
 
     const newUser = await UserModel.create(data);
@@ -110,7 +113,7 @@ const updateSettingUser = async (req, res) => {
   try {
     const data = req.body;
 
-    const user = await UserModel.findEditSetting(data.user_name, data.user_id)
+    const user = await UserModel.findEditSetting(data.user_name, data.user_id);
 
     if (user) {
       return res.status(400).json({ menssage: "Username already exists" });
@@ -127,11 +130,11 @@ const updateSettingUser = async (req, res) => {
   }
 };
 
-const updatePasswordUser = async (req, res) =>{
+const updatePasswordUser = async (req, res) => {
   try {
-    const data = req.body
+    const data = req.body;
 
-    const user = await UserModel.editPassword(data)
+    const user = await UserModel.editPassword(data);
 
     if (!user) {
       return res.status(400).json({ menssage: "Password incorrect" });
@@ -144,7 +147,7 @@ const updatePasswordUser = async (req, res) =>{
       menssage: "ERROR SERVER",
     });
   }
-}
+};
 
 /*export const authToken = async (req, res) => {
   const { authorization } = req.headers;
@@ -179,5 +182,5 @@ export const UserController = {
   profileUser,
   updateInfoUser,
   updateSettingUser,
-  updatePasswordUser
+  updatePasswordUser,
 };

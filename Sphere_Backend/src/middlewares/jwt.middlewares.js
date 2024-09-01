@@ -19,6 +19,7 @@ export const verifyToken = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return res.sendStatus(400).json({ message: "Invalid token" });
+    return res.status(400).json({ message: "Invalid token" });
+
   }
 };
