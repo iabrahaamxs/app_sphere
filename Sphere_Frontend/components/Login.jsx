@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 import { Eye, Eye_Off, LockIcon, MailIcon, UserIcon } from "./Icons";
 import { UserApi } from "../api/userApi";
+import { setItem } from "../utils/AsyncStorage";
 const icon = require("../assets/sphereColor.png");
 
 export function Login() {
@@ -88,6 +89,7 @@ export function Login() {
             });
 
             if (auth.jwt) {
+              setItem("jwt", auth.jwt);
               router.replace("/home");
             }
           }}

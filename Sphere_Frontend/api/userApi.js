@@ -7,7 +7,7 @@ const login = async (data) => {
     return res.data;
   } catch (error) {
     //console.log(error);
-    return { msg: "error" };
+    return { msg: "error login" };
   }
 };
 
@@ -17,11 +17,28 @@ const register = async (data) => {
     return res.data;
   } catch (error) {
     console.log(error);
-    return { msg: "error" };
+    return { msg: "error register" };
+  }
+};
+
+const getProfile = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/profile", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return { msg: "error getProfile" };
   }
 };
 
 export const UserApi = {
   login,
   register,
+  getProfile,
 };
+
+

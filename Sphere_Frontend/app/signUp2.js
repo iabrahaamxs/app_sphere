@@ -6,8 +6,8 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { Link, Stack } from "expo-router";
-import React, { useState } from "react";
+import { Link, router, Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import RadioGroup from "../components/RadioButton";
 import * as ImagePicker from "expo-image-picker";
@@ -21,6 +21,8 @@ import {
 } from "../components/Icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserApi } from "../api/userApi";
+import { getAllItems, getItem } from "../utils/AsyncStorage";
+import { CategorieApi } from "../api/categorieApi";
 
 const User_icon = require("../assets/User_icon.png");
 
@@ -88,23 +90,21 @@ export default function SignUp2() {
       setPhoto(result.assets[0].uri);
     }
   };
-
   let User = {};
+
   const [bio, setBio] = useState("");
   const [photo, setPhoto] = useState("");
   const [date, setDate] = useState(new Date());
   const [password, setPassword] = useState("");
 
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("new-user");
+  // useEffect(() => {
+  //   async function fetchCountries() {
+  //     User = await getItem("new-user");
+  //     console.log(User);
+  //   }
 
-      User = JSON.parse(jsonValue);
-    } catch (e) {
-      console.log("error en funcionn get Data");
-    }
-  };
-  getData();
+  //   fetchCountries();
+  // }, []);
 
   return (
     <View className="flex-1 pl-1 bg-white">
@@ -227,6 +227,7 @@ export default function SignUp2() {
 
       <Pressable
         onPress={async () => {
+          User = await getItem("new-user");
           User.user_photo = photo;
           User.bio = bio;
           User.password = password;
@@ -240,9 +241,13 @@ export default function SignUp2() {
           const userCreated = await UserApi.register(User);
 
           if (userCreated.jwt) {
-            console.log("Se creooo");
-
-            //router.replace("/home");
+            const cat = await CategorieApi.create(
+              {
+                categories: selectedValues,
+              },
+              userCreated.jwt
+            );
+            router.replace("/home");
           }
         }}
         style={({ pressed }) => [

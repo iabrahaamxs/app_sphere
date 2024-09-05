@@ -15,17 +15,18 @@ const createUser = async (req, res) => {
       data.phone
     );
     if (user) {
-      return res
-        .status(400)
-        .json({
-          ok: false,
-          menssage: "User (email, user_name, phone) already exists",
-        });
+      return res.status(400).json({
+        ok: false,
+        menssage: "User (email, user_name, phone) already exists",
+      });
     }
 
     const newUser = await UserModel.create(data);
 
-    const jwtConstructor = new SignJWT({ user_name: newUser.user_name });
+    const jwtConstructor = new SignJWT({
+      user_name: newUser.user_name,
+      user_id: newUser.user_id,
+    });
 
     const encoder = new TextEncoder();
     const token = await jwtConstructor
@@ -54,7 +55,10 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ menssage: "Incorrect email or password" });
     }
 
-    const jwtConstructor = new SignJWT({ user_name: user.user_name });
+    const jwtConstructor = new SignJWT({
+      user_name: user.user_name,
+      user_id: user.user_id,
+    });
 
     const encoder = new TextEncoder();
     const token = await jwtConstructor

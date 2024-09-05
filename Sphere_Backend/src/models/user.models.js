@@ -40,7 +40,9 @@ const findUser = async (email, user_name, phone) => {
 const findByUserName = async (user_name) => {
   const { rows } = await poll.query(
     `
-    SELECT * FROM users
+    SELECT user_id, countries.country, name, last_name, user_name, phone, email, user_photo, bio, birthdate, gender, user_created_at, user_updated_at  
+      FROM users JOIN countries 
+      ON users.country = countries. country_id
       WHERE user_name = $1`,
     [user_name]
   );
@@ -116,12 +118,7 @@ const editSettingPersonal = async (data) => {
       SET user_photo = $1, user_name = $2, bio = $3, user_updated_at = CURRENT_TIMESTAMP
       WHERE user_id = $4 
       RETURNING *`,
-    [
-      data.user_photo,
-      data.user_name,
-      data.bio,
-      data.user_id,
-    ]
+    [data.user_photo, data.user_name, data.bio, data.user_id]
   );
 
   return rows[0];
@@ -134,17 +131,11 @@ const editPassword = async (data) => {
       SET password = $1, user_updated_at = CURRENT_TIMESTAMP
       WHERE user_id = $2 AND password = $3
       RETURNING *`,
-    [
-      data.new_password,
-      data.user_id,
-      data.password
-    ]
+    [data.new_password, data.user_id, data.password]
   );
 
   return rows[0];
 };
-
-
 
 export const UserModel = {
   create,
@@ -155,5 +146,5 @@ export const UserModel = {
   editInfoPersonal,
   findEditSetting,
   editSettingPersonal,
-  editPassword
+  editPassword,
 };

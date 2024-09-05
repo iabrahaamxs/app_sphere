@@ -22,6 +22,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCountries } from "../api/countriesApi";
+import { setItem } from "../utils/AsyncStorage";
 
 export default function SignUp() {
   const genders = [
@@ -53,14 +54,14 @@ export default function SignUp() {
 
   const NewUser = {};
 
-  const storeData = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem("new-user", jsonValue);
-    } catch (e) {
-      console.log("error del storeData");
-    }
-  };
+  // const storeData = async (value) => {
+  //   try {
+  //     const jsonValue = JSON.stringify(value);
+  //     await AsyncStorage.setItem("new-user", jsonValue);
+  //   } catch (e) {
+  //     console.log("error del storeData");
+  //   }
+  // };
 
   const [countryModal, setCountryModal] = useState(false);
   const [genderModal, setGenderModal] = useState(false);
@@ -222,7 +223,8 @@ export default function SignUp() {
             (NewUser.user_name = userName),
             (NewUser.country = country),
             (NewUser.gender = gender),
-            storeData(NewUser),
+            //storeData(NewUser),
+            setItem("new-user", NewUser),
           ]}
           style={{
             backgroundColor: false ? "#513Ab1" : "#462E84",
