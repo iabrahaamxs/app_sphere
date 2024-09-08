@@ -6,8 +6,8 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { Link, Stack } from "expo-router";
-import React, { useState } from "react";
+import { Link, router, Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import RadioGroup from "../components/RadioButton";
 import * as ImagePicker from "expo-image-picker";
@@ -19,6 +19,10 @@ import {
   Calendar,
   Camera,
 } from "../components/Icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserApi } from "../api/userApi";
+import { getAllItems, getItem } from "../utils/AsyncStorage";
+import { CategorieApi } from "../api/categorieApi";
 
 const User_icon = require("../assets/User_icon.png");
 
@@ -26,7 +30,6 @@ export default function SignUp2() {
   const [showPassword, setShowPassword] = useState(true);
   const [showPassword2, setShowPassword2] = useState(true);
 
-  const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 
   const onChange = (event, selectedDate) => {
@@ -72,8 +75,6 @@ export default function SignUp2() {
     { value: "8", label: "Musicales" },
   ];
 
-  const [imagen, setImagen] = useState("");
-
   const upImage = async () => {
     await ImagePicker.requestMediaLibraryPermissionsAsync();
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -86,9 +87,24 @@ export default function SignUp2() {
     });
 
     if (!result.canceled) {
-      setImagen(result.assets[0].uri);
+      setPhoto(result.assets[0].uri);
     }
   };
+  let User = {};
+
+  const [bio, setBio] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [password, setPassword] = useState("");
+
+  // useEffect(() => {
+  //   async function fetchCountries() {
+  //     User = await getItem("new-user");
+  //     console.log(User);
+  //   }
+
+  //   fetchCountries();
+  // }, []);
 
   return (
     <View className="flex-1 pl-1 bg-white">
@@ -105,9 +121,9 @@ export default function SignUp2() {
       </Text>
 
       <View className="items-center justify-center self-center">
-        {imagen ? (
+        {photo ? (
           <Image
-            source={{ uri: imagen }}
+            source={{ uri: photo }}
             style={{
               resizeMode: "contain",
               width: 130,
@@ -139,7 +155,11 @@ export default function SignUp2() {
 
       <View className="flex-row items-center ml-3">
         <Pencil />
-        <TextInput style={styles.input} placeholder="Biografía" />
+        <TextInput
+          style={styles.input}
+          placeholder="Biografía"
+          onChangeText={setBio}
+        />
       </View>
 
       <View className="flex-row items-center ml-3">
@@ -179,6 +199,7 @@ export default function SignUp2() {
           placeholder="Repite tu contraseña"
           keyboardType="default"
           secureTextEntry={showPassword2}
+          onChangeText={setPassword}
         />
         <View className="absolute right-8">
           <Pressable
@@ -205,7 +226,30 @@ export default function SignUp2() {
       </View>
 
       <Pressable
-        onPress={() => console.log(selectedValues)}
+        onPress={async () => {
+          User = await getItem("new-user");
+          User.user_photo = photo;
+          User.bio = bio;
+          User.password = password;
+          User.birthdate =
+            date.getFullYear() +
+            "-" +
+            (date.getMonth() + 1) +
+            "-" +
+            date.getDate();
+
+          const userCreated = await UserApi.register(User);
+
+          if (userCreated.jwt) {
+            const cat = await CategorieApi.create(
+              {
+                categories: selectedValues,
+              },
+              userCreated.jwt
+            );
+            router.replace("/home");
+          }
+        }}
         style={({ pressed }) => [
           {
             backgroundColor: pressed ? "#513Ab1" : "#462E84",

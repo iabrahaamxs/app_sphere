@@ -5,7 +5,7 @@ const create = async (user_id, categorie) => {
     `
       INSERT INTO users_categories (u_c_user, categorie)
         VALUES ($1, $2)
-	    RETURNING *`,
+	      RETURNING *`,
     [user_id, categorie]
   );
   return rows[0];

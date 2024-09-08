@@ -1,4 +1,3 @@
-import { poll } from "../db.js";
 import { FollowModel } from "../models/follows.models.js";
 
 /*export const getFollows = async (req, res) => {
@@ -12,10 +11,9 @@ import { FollowModel } from "../models/follows.models.js";
 
 // personas que sigue un usuario
 const getFollowed = async (req, res) => {
-  const { id } = req.params;
+  const id = req.user_id;
 
   const users = await FollowModel.getFollowed(id);
-  console.log (users)
 
   if (!users.length > 0) {
     return res.status(404).json({ menssage: "User does not have followed" });
@@ -26,29 +24,25 @@ const getFollowed = async (req, res) => {
 
 // personas que siguen a un usuario
 export const getfollowers = async (req, res) => {
-  const { id } = req.params;
-  const { rows } = await poll.query(
-    "SELECT followers.follow_id, users.user_name, followers.followed_user, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.follower_user = users.user_id WHERE followed_user = $1 AND follow_deleted_at IS NULL",
-    [id]
-  );
+  const id = req.user_id;
 
-  if (rows.length === 0) {
+  const followers = await FollowModel.getfollowers(id);
+
+  if (followers.length === 0) {
     return res.status(404).json({ menssage: "User without followers" });
   }
 
-  res.json(rows);
+  res.json(followers);
 };
 
 // crear seguidor
 export const createFollower = async (req, res) => {
   try {
     const data = req.body;
-    const { rows } = await poll.query(
-      "INSERT INTO followers (follower_user, followed_user) VALUES ($1, $2) RETURNING *",
-      [data.follower_user, data.followed_user]
-    );
 
-    return res.json(rows);
+    const follower = await FollowModel.follow(data);
+
+    return res.json(follower);
   } catch (error) {
     return res.status(500).json({ menssage: "Internal server error" });
   }
@@ -58,13 +52,18 @@ export const createFollower = async (req, res) => {
 export const deleteFollower = async (req, res) => {
   const data = req.body;
 
-  const { rows } = await poll.query(
-    "UPDATE followers SET follow_deleted_at = CURRENT_TIMESTAMP WHERE follower_user = $1 AND followed_user = $2 AND follow_deleted_at IS NULL RETURNING *",
-    [data.follower_user, data.followed_user]
-  );
-  return res.json(rows);
+  try {
+    const unfollower = await FollowModel.unfollowfollow(data);
+
+    return res.json(unfollower);
+  } catch (error) {
+    return res.status(500).json({ menssage: "Internal server error" });
+  }
 };
 
 export const FollowController = {
   getFollowed,
+  getfollowers,
+  createFollower,
+  deleteFollower,
 };

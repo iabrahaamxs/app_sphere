@@ -1,10 +1,23 @@
-import { poll } from "../db.js";
+import { jwtVerify } from "jose";
+import { JWT_PRIVATE_KEY } from "../config.js";
 import { CategorieModel } from "../models/categories.models.js";
 
 const createUserCategorie = async (req, res) => {
+  const { authorization } = req.headers;
+  const data = req.body;
+  const rows = [];
+
+  if (!authorization)
+    return res.status(401).json({ message: "Token not provided" });
+
   try {
-    const data = req.body;
-    const rows = [];
+    const encoder = new TextEncoder();
+    const { payload } = await jwtVerify(
+      authorization,
+      encoder.encode(JWT_PRIVATE_KEY)
+    );
+
+    data.user_id = payload.user_id;
 
     if (data.categories < 1) {
       return res.json({ menssage: "User without categories" });
@@ -25,9 +38,9 @@ const createUserCategorie = async (req, res) => {
 };
 
 const getCategories = async (req, res) => {
-  const { id } = req.params;
+  //const { id } = req.params;
 
-  const categories = await CategorieModel.getCategories(id);
+  const categories = await CategorieModel.getCategories(req.user_id);
 
   if (categories.length === 0) {
     return res.status(404).json({ menssage: "User without categories" });

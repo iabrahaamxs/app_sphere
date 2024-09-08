@@ -8,12 +8,16 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Eye, Eye_Off, LockIcon, MailIcon, UserIcon } from "./Icons";
+import { UserApi } from "../api/userApi";
+import { setItem } from "../utils/AsyncStorage";
 const icon = require("../assets/sphereColor.png");
 
 export function Login() {
   const insets = useSafeAreaInsets();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
 
   return (
@@ -40,6 +44,7 @@ export function Login() {
             style={styles.input}
             placeholder="Correo electronico"
             keyboardType="email-address"
+            onChangeText={setEmail}
           />
         </View>
 
@@ -51,6 +56,7 @@ export function Login() {
             placeholder="Contraseña"
             keyboardType="default"
             secureTextEntry={showPassword}
+            onChangeText={setPassword}
           />
           <View className="absolute right-6">
             <Pressable
@@ -67,20 +73,30 @@ export function Login() {
           <Text>Olvidaste tu contraseña?</Text>
         </Link>
 
-        <Link href="/home" asChild>
-          <Pressable
-            style={{
-              backgroundColor: false ? "#513Ab1" : "#462E84",
-              height: 40,
-              margin: 8,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 8,
-            }}
-          >
-            <Text className="text-white">Iniciar Sesión</Text>
-          </Pressable>
-        </Link>
+        <Pressable
+          style={({ pressed }) => ({
+            backgroundColor: pressed ? "#513Ab1" : "#462E84",
+            height: 40,
+            margin: 8,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 8,
+          })}
+          onPress={async () => {
+            const auth = await UserApi.login({
+              email: email.toLocaleLowerCase(),
+              password: password,
+            });
+
+            if (auth.jwt) {
+              setItem("jwt", auth.jwt);
+              router.replace("/home");
+            }
+          }}
+        >
+          <Text className="text-white">Iniciar Sesión</Text>
+        </Pressable>
+
         <View className="flex-row justify-center mt-4">
           <Text>¿Aún no te has registrado?</Text>
           <Link href="/signUp" className="pl-1">

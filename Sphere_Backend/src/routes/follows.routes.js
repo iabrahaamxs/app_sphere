@@ -1,21 +1,17 @@
 import { Router } from "express";
-import {
-  createFollower,
-  deleteFollower,
-  FollowController,
-  getfollowers,
-} from "../controllers/follows.controllers.js";
+import { FollowController } from "../controllers/follows.controllers.js";
+import { verifyToken } from "../middlewares/jwt.middlewares.js";
 
 const router = Router();
 
 //router.get("/follows", getFollows);
 
-router.get("/followed/:id", FollowController.getFollowed);
+router.get("/followed", verifyToken, FollowController.getFollowed);
 
-router.get("/follows/:id", getfollowers);
+router.get("/follows", verifyToken, FollowController.getfollowers);
 
-router.post("/follows", createFollower);
+router.post("/follows", FollowController.createFollower);
 
-router.put("/follows", deleteFollower);
+router.put("/follows", FollowController.deleteFollower);
 
 export default router;

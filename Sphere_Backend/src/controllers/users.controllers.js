@@ -15,14 +15,18 @@ const createUser = async (req, res) => {
       data.phone
     );
     if (user) {
-      return res
-        .status(400)
-        .json({ menssage: "User (email, user_name, phone) already exists" });
+      return res.status(400).json({
+        ok: false,
+        menssage: "User (email, user_name, phone) already exists",
+      });
     }
 
     const newUser = await UserModel.create(data);
 
-    const jwtConstructor = new SignJWT({ user_name: newUser.user_name });
+    const jwtConstructor = new SignJWT({
+      user_name: newUser.user_name,
+      user_id: newUser.user_id,
+    });
 
     const encoder = new TextEncoder();
     const token = await jwtConstructor
@@ -51,7 +55,10 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ menssage: "Incorrect email or password" });
     }
 
-    const jwtConstructor = new SignJWT({ user_name: user.user_name });
+    const jwtConstructor = new SignJWT({
+      user_name: user.user_name,
+      user_id: user.user_id,
+    });
 
     const encoder = new TextEncoder();
     const token = await jwtConstructor
@@ -110,7 +117,7 @@ const updateSettingUser = async (req, res) => {
   try {
     const data = req.body;
 
-    const user = await UserModel.findEditSetting(data.user_name, data.user_id)
+    const user = await UserModel.findEditSetting(data.user_name, data.user_id);
 
     if (user) {
       return res.status(400).json({ menssage: "Username already exists" });
@@ -127,11 +134,11 @@ const updateSettingUser = async (req, res) => {
   }
 };
 
-const updatePasswordUser = async (req, res) =>{
+const updatePasswordUser = async (req, res) => {
   try {
-    const data = req.body
+    const data = req.body;
 
-    const user = await UserModel.editPassword(data)
+    const user = await UserModel.editPassword(data);
 
     if (!user) {
       return res.status(400).json({ menssage: "Password incorrect" });
@@ -144,7 +151,7 @@ const updatePasswordUser = async (req, res) =>{
       menssage: "ERROR SERVER",
     });
   }
-}
+};
 
 /*export const authToken = async (req, res) => {
   const { authorization } = req.headers;
@@ -179,5 +186,5 @@ export const UserController = {
   profileUser,
   updateInfoUser,
   updateSettingUser,
-  updatePasswordUser
+  updatePasswordUser,
 };
