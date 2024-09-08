@@ -161,7 +161,7 @@ export default function Search() {
       <FlatList
         className="pt-2"
         data={filteredData}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <View>
             {filterType === "account" ? (
               <SearchUser item={item} />

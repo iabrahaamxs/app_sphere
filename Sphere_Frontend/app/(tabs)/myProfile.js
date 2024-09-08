@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   Modal,
   TextInput,
+  BackHandler,
+  FlatList,
 } from "react-native";
 import {
   Location,
@@ -40,6 +42,7 @@ export default function MyProfile() {
   const insets = useSafeAreaInsets();
   const [followModal, setFollowModal] = useState(false);
   const [viewPost, setViewPost] = useState(true);
+  const [viewFollow, setViewFollow] = useState(null);
   const posts = [
     {
       value: "1",
@@ -142,6 +145,7 @@ export default function MyProfile() {
   ];
 
   const ref = useRef();
+  const followRef = useRef();
 
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
@@ -156,6 +160,15 @@ export default function MyProfile() {
     setViewPost(false);
   };
 
+  const followedPress = () => {
+    followRef.current?.setPage(0);
+    setViewFollow(0);
+  };
+  const followerPress = () => {
+    followRef.current?.setPage(1);
+    setViewFollow(1);
+  };
+
   const { height } = Dimensions.get("window");
 
   const getHeight = (b) => {
@@ -166,15 +179,23 @@ export default function MyProfile() {
 
   const [Profile, setProfile] = useState({});
   const [categories, setCategories] = useState([]);
+  const [follows, setFollows] = useState([]);
+  const [followed, setFollowed] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [text, setText] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       const jwt = await getItem("jwt");
       const profileData = await UserApi.getProfile(jwt);
       const categoriesData = await CategorieApi.getCategories(jwt);
+      const followsData = await UserApi.getFollows(jwt);
+      const followedData = await UserApi.getFollowed(jwt);
 
       setProfile(profileData);
       setCategories(categoriesData);
+      setFollows(followsData);
+      setFollowed(followedData);
     };
 
     fetchData();
@@ -206,6 +227,35 @@ export default function MyProfile() {
     // Formatear la cadena de salida
     return `Se unió en ${month} del ${year}`;
   }
+
+  const searchFilter = (text, type) => {
+    if (text && type === 0) {
+      const newData = followed.filter((item) => {
+        const itemData = item.user_name
+          ? (item.user_name + " " + item.name + item.last_name).toUpperCase()
+          : "".toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredData(newData);
+    } else if (text && type === 1) {
+      const newData = follows.filter((item) => {
+        const itemData = item.user_name
+          ? (item.user_name + " " + item.name + item.last_name).toUpperCase()
+          : "".toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredData(newData);
+    } else if (text === "" && type === 0) {
+      setFilteredData(followed);
+    } else if (text === "" && type === 1) {
+      setFilteredData(follows);
+    } else {
+      console.log("error al filtrar datos");
+      setFilteredData([]);
+    }
+  };
 
   return (
     <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
@@ -268,7 +318,7 @@ export default function MyProfile() {
             </View>
 
             <ScrollView
-              className="mr-auto mt-1 relative"
+              className="mr-auto mt-2 mb-4 relative"
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
@@ -285,23 +335,46 @@ export default function MyProfile() {
               </View>
             </ScrollView>
 
-            <View className="flex-row  justify-between w-[80%] mb-5">
-              <Modal animationType="slide" visible={followModal} transparent={true}>
+            <View className="flex-row  justify-between w-[80%] mb-8">
+              <Modal
+                animationType="slide"
+                visible={followModal}
+                transparent={true}
+                onRequestClose={() => setFollowModal(false)}
+              >
                 <View className="bg-[#fff] flex-1">
                   <View className="flex-row m-4">
-                    <Pressable onPress={()=> setFollowModal(false)}>
+                    <Pressable onPress={() => setFollowModal(false)}>
                       <Left />
                     </Pressable>
                     <Text className="pl-4">{Profile.user_name}</Text>
                   </View>
                   <View className="flex-row ">
-                    <Pressable className="w-[50%] border-b-2 p-1 items-center ">
-                      <Text>Seguidores</Text>
-                      <Text className="text-base font-bold">200</Text>
-                    </Pressable>
-                    <Pressable className="w-[50%] p-1 items-center opacity-50	">
+                    <Pressable
+                      style={{ opacity: !viewFollow ? 1 : 0.5 }}
+                      onPress={() => {
+                        followedPress();
+                        searchFilter(text, 0);
+                      }}
+                      className="w-[50%] p-1 items-center opacity-50	"
+                    >
                       <Text>Seguidos</Text>
-                      <Text className="text-base font-bold">5600</Text>
+                      <Text className="text-base font-bold">
+                        {followed.length}
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      style={{ opacity: viewFollow ? 1 : 0.5 }}
+                      onPress={() => {
+                        followerPress();
+                        searchFilter(text, 1);
+                      }}
+                      className="w-[50%] border-b-2 p-1 items-center "
+                    >
+                      <Text>Seguidores</Text>
+                      <Text className="text-base font-bold">
+                        {follows.length}
+                      </Text>
                     </Pressable>
                   </View>
                   <View className="p-3">
@@ -315,36 +388,76 @@ export default function MyProfile() {
                         borderRadius: 5,
                       }}
                       placeholder="Buscar"
-                      onChangeText={(text) => onChangeSearch(text)}
+                      onChangeText={(text) => {
+                        searchFilter(text, viewFollow);
+                        setText(text);
+                      }}
                     />
                     <LupaIcon className="absolute p-5 opacity-40" />
                   </View>
-                  <CardUser />
-                  <CardUser />
-                  <CardUser />
-                  <CardUser />
-                  <CardUser />
-                  <CardUser />
+                  <PagerView
+                    ref={followRef}
+                    initialPage={viewFollow}
+                    scrollEnabled={false}
+                    style={{ flex: 1 }}
+                  >
+                    <View key="0">
+                      <FlatList
+                        className=""
+                        data={filteredData}
+                        renderItem={({ item }) => (
+                          <View>
+                            <CardUser user={item} />
+                          </View>
+                        )}
+                        keyExtractor={(item) => item.follow_id}
+                      />
+                    </View>
+
+                    <View key="1">
+                      <FlatList
+                        className=""
+                        data={filteredData}
+                        renderItem={({ item }) => (
+                          <View>
+                            <CardUser user={item} />
+                          </View>
+                        )}
+                        keyExtractor={(item) => item.follow_id}
+                      />
+                    </View>
+                  </PagerView>
                 </View>
               </Modal>
-              <Pressable onPress={()=> setFollowModal(true)} className="w-[120] border-2 rounded-lg p-1 items-center ">
-                <Text className="text-base font-bold">200</Text>
+              <Pressable
+                onPress={() => {
+                  setFollowModal(true);
+                  setViewFollow(0);
+                  searchFilter("", 0);
+                }}
+                className="w-[120] border-2 rounded-lg p-1 items-center "
+              >
+                <Text className="text-base font-bold">{followed.length}</Text>
                 <Text>Seguidos</Text>
               </Pressable>
 
-              {/* <View className="w-[120] border-2 rounded-lg p-1 items-center ">
-                <Text className="text-base font-bold">200</Text>
-                <Text>Seguidos</Text>
-              </View> */}
-              <View className="w-[120] border-2 rounded-lg p-1 items-center">
-                <Text className="text-base font-bold">5M</Text>
+              <Pressable
+                onPress={() => {
+                  setFollowModal(true);
+                  setViewFollow(1);
+                  searchFilter("", 1);
+                }}
+                className="w-[120] border-2 rounded-lg p-1 items-center "
+              >
+                <Text className="text-base font-bold">{follows.length}</Text>
                 <Text>Seguidores</Text>
-              </View>
+              </Pressable>
             </View>
           </View>
           <View style={styles.container}>
             <View className="p-2 flex-row justify-between w-[85%] self-center	">
               <Pressable
+                style={{ opacity: viewPost ? 1 : 0.5 }}
                 onPress={() => postPress()}
                 className="flex-row items-center"
               >
@@ -352,6 +465,7 @@ export default function MyProfile() {
                 <Text className="text-base pl-2">Publicaciones</Text>
               </Pressable>
               <Pressable
+                style={{ opacity: !viewPost ? 1 : 0.5 }}
                 onPress={() => favPress()}
                 className="flex-row items-center"
               >

@@ -35,10 +35,36 @@ const getProfile = async (jwt) => {
   }
 };
 
+const getFollows = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/follows", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return { msg: "error getFollows" };
+  }
+};
+
+const getFollowed = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/followed", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return { msg: "error getFollowed" };
+  }
+};
+
 export const UserApi = {
   login,
   register,
   getProfile,
+  getFollows,
+  getFollowed,
 };
-
-
