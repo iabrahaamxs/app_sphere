@@ -43,106 +43,8 @@ export default function MyProfile() {
   const [followModal, setFollowModal] = useState(false);
   const [viewPost, setViewPost] = useState(true);
   const [viewFollow, setViewFollow] = useState(null);
-  const posts = [
-    {
-      value: "1",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwvJWnvrFvge1Nhr61-isRuZpr2G26MlrqwQ&s",
-    },
-    { value: "2", uri: "https://img2.rtve.es/i/?w=1600&i=1632450182030.jpg" },
-    { value: "3", uri: "https://img2.rtve.es/i/?w=1600&i=1632450182030.jpg" },
-    {
-      value: "4",
-      uri: "https://media.wired.com/photos/64b6962b6296ebb3f0861532/master/pass/Culture-EA-FC24_Screenshot_EPL_4k_CityCele.jpg",
-    },
-    {
-      value: "5",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "6",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "7",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "8",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "9",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "10",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "11",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "12",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "13",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "14",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "15",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "16",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "17",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "18",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "19",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "0",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "20",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "21",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "22",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-  ];
-  const favorites = [
-    {
-      value: "1",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwvJWnvrFvge1Nhr61-isRuZpr2G26MlrqwQ&s",
-    },
-    { value: "2", uri: "https://img2.rtve.es/i/?w=1600&i=1632450182030.jpg" },
-    { value: "3", uri: "https://img2.rtve.es/i/?w=1600&i=1632450182030.jpg" },
-    {
-      value: "4",
-      uri: "https://media.wired.com/photos/64b6962b6296ebb3f0861532/master/pass/Culture-EA-FC24_Screenshot_EPL_4k_CityCele.jpg",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   const ref = useRef();
   const followRef = useRef();
@@ -172,6 +74,8 @@ export default function MyProfile() {
   const { height } = Dimensions.get("window");
 
   const getHeight = (b) => {
+    console.log(b);
+
     return height > b ? height - 20 : b;
   };
 
@@ -191,11 +95,15 @@ export default function MyProfile() {
       const categoriesData = await CategorieApi.getCategories(jwt);
       const followsData = await UserApi.getFollows(jwt);
       const followedData = await UserApi.getFollowed(jwt);
+      const postsData = await UserApi.getPosts(jwt);
+      const favoritesData = await UserApi.getFavorites(jwt);
 
       setProfile(profileData);
       setCategories(categoriesData);
       setFollows(followsData);
       setFollowed(followedData);
+      setPosts(postsData);
+      setFavorites(favoritesData);
     };
 
     fetchData();
@@ -369,7 +277,7 @@ export default function MyProfile() {
                         followerPress();
                         searchFilter(text, 1);
                       }}
-                      className="w-[50%] border-b-2 p-1 items-center "
+                      className="w-[50%] p-1 items-center "
                     >
                       <Text>Seguidores</Text>
                       <Text className="text-base font-bold">
@@ -486,10 +394,10 @@ export default function MyProfile() {
               <View style={styles.grid} key="0">
                 {posts.map((post) => (
                   <Image
-                    key={post.value}
+                    key={post.post_id}
                     style={styles.box}
                     source={{
-                      uri: post.uri,
+                      uri: post.photos[0].photo,
                     }}
                   />
                 ))}
@@ -498,10 +406,10 @@ export default function MyProfile() {
               <View style={styles.grid} key="1">
                 {favorites.map((fav) => (
                   <Image
-                    key={fav.value}
+                    key={fav.favorite_id}
                     style={styles.box}
                     source={{
-                      uri: fav.uri,
+                      uri: fav.photos[0].photo,
                     }}
                   />
                 ))}

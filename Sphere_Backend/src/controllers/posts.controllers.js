@@ -1,7 +1,7 @@
 import { poll } from "../db.js";
 import { PhotoModel } from "../models/photos.models.js"; //test
-import {CommentModel} from "../models/comments.models.js"
-import {LikeModel} from "../models/likes.models.js"
+import { CommentModel } from "../models/comments.models.js";
+import { LikeModel } from "../models/likes.models.js";
 
 export const createPost = async (req, res) => {
   try {
@@ -18,7 +18,7 @@ export const createPost = async (req, res) => {
 
 // obtener posts de un usuario con sus respectivas fotos
 export const getPosts = async (req, res) => {
-  const { user } = req.params;
+  const user = req.user_id;
   const { rows } = await poll.query(
     "SELECT * FROM posts WHERE post_user = $1",
     [user]
@@ -36,16 +36,14 @@ export const getPosts = async (req, res) => {
 
   //obtener comentarios de cada post
   for (let index = 0; index < rows.length; index++) {
-    let comments = await CommentModel.getComments(rows[index].post_id)
-    rows[index].comments = comments
-    
+    let comments = await CommentModel.getComments(rows[index].post_id);
+    rows[index].comments = comments;
   }
 
   //obtener likes de cada post
   for (let index = 0; index < rows.length; index++) {
-    let likes = await LikeModel.getLikes(rows[index].post_id)
-    rows[index].likes = likes
-    
+    let likes = await LikeModel.getLikes(rows[index].post_id);
+    rows[index].likes = likes;
   }
 
   return res.json(rows);

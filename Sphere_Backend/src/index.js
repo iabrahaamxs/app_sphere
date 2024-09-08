@@ -5,7 +5,8 @@ import followsRoutes from "./routes/follows.routes.js";
 import postsRoutes from "./routes/posts.routes.js";
 import categoriesRoutes from "./routes/categories.routes.js";
 import photosRoutes from "./routes/photos.routes.js";
-import countriesRoutes from "./routes/countries.routes.js"
+import countriesRoutes from "./routes/countries.routes.js";
+import FavoritesRoutes from "./routes/favorites.routes.js";
 import morgan from "morgan";
 
 const app = express();
@@ -14,7 +15,13 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(userRoutes);
 app.use(photosRoutes);
-app.use(followsRoutes, postsRoutes, categoriesRoutes, countriesRoutes);
+app.use(
+  followsRoutes,
+  postsRoutes,
+  categoriesRoutes,
+  countriesRoutes,
+  FavoritesRoutes
+);
 //app.use(categoriesRoutes);
 
 app.listen(PORT);

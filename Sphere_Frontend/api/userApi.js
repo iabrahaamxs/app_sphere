@@ -61,10 +61,42 @@ const getFollowed = async (jwt) => {
   }
 };
 
+const getPosts = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/posts", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error getPosts" }');
+
+    return [];
+  }
+};
+
+const getFavorites = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/favorites", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error getFavorites" }');
+
+    return [];
+  }
+};
+
 export const UserApi = {
   login,
   register,
   getProfile,
   getFollows,
   getFollowed,
+  getPosts,
+  getFavorites,
 };
