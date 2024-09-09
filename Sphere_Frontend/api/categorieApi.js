@@ -15,7 +15,7 @@ const create = async (data, jwt) => {
   }
 };
 
-const getCategories = async (jwt) => {
+const getCategories = async (id) => {
   const template = [
     { value: 1, icon: "hand-rock", name: "Acción" },
     { value: 2, icon: "heart-pulse", name: "Aventura" },
@@ -28,11 +28,7 @@ const getCategories = async (jwt) => {
   ];
 
   try {
-    const res = await axiosManager.get("/categorie", {
-      headers: {
-        Authorization: jwt,
-      },
-    });
+    const res = await axiosManager.get(`/categorie/${id}`);
 
     const categories = res.data.map((r) => {
       const match = template.find((t) => t.value === r.categorie);

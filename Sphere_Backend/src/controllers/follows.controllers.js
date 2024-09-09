@@ -11,7 +11,7 @@ import { FollowModel } from "../models/follows.models.js";
 
 // personas que sigue un usuario
 const getFollowed = async (req, res) => {
-  const id = req.user_id;
+  const { id } = req.params;
 
   const users = await FollowModel.getFollowed(id);
 
@@ -24,7 +24,7 @@ const getFollowed = async (req, res) => {
 
 // personas que siguen a un usuario
 export const getfollowers = async (req, res) => {
-  const id = req.user_id;
+  const { id } = req.params;
 
   const followers = await FollowModel.getfollowers(id);
 

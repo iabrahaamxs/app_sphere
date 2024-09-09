@@ -6,11 +6,11 @@ const Post = ({ item }) => {
   return (
     <View className="mb-2">
       <View className="flex-row items-center px-2 ">
-        <Link href={`/user/${item.userId}`} asChild>
+        <Link href={`/user/${item.post_user}`} asChild>
           <Pressable className="flex-row items-center">
             <Image
               source={{
-                uri: "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
+                uri: item.user_photo,
               }}
               style={{
                 resizeMode: "contain",
@@ -21,19 +21,19 @@ const Post = ({ item }) => {
                 borderColor: "#462E84",
               }}
             />
-            <Text className="text-base mx-2 ">{item.userName} ·</Text>
+            <Text className="text-base mx-2 ">{item.name} ·</Text>
           </Pressable>
         </Link>
-        <Text className="text-xs leading-8	">{item.date}</Text>
+        <Text className="text-xs leading-8	">{item.post_created_at}</Text>
         <Ellipsis className="absolute right-3" />
       </View>
       <Text className="px-2">{item.description}</Text>
       <Image
         source={{
-          uri: item.photo,
+          uri: item.photos[0].photo,
         }}
         style={{
-          resizeMode: "contain",
+          resizeMode: "cover",
           width: "100%",
           aspectRatio: 4 / 3,
         }}

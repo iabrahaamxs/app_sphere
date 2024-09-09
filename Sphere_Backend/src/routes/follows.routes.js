@@ -6,9 +6,9 @@ const router = Router();
 
 //router.get("/follows", getFollows);
 
-router.get("/followed", verifyToken, FollowController.getFollowed);
+router.get("/followed/:id", FollowController.getFollowed);
 
-router.get("/follows", verifyToken, FollowController.getfollowers);
+router.get("/follows/:id", FollowController.getfollowers);
 
 router.post("/follows", FollowController.createFollower);
 
