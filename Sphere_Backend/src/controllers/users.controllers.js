@@ -35,7 +35,12 @@ const createUser = async (req, res) => {
       .setExpirationTime("5h")
       .sign(encoder.encode(JWT_PRIVATE_KEY));
 
-    return res.status(201).json({ ok: true, jwt: token });
+    return res.status(201).json({
+      ok: true,
+      jwt: token,
+      user_name: newUser.user_name,
+      user_id: newUser.user_id,
+    });
   } catch (error) {
     if (error?.code === "23505") {
       return res.status(409).json({ menssage: "Email already exists" });
@@ -67,15 +72,22 @@ const loginUser = async (req, res) => {
       .setExpirationTime("5h")
       .sign(encoder.encode(JWT_PRIVATE_KEY));
 
-    return res.json({ ok: true, jwt: token });
+    return res.json({
+      ok: true,
+      jwt: token,
+      user_name: user.user_name,
+      user_id: user.user_id,
+    });
   } catch (error) {
     return res.status(500).json({ menssage: "Internal server error" });
   }
 };
 
 const profileUser = async (req, res) => {
+  const { userid } = req.params;
+
   try {
-    const user = await UserModel.findByUserName(req.user_name);
+    const user = await UserModel.findByUserId(userid);
 
     return res.json(user);
   } catch (error) {

@@ -21,108 +21,39 @@ import {
   UserUnfollow,
 } from "../../components/Icons";
 import { getUser } from "../(tabs)/search";
+import { UserApi } from "../../api/userApi";
+import { formatDate } from "../../utils/FormatDate";
+import { CategorieApi } from "../../api/categorieApi";
+import { PostApi } from "../../api/postsApi";
 //const User_icon = require("../../assets/User_icon.png");
 
 export default function UserProfile() {
   const { userProfile } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const [user, setUser] = useState(null);
-  const users = getUser();
+  const [categories, setCategories] = useState([]);
+  const [follows, setFollows] = useState([]);
+  const [followed, setFollowed] = useState([]);
   const [follow, setFollow] = useState(false);
-
-  const posts = [
-    {
-      value: "1",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwvJWnvrFvge1Nhr61-isRuZpr2G26MlrqwQ&s",
-    },
-    { value: "2", uri: "https://img2.rtve.es/i/?w=1600&i=1632450182030.jpg" },
-    { value: "3", uri: "https://img2.rtve.es/i/?w=1600&i=1632450182030.jpg" },
-    {
-      value: "4",
-      uri: "https://media.wired.com/photos/64b6962b6296ebb3f0861532/master/pass/Culture-EA-FC24_Screenshot_EPL_4k_CityCele.jpg",
-    },
-    {
-      value: "5",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "6",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "7",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "8",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "9",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "10",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "11",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "12",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "13",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "14",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "15",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "16",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "17",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "18",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "19",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "0",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "20",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "21",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-    {
-      value: "22",
-      uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3WODwZnCUMfFeWXgUueAeJmKCC1uJ0O2Ig&s",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     if (userProfile) {
-      const newUser = users.find((user) => user.id === userProfile);
-      setUser(newUser);
+      const fetchData = async () => {
+        const userData = await UserApi.getProfile(userProfile);
+        const categoriesData = await CategorieApi.getCategories(userProfile);
+        const followsData = await UserApi.getFollows(userProfile);
+        const followedData = await UserApi.getFollowed(userProfile);
+        const postsData = await PostApi.getPosts(userProfile);
+
+        setUser(userData);
+        setCategories(categoriesData);
+        setFollows(followsData);
+        setFollowed(followedData);
+        setPosts(postsData);
+      };
+
+      fetchData();
     }
   }, [userProfile]);
 
@@ -140,12 +71,12 @@ export default function UserProfile() {
             <Link href="/">
               <Left color="white" />
             </Link>
-            <Pressable onPress={() => copyToClipboard("@" + user.userName)}>
+            <Pressable onPress={() => copyToClipboard("@" + user.user_name)}>
               <Share color="white" />
             </Pressable>
           </View>
           <Image
-            source={{ uri: user.photo }}
+            source={{ uri: user.user_photo }}
             style={{
               resizeMode: "cover",
               width: "110%",
@@ -156,7 +87,7 @@ export default function UserProfile() {
           <View className="w-[100%] h-[410] bg-white mt-[-6] rounded-t-xl items-center z-20">
             <Image
               className="mt-[-65]"
-              source={{ uri: user.photo }}
+              source={{ uri: user.user_photo }}
               style={{
                 resizeMode: "contain",
                 width: 130,
@@ -166,8 +97,8 @@ export default function UserProfile() {
               }}
             />
 
-            <Text className="text-xl">{user.name}</Text>
-            <Text className="text-sm mt-1">{"@" + user.userName}</Text>
+            <Text className="text-xl">{user.name + " " + user.last_name}</Text>
+            <Text className="text-sm mt-1">{"@" + user.user_name}</Text>
             <Text className="text-sm p-2">{user.bio}</Text>
 
             <Pressable
@@ -198,33 +129,38 @@ export default function UserProfile() {
 
             <View className=" flex-row w-[100%] p-1 ml-2.5">
               <Location />
-              <Text className="ml-2">Venezuela</Text>
+              <Text className="ml-2">{user.country}</Text>
             </View>
             <View className=" flex-row w-[100%] p-1 ml-1">
               <Calendar />
-              <Text className="ml-1.5">Se unió en agosto del 2024</Text>
+              <Text className="ml-1.5">{formatDate(user.user_created_at)}</Text>
             </View>
 
             <ScrollView
-              className="mr-auto pl-2 mt-1 relative"
+              className="mr-auto mt-2 mb-4 relative"
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
-              <View className="flex-row h-7">
-                <Pressable className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1">
-                  <Compass className="ml-2" size={20} />
-                  <Text className="ml-2 mr-2">Arcade</Text>
-                </Pressable>
+              <View className="flex-row h-7 pl-2 pr-2">
+                {categories.map((categorie) => (
+                  <Pressable
+                    className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1"
+                    key={categorie.value}
+                  >
+                    <Compass className="ml-2" size={20} name={categorie.icon} />
+                    <Text className="ml-2 mr-2">{categorie.name}</Text>
+                  </Pressable>
+                ))}
               </View>
             </ScrollView>
 
             <View className="flex-row  justify-between w-[80%] mb-5">
               <View className="w-[120] border-2 rounded-lg p-1 items-center">
-                <Text className="text-base font-bold">200</Text>
+                <Text className="text-base font-bold">{followed.length}</Text>
                 <Text>Seguidos</Text>
               </View>
               <View className="w-[120] border-2 rounded-lg p-1 items-center">
-                <Text className="text-base font-bold">7300</Text>
+                <Text className="text-base font-bold">{follows.length}</Text>
                 <Text>Seguidores</Text>
               </View>
             </View>
@@ -234,10 +170,10 @@ export default function UserProfile() {
             <View style={styles.grid}>
               {posts.map((post) => (
                 <Image
-                  key={post.value}
+                  key={post.post_id}
                   style={styles.box}
                   source={{
-                    uri: post.uri,
+                    uri: post.photos[0].photo,
                   }}
                 />
               ))}
@@ -260,6 +196,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
+    minHeight: 700
   },
   box: {
     width: "32%", // Ancho de cada elemento (30% para 3 columnas con espacio entre)

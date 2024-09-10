@@ -3,9 +3,22 @@ import { StatusBar } from "expo-status-bar";
 import { FlatList, Image, Text, View } from "react-native";
 import Post from "../../components/Post";
 import { getPosts } from "./search";
+import { getItem } from "../../utils/AsyncStorage";
+import { PostApi } from "../../api/postsApi";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const posts = getPosts();
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const jwt = await getItem("jwt");
+      const postsData = await PostApi.getFollowersPosts(jwt);
+      setPosts(postsData);
+    };
+
+    fetchData();
+  }, []);
   return (
     <View>
       <StatusBar style="auto" />
@@ -42,7 +55,7 @@ export default function Home() {
             <Post item={item} />
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.post_id}
       />
     </View>
   );

@@ -90,6 +90,8 @@ export function Login() {
 
             if (auth.jwt) {
               setItem("jwt", auth.jwt);
+              setItem("user_name", auth.user_name);
+              setItem("id", auth.user_id);
               router.replace("/home");
             }
           }}

@@ -5,7 +5,7 @@ import { verifyToken } from "../middlewares/jwt.middlewares.js";
 const router = Router();
 
 router.post("/categorie", CategorieController.createUserCategorie);
-router.get("/categorie", verifyToken, CategorieController.getCategories);
+router.get("/categorie/:userid", CategorieController.getCategories);
 router.put("/categorie", CategorieController.updateCategories);
 
 export default router;

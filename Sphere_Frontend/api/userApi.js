@@ -21,13 +21,9 @@ const register = async (data) => {
   }
 };
 
-const getProfile = async (jwt) => {
+const getProfile = async (user) => {
   try {
-    const res = await axiosManager.get("/profile", {
-      headers: {
-        Authorization: jwt,
-      },
-    });
+    const res = await axiosManager.get(`/profile/${user}`);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -35,61 +31,40 @@ const getProfile = async (jwt) => {
   }
 };
 
-const getFollows = async (jwt) => {
+const getFollows = async (id) => {
   try {
-    const res = await axiosManager.get("/follows", {
-      headers: {
-        Authorization: jwt,
-      },
-    });
+    const res = await axiosManager.get(`/follows/${id}`);
     return res.data;
   } catch (error) {
-    return { msg: "error getFollows" };
-  }
-};
-
-const getFollowed = async (jwt) => {
-  try {
-    const res = await axiosManager.get("/followed", {
-      headers: {
-        Authorization: jwt,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    return { msg: "error getFollowed" };
-  }
-};
-
-const getPosts = async (jwt) => {
-  try {
-    const res = await axiosManager.get("/posts", {
-      headers: {
-        Authorization: jwt,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    console.log('{ msg: "error getPosts" }');
+    console.log('{ msg: "error getFollows" }');
 
     return [];
   }
 };
 
-const getFavorites = async (jwt) => {
+const getFollowed = async (id) => {
   try {
-    const res = await axiosManager.get("/favorites", {
-      headers: {
-        Authorization: jwt,
-      },
-    });
+    const res = await axiosManager.get(`/followed/${id}`);
     return res.data;
   } catch (error) {
-    console.log('{ msg: "error getFavorites" }');
+    console.log('{ msg: "error getFollowed" }');
 
     return [];
   }
 };
+
+// const getUser = async (userName) => {
+//   try {
+//     const res = await axiosManager.get("/user", {
+//       params: {
+//         user_name: userName,
+//       },
+//     });
+//     return res.data;
+//   } catch (error) {
+//     return { msg: "error getUser" };
+//   }
+// };
 
 export const UserApi = {
   login,
@@ -97,6 +72,5 @@ export const UserApi = {
   getProfile,
   getFollows,
   getFollowed,
-  getPosts,
-  getFavorites,
+  //getUser,
 };

@@ -33,14 +33,14 @@ const createUserCategorie = async (req, res) => {
 
     return res.json(rows);
   } catch (error) {
-    return res.status(500).json({ menssage: "Internal server error" });
+    return res.status(500).json({ menssage: "Internal server error" }); 
   }
 };
-
+ 
 const getCategories = async (req, res) => {
-  //const { id } = req.params;
+  const { userid } = req.params;
 
-  const categories = await CategorieModel.getCategories(req.user_id);
+  const categories = await CategorieModel.getCategories(userid);
 
   if (categories.length === 0) {
     return res.status(404).json({ menssage: "User without categories" });

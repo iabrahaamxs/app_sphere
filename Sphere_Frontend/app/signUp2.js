@@ -21,7 +21,7 @@ import {
 } from "../components/Icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserApi } from "../api/userApi";
-import { getAllItems, getItem } from "../utils/AsyncStorage";
+import { getAllItems, getItem, setItem } from "../utils/AsyncStorage";
 import { CategorieApi } from "../api/categorieApi";
 
 const User_icon = require("../assets/User_icon.png");
@@ -247,6 +247,9 @@ export default function SignUp2() {
               },
               userCreated.jwt
             );
+            await setItem("jwt", userCreated.jwt);
+            await setItem("user_name", userCreated.user_name);
+            await setItem("id", userCreated.user_id);
             router.replace("/home");
           }
         }}

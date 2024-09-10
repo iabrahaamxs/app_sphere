@@ -20,8 +20,6 @@ import {
   Grid,
   Bookmark,
   Logout,
-  LockIcon,
-  LockBold,
   Left,
   LupaIcon,
 } from "../../components/Icons";
@@ -30,10 +28,12 @@ import { useEffect, useRef, useState } from "react";
 import PagerView from "react-native-pager-view";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { clear, getAllItems, getItem } from "../../utils/AsyncStorage";
+import { clear, getItem } from "../../utils/AsyncStorage";
 import { UserApi } from "../../api/userApi";
 import { CategorieApi } from "../../api/categorieApi";
+import { PostApi } from "../../api/postsApi";
 import CardUser from "../../components/CardUser";
+import { formatDate } from "../../utils/FormatDate";
 
 //const User_icon = require("../../assets/User_icon.png");
 
@@ -74,8 +74,6 @@ export default function MyProfile() {
   const { height } = Dimensions.get("window");
 
   const getHeight = (b) => {
-    console.log(b);
-
     return height > b ? height - 20 : b;
   };
 
@@ -91,12 +89,14 @@ export default function MyProfile() {
   useEffect(() => {
     const fetchData = async () => {
       const jwt = await getItem("jwt");
-      const profileData = await UserApi.getProfile(jwt);
-      const categoriesData = await CategorieApi.getCategories(jwt);
-      const followsData = await UserApi.getFollows(jwt);
-      const followedData = await UserApi.getFollowed(jwt);
-      const postsData = await UserApi.getPosts(jwt);
-      const favoritesData = await UserApi.getFavorites(jwt);
+      const id = await getItem("id");
+      //const user_name = await getItem("user_name");
+      const profileData = await UserApi.getProfile(id);
+      const categoriesData = await CategorieApi.getCategories(id);
+      const followsData = await UserApi.getFollows(id);
+      const followedData = await UserApi.getFollowed(id);
+      const postsData = await PostApi.getPosts(id);
+      const favoritesData = await PostApi.getFavorites(jwt);
 
       setProfile(profileData);
       setCategories(categoriesData);
@@ -108,33 +108,6 @@ export default function MyProfile() {
 
     fetchData();
   }, []);
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-
-    // Array de nombres de los meses
-    const months = [
-      "enero",
-      "febrero",
-      "marzo",
-      "abril",
-      "mayo",
-      "junio",
-      "julio",
-      "agosto",
-      "septiembre",
-      "octubre",
-      "noviembre",
-      "diciembre",
-    ];
-
-    // Obtener el mes y el año
-    const month = months[date.getUTCMonth()]; // getUTCMonth() devuelve el mes de 0 a 11
-    const year = date.getUTCFullYear();
-
-    // Formatear la cadena de salida
-    return `Se unió en ${month} del ${year}`;
-  }
 
   const searchFilter = (text, type) => {
     if (text && type === 0) {
@@ -174,8 +147,14 @@ export default function MyProfile() {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-end	">
-            <Link href="/">
-              <Logout color="white" />
+            <Link href="/" asChild>
+              <Pressable
+                onPress={async () => {
+                  await clear();
+                }}
+              >
+                <Logout color="white" />
+              </Pressable>
             </Link>
           </View>
           <Image
