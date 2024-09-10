@@ -15,7 +15,8 @@ const getPosts = async (user) => {
   const { rows } = await poll.query(
     `
     SELECT * FROM posts 
-        WHERE post_user = $1`,
+        WHERE post_user = $1
+        ORDER BY post_created_at DESC`,
     [user]
   );
   return rows;
@@ -29,7 +30,7 @@ const getFollowersPosts = async (user_id) => {
       JOIN followers f ON p.post_user = f.followed_user
       JOIN users u ON p.post_user = u.user_id
       WHERE f.follower_user = $1
-      ORDER BY p.post_created_at ASC;`,
+      ORDER BY p.post_created_at DESC;`,
     [user_id]
   );
   return rows;

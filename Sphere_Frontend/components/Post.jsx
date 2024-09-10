@@ -1,6 +1,7 @@
 import { Image, Pressable, Text, View } from "react-native";
 import { Bookmark, Comment, Ellipsis, Heart } from "./Icons";
 import { Link } from "expo-router";
+import { timeElapsed } from "../utils/FormatDate";
 
 const Post = ({ item }) => {
   return (
@@ -24,7 +25,9 @@ const Post = ({ item }) => {
             <Text className="text-base mx-2 ">{item.name} ·</Text>
           </Pressable>
         </Link>
-        <Text className="text-xs leading-8	">{item.post_created_at}</Text>
+        <Text className="text-xs leading-8	">
+          {timeElapsed(item.post_created_at)}
+        </Text>
         <Ellipsis className="absolute right-3" />
       </View>
       <Text className="px-2">{item.description}</Text>
