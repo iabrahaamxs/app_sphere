@@ -7,10 +7,13 @@ import {
   Image,
 } from "react-native";
 import { Link, Stack } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RadioGroup from "../components/RadioButton";
 import * as ImagePicker from "expo-image-picker";
 import { Pencil, Camera, UserName } from "../components/Icons";
+import { getItem } from "../utils/AsyncStorage";
+import { UserApi } from "../api/userApi";
+import { CategorieApi } from "../api/categorieApi";
 
 const User_icon = require("../assets/User_icon.png");
 
@@ -47,8 +50,25 @@ export default function SignUp2() {
     bio: "esta es mi bio actuaaaal, se puede editar en cualquier momento",
   };
 
-  const [userName, setUserName] = useState(User.userName);
-  const [bio, setBio] = useState(User.bio);
+  const [userName, setUserName] = useState("");
+  const [bio, setBio] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const id = await getItem("id");
+      const { bio, user_name, user_photo } = await UserApi.getProfile(id);
+      const categoriesData = await CategorieApi.getCategories(id);
+      const newArray = categoriesData.map((item) => item.value.toString());
+      console.log(newArray);
+
+      setBio(bio);
+      setUserName(user_name);
+      setImagen(user_photo);
+      setSelectedValues(newArray);
+    };
+
+    fetchData();
+  }, []);
 
   const upImage = async () => {
     await ImagePicker.requestMediaLibraryPermissionsAsync();

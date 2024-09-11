@@ -1,5 +1,5 @@
 import { Pressable, Text, View, StyleSheet, TextInput } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SelectDropdown from "react-native-select-dropdown";
@@ -12,6 +12,9 @@ import {
   Phone,
   UserIcon,
 } from "../components/Icons";
+import { getItem } from "../utils/AsyncStorage";
+import { UserApi } from "../api/userApi";
+import { timeElapsed } from "../utils/FormatDate";
 
 export default function EditProfile() {
   const insets = useSafeAreaInsets();
@@ -26,23 +29,37 @@ export default function EditProfile() {
     { title: "Ecuador", id: 3 },
     { title: "Perú", id: 4 },
   ];
-  const User = {
-    name: "Abraham",
-    lastName: "Almao",
-    email: "abraham@gmail.com",
-    phone: "04145669809",
-    birthday: "04/02/2001",
-    country: "Venezuela",
-    gender: "Masculino",
-  };
 
-  const [name, setName] = React.useState(User.name);
-  const [lastName, setLastName] = React.useState(User.lastName);
-  const [email, setEmail] = React.useState(User.email);
-  const [phone, setPhone] = React.useState(User.phone);
-  const [birthday, setBirthday] = React.useState(User.birthday);
-  const [country, setCountry] = React.useState(User.country);
-  const [gender, setGender] = React.useState(User.gender);
+  const [user, setUser] = React.useState({});
+  const [name, setName] = React.useState(user.name);
+  const [lastName, setLastName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [birthday, setBirthday] = React.useState("");
+  const [country, setCountry] = React.useState("");
+  const [gender, setGender] = React.useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const id = await getItem("id");
+      const profileData = await UserApi.getProfile(id);
+      setUser(profileData);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name || "");
+      setLastName(user.last_name || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || "");
+      setBirthday(user.birthdate || "");
+      setCountry(user.country || "");
+      setGender(user.gender || "");
+    }
+  }, [user]);
 
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -133,7 +150,7 @@ export default function EditProfile() {
           {show ? (
             <Text> {date.toLocaleDateString()}</Text>
           ) : (
-            <Text>{birthday}</Text>
+            <Text>{timeElapsed(birthday)}</Text>
           )}
         </Pressable>
       </View>
@@ -205,6 +222,7 @@ export default function EditProfile() {
           showsVerticalScrollIndicator={false}
         />
       </View>
+
       <Pressable
         style={{
           backgroundColor: false ? "#513Ab1" : "#462E84",
