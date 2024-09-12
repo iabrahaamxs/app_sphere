@@ -1,12 +1,12 @@
 import { poll } from "../db.js";
 
-const create = async (user_id, categorie) => {
+const create = async (user_id, description) => {
   const { rows } = await poll.query(
     `
     INSERT INTO posts (post_user, description) 
         VALUES ($1, $2) 
         RETURNING *`,
-    [user_id, categorie]
+    [user_id, description]
   );
   return rows[0];
 };

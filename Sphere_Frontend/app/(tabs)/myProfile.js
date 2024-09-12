@@ -23,7 +23,7 @@ import {
   Left,
   LupaIcon,
 } from "../../components/Icons";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import PagerView from "react-native-pager-view";
 import * as Clipboard from "expo-clipboard";
@@ -147,15 +147,14 @@ export default function MyProfile() {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-end	">
-            <Link href="/" asChild>
-              <Pressable
-                onPress={async () => {
-                  await clear();
-                }}
-              >
-                <Logout color="white" />
-              </Pressable>
-            </Link>
+            <Pressable
+              onPress={async () => {
+                await clear();
+                router.replace("/");
+              }}
+            >
+              <Logout color="white" />
+            </Pressable>
           </View>
           <Image
             source={{ uri: Profile.user_photo }}

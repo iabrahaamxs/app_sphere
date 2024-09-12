@@ -1,4 +1,12 @@
-import { Pressable, Text, View, StyleSheet, TextInput } from "react-native";
+import {
+  Pressable,
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Modal,
+  ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Link, Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,19 +23,13 @@ import {
 import { getItem } from "../utils/AsyncStorage";
 import { UserApi } from "../api/userApi";
 import { timeElapsed } from "../utils/FormatDate";
+import { getCountries } from "../api/countriesApi";
 
 export default function EditProfile() {
   const insets = useSafeAreaInsets();
   const genders = [
     { title: "Masculino", icon: 1 },
     { title: "Femenino", icon: 2 },
-  ];
-
-  const countries = [
-    { title: "Venezuela", id: 1 },
-    { title: "Colombia", id: 2 },
-    { title: "Ecuador", id: 3 },
-    { title: "Perú", id: 4 },
   ];
 
   const [user, setUser] = React.useState({});
@@ -39,11 +41,17 @@ export default function EditProfile() {
   const [country, setCountry] = React.useState("");
   const [gender, setGender] = React.useState("");
 
+  const [countries, setCountries] = useState([]);
+  const [countryModal, setCountryModal] = useState(false);
+  const [countryId, setCountryId] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       const id = await getItem("id");
       const profileData = await UserApi.getProfile(id);
+      const countryData = await getCountries();
       setUser(profileData);
+      setCountries(countryData);
     };
 
     fetchData();
@@ -157,36 +165,38 @@ export default function EditProfile() {
 
       <View className="flex-row items-center ml-3">
         <Earth className="opacity-80" />
-        <SelectDropdown
-          data={countries}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-          }}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.input}>
-                {selectedItem && selectedItem.title ? (
-                  <Text>{selectedItem.title}</Text>
-                ) : (
-                  <Text>{country}</Text>
-                )}
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && { backgroundColor: "#D2D9DF" }),
-                }}
-              >
-                <Text>{item.title}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-        />
+        <Modal visible={countryModal} transparent={true}>
+          <View className="bg-[#000]/40 flex-1 justify-center	items-center">
+            <View className="w-[80%] h-[40%] bg-white">
+              <ScrollView>
+                {countries.map((country) => (
+                  <Pressable
+                    onPress={() => [
+                      setCountryModal(false),
+                      setCountry(country.country),
+                      setCountryId(country.country_id),
+                    ]}
+                    className="border-[0.5px] h-8 justify-center"
+                    key={country.country_id}
+                  >
+                    <Text className="self-center justify-center">
+                      {country.country}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        <Pressable style={styles.input} onPress={() => setCountryModal(true)}>
+          <View>
+            {!country ? (
+              <Text className="opacity-50">País</Text>
+            ) : (
+              <Text>{country}</Text>
+            )}
+          </View>
+        </Pressable>
       </View>
 
       <View className="flex-row items-center ml-3">

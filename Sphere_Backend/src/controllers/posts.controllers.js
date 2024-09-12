@@ -1,13 +1,15 @@
 import { PhotoModel } from "../models/photos.models.js"; //test
+import { PostModel } from "../models/posts.models.js";
 import { CommentModel } from "../models/comments.models.js";
 import { LikeModel } from "../models/likes.models.js";
-import { PostModel } from "../models/posts.models.js";
 
 const createPost = async (req, res) => {
   try {
     const data = req.body;
 
-    const { rows } = await PostModel.create(data.post_user, data.description);
+    const rows = await PostModel.create(data.post_user, data.description);
+
+    const photo = await PhotoModel.create(rows.post_id, data.photo);
 
     return res.json(rows);
   } catch (error) {
