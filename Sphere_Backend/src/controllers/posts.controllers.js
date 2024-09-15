@@ -85,8 +85,92 @@ const getFollowersPosts = async (req, res) => {
   }
 };
 
+const searchTagPosts = async (req, res) => {
+  const { tag } = req.params;
+
+  try {
+    const rows = await PostModel.getPostsTag(tag);
+
+    return res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      menssage: "ERROR SERVER",
+    });
+  }
+};
+
+const searchPostsByTag = async (req, res) => {
+  const { tag } = req.params;
+
+  try {
+    const rows = await PostModel.getPostsByTag(tag);
+
+    //obtiene las fotos de cada post
+    for (let index = 0; index < rows.length; index++) {
+      let photos = await PhotoModel.getPhotos(rows[index].post_id);
+      rows[index].photos = photos;
+    }
+
+    //obtener comentarios de cada post
+    for (let index = 0; index < rows.length; index++) {
+      let comments = await CommentModel.getComments(rows[index].post_id);
+      rows[index].comments = comments;
+    }
+
+    //obtener likes de cada post
+    for (let index = 0; index < rows.length; index++) {
+      let likes = await LikeModel.getLikes(rows[index].post_id);
+      rows[index].likes = likes;
+    }
+
+    return res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      menssage: "ERROR SERVER",
+    });
+  }
+};
+
+const searchPostsByDescription = async (req, res) => {
+  const { txt } = req.params;
+
+  try {
+    const rows = await PostModel.getPostsByDescription(txt);
+
+    //obtiene las fotos de cada post
+    for (let index = 0; index < rows.length; index++) {
+      let photos = await PhotoModel.getPhotos(rows[index].post_id);
+      rows[index].photos = photos;
+    }
+
+    //obtener comentarios de cada post
+    for (let index = 0; index < rows.length; index++) {
+      let comments = await CommentModel.getComments(rows[index].post_id);
+      rows[index].comments = comments;
+    }
+
+    //obtener likes de cada post
+    for (let index = 0; index < rows.length; index++) {
+      let likes = await LikeModel.getLikes(rows[index].post_id);
+      rows[index].likes = likes;
+    }
+
+    return res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      menssage: "ERROR SERVER",
+    });
+  }
+};
+
 export const PostController = {
   createPost,
   getPosts,
   getFollowersPosts,
+  searchTagPosts,
+  searchPostsByTag,
+  searchPostsByDescription,
 };

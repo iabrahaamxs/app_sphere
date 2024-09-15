@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FlatList,
   Pressable,
@@ -11,16 +11,21 @@ import {
 import SearchUser from "../../components/SearchUser";
 import SearchTag from "../../components/SearchTag";
 import Post from "../../components/Post";
-
 import { LupaIcon } from "../../components/Icons";
+import { UserApi } from "../../api/userApi";
+import { PostApi } from "../../api/postsApi";
+import PagerView from "react-native-pager-view";
 
 export default function Search() {
   const [text, setText] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [filteredTags, setFilteredTags] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [filterType, setFilterType] = useState("account");
+  const [viewPage, setViewPage] = useState(0);
+  const ref = useRef();
 
-  const users = getUser();
-  const posts = getPosts();
+  const debounceTimer = useRef(null); // Ref para almacenar el temporizador
 
   const onChangeSearch = (txt) => {
     setText(txt);
@@ -30,59 +35,47 @@ export default function Search() {
   const pressAccount = () => {
     setFilterType("account");
     searchFilter(text, "account");
+    ref.current?.setPage(0);
+    setViewPage(0);
   };
 
   const pressTag = () => {
     setFilterType("tag");
     searchFilter(text, "tag");
+    ref.current?.setPage(1);
+    setViewPage(1);
   };
 
   const pressPost = () => {
     setFilterType("post");
     searchFilter(text, "post");
+    ref.current?.setPage(2);
+    setViewPage(2);
   };
 
-  const searchFilter = (text, type) => {
-    if (text && type === "account") {
-      const newData = users.filter((item) => {
-        const itemData = item.userName
-          ? item.userName.toUpperCase()
-          : "".toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-      setFilteredData(newData);
-    } else if (text && type === "post") {
-      const newData = posts.filter((item) => {
-        const itemData = item.description
-          ? item.description.toUpperCase()
-          : "".toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-      setFilteredData(newData);
-    } else if (text && type === "tag") {
-      const regex = new RegExp(`#${text.toLocaleLowerCase()}\\w*`, "g");
-      const tagCounts = {};
-
-      posts.forEach((post) => {
-        const tags = post.description.toLocaleLowerCase().match(regex);
-
-        if (tags) {
-          tags.forEach((tag) => {
-            if (tagCounts[tag]) {
-              tagCounts[tag] += 1;
-            } else {
-              tagCounts[tag] = 1;
-            }
-          });
-        }
-      });
-
-      setFilteredData(Object.entries(tagCounts).sort());
-    } else {
-      setFilteredData([]);
+  const searchFilter = (txt, type) => {
+    // Limpiar el temporizador anterior antes de establecer uno nuevo
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
     }
+
+    // Establecer un nuevo temporizador para esperar 500ms antes de realizar la búsqueda
+    debounceTimer.current = setTimeout(async () => {
+      if (type === "account" && txt) {
+        const users = await UserApi.searchUsers(txt);
+        setFilteredUsers(users);
+      } else if (type === "tag" && txt) {
+        const tags = await PostApi.getHashtags(txt);
+        setFilteredTags(tags);
+      } else if (type === "post" && txt) {
+        const posts = await PostApi.getPostsByDescription(txt);
+        setFilteredPosts(posts);
+      } else {
+        setFilteredUsers([]);
+        setFilteredTags([]);
+        setFilteredPosts([]);
+      }
+    }, 500);
   };
 
   return (
@@ -158,22 +151,52 @@ export default function Search() {
         </Pressable>
       </View>
 
-      <FlatList
-        className="pt-2"
-        data={filteredData}
-        renderItem={({ item }) => (
-          <View>
-            {filterType === "account" ? (
-              <SearchUser item={item} />
-            ) : (
-              <View></View>
+      <PagerView
+        className="mt-2"
+        ref={ref}
+        initialPage={viewPage}
+        scrollEnabled={false}
+        style={{ flex: 1 }}
+      >
+        <View key="0">
+          <FlatList
+            className=""
+            data={filteredUsers}
+            renderItem={({ item }) => (
+              <View>
+                <SearchUser item={item} />
+              </View>
             )}
-            {filterType === "tag" ? <SearchTag item={item} /> : <View></View>}
-            {filterType === "post" ? <Post item={item} /> : <View></View>}
-          </View>
-        )}
-        keyExtractor={(item, index) => (item.id ? item.id : index)}
-      />
+            keyExtractor={(item, index) => index}
+          />
+        </View>
+
+        <View key="1">
+          <FlatList
+            className=""
+            data={filteredTags}
+            renderItem={({ item }) => (
+              <View>
+                <SearchTag item={item} />
+              </View>
+            )}
+            keyExtractor={(item, index) => index}
+          />
+        </View>
+
+        <View key="2">
+          <FlatList
+            className=""
+            data={filteredPosts}
+            renderItem={({ item }) => (
+              <View>
+                <Post item={item} />
+              </View>
+            )}
+            keyExtractor={(item, index) => index}
+          />
+        </View>
+      </PagerView>
     </View>
   );
 }

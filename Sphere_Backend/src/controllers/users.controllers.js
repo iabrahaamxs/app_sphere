@@ -49,6 +49,18 @@ const createUser = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const data = req.query;
+
+    const users = await UserModel.getUsers(data.txt);
+
+    return res.json(users);
+  } catch (error) {
+    return res.status(500).json({ menssage: "Internal server error" });
+  }
+};
+
 const loginUser = async (req, res) => {
   try {
     const data = req.body;
@@ -194,6 +206,7 @@ const updatePasswordUser = async (req, res) => {
 
 export const UserController = {
   createUser,
+  getUsers,
   loginUser,
   profileUser,
   updateInfoUser,

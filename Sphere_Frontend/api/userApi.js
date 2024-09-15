@@ -53,6 +53,22 @@ const getFollowed = async (id) => {
   }
 };
 
+const searchUsers = async (txt) => {
+  try {
+    const res = await axiosManager.get("/search/users", {
+      params: {
+        txt: txt,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error searchUsers" }');
+
+    return [];
+  }
+};
+
 // const getUser = async (userName) => {
 //   try {
 //     const res = await axiosManager.get("/user", {
@@ -72,5 +88,6 @@ export const UserApi = {
   getProfile,
   getFollows,
   getFollowed,
+  searchUsers,
   //getUser,
 };

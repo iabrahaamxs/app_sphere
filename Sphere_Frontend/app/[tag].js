@@ -4,21 +4,22 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { getPosts } from "./(tabs)/search";
 import Post from "../components/Post";
+import { PostApi } from "../api/postsApi";
 
 export default function PostsTag() {
   const { tag } = useLocalSearchParams();
-  const posts = getPosts();
-  const [filteredData, setFilteredData] = useState(null);
+  // const posts = getPosts();
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
+  const fetchData = async () => {
+    if (tag) {
+      const postsData = await PostApi.getPostsByTag(tag);
+      setFilteredPosts(postsData);
+    }
+  };
 
   useEffect(() => {
-    if (tag) {
-      const postsTag = posts.filter((obj) => {
-        const regex = new RegExp(`\\b${tag}\\b`, "i"); // Crear una expresión regular que busca la palabra exacta
-        return regex.test(obj.description); // Verificar si la palabra exacta está en el string del objeto
-      });
-
-      setFilteredData(postsTag);
-    }
+    fetchData();
   }, [tag]);
 
   return (
@@ -32,13 +33,13 @@ export default function PostsTag() {
         }}
       />
       <FlatList
-        data={filteredData}
+        data={filteredPosts}
         renderItem={({ item }) => (
           <View>
             <Post item={item} />
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
       />
     </View>
   );

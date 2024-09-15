@@ -2,7 +2,7 @@ import { poll } from "../db.js";
 
 const getFollowed = async (id) => {
   const { rows } = await poll.query(
-    "SELECT followers.follow_id, followers.follower_user, users.name, users.last_name, users.user_name, users.user_photo, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.followed_user = users.user_id WHERE follower_user = $1 AND follow_deleted_at IS NULL",
+    "SELECT followers.follow_id, followers.follower_user, users.name, users.last_name, users.user_id, users.user_name, users.user_photo, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.followed_user = users.user_id WHERE follower_user = $1 AND follow_deleted_at IS NULL",
     [id]
   );
 
@@ -11,7 +11,7 @@ const getFollowed = async (id) => {
 
 const getfollowers = async (id) => {
   const { rows } = await poll.query(
-    "SELECT followers.follow_id, users.name, users.last_name, users.user_name, users.user_photo, followers.followed_user, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.follower_user = users.user_id WHERE followed_user = $1 AND follow_deleted_at IS NULL",
+    "SELECT followers.follow_id, users.user_id, users.name, users.last_name, users.user_name, users.user_photo, followers.followed_user, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.follower_user = users.user_id WHERE followed_user = $1 AND follow_deleted_at IS NULL",
     [id]
   );
   return rows;

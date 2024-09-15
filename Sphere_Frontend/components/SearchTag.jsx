@@ -2,7 +2,8 @@ import { Link } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 
 const SearchTag = ({ item }) => {
-  const route = item[0].slice(1);
+  const route = item.hashtag.slice(1).toString();
+
   return (
     <Link href={`/${route}`} asChild>
       <Pressable className="flex-row ml-2 mb-1 ">
@@ -20,8 +21,8 @@ const SearchTag = ({ item }) => {
           }}
         />
         <View className="pl-3">
-          <Text className="text-base font-medium">{item[0]}</Text>
-          <Text className="opacity-80">{item[1]} publicaciones</Text>
+          <Text className="text-base font-medium">{item.hashtag}</Text>
+          <Text className="opacity-80">{item.post_count} publicaciones</Text>
         </View>
       </Pressable>
     </Link>

@@ -59,7 +59,6 @@ export default function SignUp2() {
       const { bio, user_name, user_photo } = await UserApi.getProfile(id);
       const categoriesData = await CategorieApi.getCategories(id);
       const newArray = categoriesData.map((item) => item.value.toString());
-      console.log(newArray);
 
       setBio(bio);
       setUserName(user_name);
@@ -88,99 +87,105 @@ export default function SignUp2() {
 
   return (
     <View className="flex-1 pl-1 bg-white ">
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerStyle: {},
-          headerTitle: "Configuración de cuenta",
-          headerShadowVisible: false,
-        }}
-      />
+      {userName === "" ? (
+        <></>
+      ) : (
+        <View>
+          <Stack.Screen
+            options={{
+              headerShown: true,
+              headerStyle: {},
+              headerTitle: "Configuración de cuenta",
+              headerShadowVisible: false,
+            }}
+          />
 
-      <View className="items-center justify-center self-center">
-        {imagen ? (
-          <Image
-            source={{ uri: imagen }}
-            style={{
-              resizeMode: "cover",
-              width: 130,
-              height: 130,
-              borderRadius: 99999,
-              borderWidth: 2,
-              borderColor: "#462E84",
-            }}
-          />
-        ) : (
-          <Image
-            source={User_icon}
-            style={{
-              resizeMode: "contain",
-              width: 130,
-              height: 130,
-              borderRadius: 99999,
-              borderWidth: 2,
-              borderColor: "#462E84",
-            }}
-          />
-        )}
-        <View className="w-8 h-8 absolute right-1.5	bottom-1 bg-white rounded-full items-center justify-center">
-          <Pressable onPress={upImage}>
-            <Camera />
+          <View className="items-center justify-center self-center">
+            {imagen ? (
+              <Image
+                source={{ uri: imagen }}
+                style={{
+                  resizeMode: "cover",
+                  width: 130,
+                  height: 130,
+                  borderRadius: 99999,
+                  borderWidth: 2,
+                  borderColor: "#462E84",
+                }}
+              />
+            ) : (
+              <Image
+                source={User_icon}
+                style={{
+                  resizeMode: "contain",
+                  width: 130,
+                  height: 130,
+                  borderRadius: 99999,
+                  borderWidth: 2,
+                  borderColor: "#462E84",
+                }}
+              />
+            )}
+            <View className="w-8 h-8 absolute right-1.5	bottom-1 bg-white rounded-full items-center justify-center">
+              <Pressable onPress={upImage}>
+                <Camera />
+              </Pressable>
+            </View>
+          </View>
+          <Text className="self-center my-1">Editar foto de perfil</Text>
+
+          <View className="flex-row items-center ml-3">
+            <UserName />
+            <TextInput
+              style={[styles.input, { height: 40 }]}
+              placeholder="Nombre de usuario"
+              onChangeText={setUserName}
+              value={userName}
+            />
+          </View>
+
+          <View className="flex-row items-center ml-3">
+            <Pencil />
+            <TextInput
+              style={styles.input}
+              placeholder="Biografía"
+              multiline={true}
+              onChangeText={setBio}
+              value={bio}
+            />
+          </View>
+
+          <Text className="self-center my-2 text-[17px]	opacity-70">
+            Selecciona las categorias de tus juegos favoritos
+          </Text>
+
+          <View>
+            <RadioGroup
+              options={options}
+              selectedValues={selectedValues}
+              onValueChange={handleValueChange}
+            />
+            {/* Puedes usar selectedOption en el resto de tu app */}
+          </View>
+
+          <Pressable
+            onPress={() => console.log(selectedValues)}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? "#513Ab1" : "#462E84",
+                height: 40,
+                margin: 8,
+                marginTop: 50,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 8,
+              },
+            ]}
+          >
+            <Text className="text-white">Actualizar</Text>
           </Pressable>
         </View>
-      </View>
-      <Text className="self-center my-1">Editar foto de perfil</Text>
-
-      <View className="flex-row items-center ml-3">
-        <UserName />
-        <TextInput
-          style={[styles.input, { height: 40 }]}
-          placeholder="Nombre de usuario"
-          onChangeText={setUserName}
-          value={userName}
-        />
-      </View>
-
-      <View className="flex-row items-center ml-3">
-        <Pencil />
-        <TextInput
-          style={styles.input}
-          placeholder="Biografía"
-          multiline={true}
-          onChangeText={setBio}
-          value={bio}
-        />
-      </View>
-
-      <Text className="self-center my-2 text-[17px]	opacity-70">
-        Selecciona las categorias de tus juegos favoritos
-      </Text>
-
-      <View>
-        <RadioGroup
-          options={options}
-          selectedValues={selectedValues}
-          onValueChange={handleValueChange}
-        />
-        {/* Puedes usar selectedOption en el resto de tu app */}
-      </View>
-
-      <Pressable
-        onPress={() => console.log(selectedValues)}
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed ? "#513Ab1" : "#462E84",
-            height: 40,
-            margin: 8,
-            marginTop: 50,
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 8,
-          },
-        ]}
-      >
-        <Text className="text-white">Actualizar</Text>
-      </Pressable>
+      )}
     </View>
   );
 }

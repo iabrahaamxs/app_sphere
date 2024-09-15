@@ -36,8 +36,60 @@ const getFollowersPosts = async (user_id) => {
   return rows;
 };
 
+// Buscar los hashtag de los posts
+const getPostsTag = async (tag) => {
+  const { rows } = await poll.query(
+    `
+    WITH extracted_hashtags AS (
+	SELECT
+		unnest(regexp_matches(description, '#[a-zA-Z0-9_]+', 'g')) AS hashtag
+		FROM posts
+    	WHERE post_deleted_at IS NULL
+	)
+	SELECT 
+    	hashtag,
+    	COUNT(*) AS post_count
+			FROM extracted_hashtags
+			WHERE hashtag ILIKE $1
+			GROUP BY hashtag`,
+    [`#${tag}%`]
+  );
+  return rows;
+};
+
+// Buscar los posts por hashtag
+const getPostsByTag = async (tag) => {
+  const { rows } = await poll.query(
+    `
+    SELECT p.post_id, p.post_user, u.user_name, u.name, u.last_name, u.user_photo, p.description, p.post_created_at, p.post_updated_at
+      FROM posts p
+      JOIN users u ON p.post_user = u.user_id
+      WHERE description ~* $1
+      AND post_deleted_at IS NULL;
+    `,
+    [`#\\m${tag}\\M`]
+  );
+  return rows;
+};
+
+// Buscar post por palabras en la descripcion
+const getPostsByDescription = async (txt) => {
+  const { rows } = await poll.query(
+    `SELECT p.post_id, p.post_user, u.user_name, u.name, u.last_name, u.user_photo, p.description, p.post_created_at, p.post_updated_at
+      FROM posts p
+      JOIN users u ON p.post_user = u.user_id
+      WHERE description ~* $1
+      AND post_deleted_at IS NULL`,
+    [`\\m${txt}\\M`]
+  );
+  return rows;
+};
+
 export const PostModel = {
   create,
   getPosts,
   getFollowersPosts,
+  getPostsTag,
+  getPostsByTag,
+  getPostsByDescription,
 };

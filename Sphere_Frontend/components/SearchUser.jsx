@@ -1,13 +1,26 @@
 import { Link } from "expo-router";
+import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
+import { getItem } from "../utils/AsyncStorage";
 
 const SearchUser = ({ item }) => {
+  const [id, setId] = useState(null);
+
+  const fetchData = async () => {
+    const id = await getItem("id");
+    setId(id);
+  };
+  fetchData();
+
   return (
-    <Link href={`/user/${item.id}`} asChild>
+    <Link
+      href={`${item.user_id == id ? "/myProfile" : "/user/" + item.user_id}`}
+      asChild
+    >
       <Pressable>
         <View className="flex-row ml-2 mb-1 ">
           <Image
-            source={{ uri: item.photo }}
+            source={{ uri: item.user_photo }}
             style={{
               resizeMode: "contain",
               width: 55,
@@ -19,7 +32,7 @@ const SearchUser = ({ item }) => {
           />
           <View className="pl-3">
             <Text className="text-base font-medium">{item.name}</Text>
-            <Text className="opacity-80">{item.userName}</Text>
+            <Text className="opacity-80">{item.user_name}</Text>
           </View>
         </View>
       </Pressable>

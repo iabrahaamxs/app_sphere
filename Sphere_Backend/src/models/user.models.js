@@ -24,6 +24,18 @@ const create = async (data) => {
   return rows[0];
 };
 
+const getUsers = async (txt) => {
+  const { rows } = await poll.query(
+    `
+    SELECT * FROM users 
+      WHERE user_name 
+      ILIKE $1`,
+    [`%${txt}%`]
+  );
+
+  return rows;
+};
+
 const findUser = async (email, user_name, phone) => {
   const { rows } = await poll.query(
     `
@@ -154,6 +166,7 @@ const editPassword = async (data) => {
 
 export const UserModel = {
   create,
+  getUsers,
   findUser,
   findByUserName,
   findByUserId,

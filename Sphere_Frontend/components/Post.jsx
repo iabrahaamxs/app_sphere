@@ -2,12 +2,27 @@ import { Image, Pressable, Text, View } from "react-native";
 import { Bookmark, Comment, Ellipsis, Heart } from "./Icons";
 import { Link } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
+import { useState } from "react";
+import { getItem } from "../utils/AsyncStorage";
 
 const Post = ({ item }) => {
+  const [id, setId] = useState(null);
+
+  const fetchData = async () => {
+    const id = await getItem("id");
+    setId(id);
+  };
+  fetchData();
+
   return (
     <View className="mb-2">
       <View className="flex-row items-center px-2 ">
-        <Link href={`/user/${item.post_user}`} asChild>
+        <Link
+          href={`${
+            item.post_user == id ? "/myProfile" : "/user/" + item.post_user
+          }`}
+          asChild
+        >
           <Pressable className="flex-row items-center">
             <Image
               source={{
