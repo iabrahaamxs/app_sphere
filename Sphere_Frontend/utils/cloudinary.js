@@ -9,7 +9,7 @@ export const cld = new Cloudinary({
 
 export const uploadImage = async (file) => {
   const options = {
-    upload_preset: "Profile-photo",
+    upload_preset: process.env.EXPO_PUBLIC_CLOUDINARY_FOLDER,
     unsigned: true,
   };
 

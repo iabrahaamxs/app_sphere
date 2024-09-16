@@ -100,7 +100,7 @@ export default function EditProfile() {
     const res = await UserApi.updateInformation(
       name,
       lastName,
-      email,
+      email.toLowerCase(),
       phone,
       formatYMD(birthday),
       countryId,
@@ -286,7 +286,7 @@ export default function EditProfile() {
               borderRadius: 8,
             })}
           >
-            <Text className="text-white">Actualizaaaaaaaar</Text>
+            <Text className="text-white">Actualizar</Text>
           </Pressable>
         </View>
       ) : (

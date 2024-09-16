@@ -5,6 +5,7 @@ import {
   TextInput,
   Pressable,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { Link, Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -15,12 +16,23 @@ import { getItem } from "../utils/AsyncStorage";
 import { UserApi } from "../api/userApi";
 import { CategorieApi } from "../api/categorieApi";
 import { uploadImage } from "../utils/cloudinary";
+import { compararObjetos } from "../utils/CompareObj";
 
 const User_icon = require("../assets/User_icon.png");
 
-export default function SignUp2() {
+export default function AccountSettings() {
   // radio button
-
+  const [data, setData] = useState({});
+  const [newData, setNewData] = useState({});
+  //const [userName, setUserName] = useState("");
+  //const [bio, setBio] = useState("");
+  //const [id, setId] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  //const [imagen, setImagen] = useState("");
+  const [newImagen, setNewImagen] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedValues, setSelectedValues] = useState(["3", "5", "6"]);
   const [deselected, setDeselected] = useState([
     "1",
@@ -32,20 +44,6 @@ export default function SignUp2() {
     "7",
     "8",
   ]);
-  function removeCommonElements(array1, array2) {
-    const elementsToRemove = new Set(array2);
-
-    return array1.filter((element) => !elementsToRemove.has(element));
-  }
-
-  const handleValueChange = (value) => {
-    setSelectedValues((prevSelectedValues) =>
-      prevSelectedValues.includes(value)
-        ? prevSelectedValues.filter((v) => v !== value)
-        : [...prevSelectedValues, value]
-    );
-  };
-
   const options = [
     { value: "1", label: "Acción" },
     { value: "2", label: "Aventura" },
@@ -57,93 +55,134 @@ export default function SignUp2() {
     { value: "8", label: "Musicales" },
   ];
 
-  const [imagen, setImagen] = useState(
-    "https://variety.com/wp-content/uploads/2023/10/SuperMarioRunTA-e1697227587140.webp?w=1000&h=667&crop=1"
-  );
-  const [newImagen, setNewImagen] = useState("");
+  function removeCommonElements(array1, array2) {
+    const elementsToRemove = new Set(array2);
 
-  const User = {
-    userName: "abrahaam",
-    bio: "esta es mi bio actuaaaal, se puede editar en cualquier momento",
+    return array1.filter((element) => !elementsToRemove.has(element));
+  }
+
+  const handleValueChange = (value) => {
+    setSelectedValues((prevSelectedValues) => {
+      const newSelectedValues = prevSelectedValues.includes(value)
+        ? prevSelectedValues.filter((v) => v !== value)
+        : [...prevSelectedValues, value];
+
+      setNewData({ ...newData, newArray: newSelectedValues.sort() });
+      compareObj({ ...newData, newArray: newSelectedValues.sort() });
+
+      return newSelectedValues;
+    });
   };
-
-  const [userName, setUserName] = useState("");
-  const [bio, setBio] = useState("");
-  const [id, setId] = useState("");
-  const [error, setError] = useState(false);
-  const [finish, setFinish] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const id = await getItem("id");
-      const { bio, user_name, user_photo, user_id } = await UserApi.getProfile(
-        id
-      );
-      const categoriesData = await CategorieApi.getCategories(id);
+      const [{ bio, user_name, user_photo, user_id }, categoriesData] =
+        await Promise.all([
+          UserApi.getProfile(id),
+          CategorieApi.getCategories(id),
+        ]);
       const newArray = categoriesData.map((item) => item.value.toString());
 
-      setBio(bio);
-      setUserName(user_name);
-      setId(user_id);
-      setImagen(user_photo);
+      setData({
+        user_id,
+        user_photo,
+        user_name,
+        bio,
+        newArray: newArray.sort(),
+      });
+
+      setNewData({
+        user_id,
+        user_photo,
+        user_name,
+        bio,
+        newArray: newArray.sort(),
+      });
+
       setSelectedValues(newArray);
+      compareObj(newData);
     };
 
     fetchData();
   }, []);
 
   const upImage = async () => {
-    await ImagePicker.requestMediaLibraryPermissionsAsync();
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      //allowsMultipleSelection: false,
-      //selectionLimit: 5,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImagen(result.assets[0].uri);
-      setNewImagen(result.assets[0].uri);
+    try {
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        setErrorMessage("Permiso denegado para acceder a la galería.");
+        return;
+      }
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8, // Reduce calidad
+      });
+      if (!result.canceled) {
+        setNewImagen(result.assets[0].uri);
+        setIsDisabled(false);
+      }
+    } catch (error) {
+      setErrorMessage("Error al cargar la imagen.");
     }
   };
 
   const update = async () => {
-    const categoriesOff = removeCommonElements(deselected, selectedValues);
+    setIsLoading(true);
+    const categoriesOff = removeCommonElements(deselected, newData.newArray);
 
+    let imageUrl = newData.user_photo;
     if (newImagen) {
       const response = await uploadImage(newImagen);
-      //aqui enviar url a la bbdd
-
-      const up = await UserApi.updateSettings(
-        response.secure_url,
-        userName,
-        bio,
-        selectedValues,
-        categoriesOff,
-        id
-      );
-
-      up ? setFinish(true) : setError(true);
-
-      return;
+      imageUrl = response.secure_url;
     }
 
-    console.log(
-      imagen,
-      userName,
-      bio,
-      selectedValues,
-      res,
-      id,
-      "sin imagen en la nube"
+    const up = await UserApi.updateSettings(
+      imageUrl,
+      newData.user_name,
+      newData.bio,
+      newData.newArray,
+      categoriesOff,
+      newData.user_id
     );
+
+    setData({
+      user_id: newData.user_id,
+      user_photo: imageUrl,
+      user_name: newData.user_name,
+      bio: newData.bio,
+      newArray: newData.newArray.sort(),
+    });
+
+    if (up) {
+      setErrorMessage("");
+      setSuccessMessage(
+        "Tu configuración de cuenta ha sido actualizada con éxito!!"
+      );
+    } else {
+      setSuccessMessage("");
+      setErrorMessage("No se pudo actualizar tu configuración de cuenta");
+    }
+    setIsDisabled(true);
+    setIsLoading(false);
   };
+
+  function compareObj(newdata) {
+    if (!newdata.user_name) {
+      setIsDisabled(true);
+      return;
+    }
+    const bool = compararObjetos(data, newdata);
+
+    setIsDisabled(bool);
+  }
 
   return (
     <View className="flex-1 pl-1 bg-white ">
-      {userName === "" ? (
+      {Object.keys(newData).length == 0 ? (
         <></>
       ) : (
         <View>
@@ -157,9 +196,9 @@ export default function SignUp2() {
           />
 
           <View className="items-center justify-center self-center">
-            {imagen ? (
+            {newData.user_photo ? (
               <Image
-                source={{ uri: imagen }}
+                source={{ uri: newData.user_photo }}
                 style={{
                   resizeMode: "cover",
                   width: 130,
@@ -195,8 +234,11 @@ export default function SignUp2() {
             <TextInput
               style={[styles.input, { height: 40 }]}
               placeholder="Nombre de usuario"
-              onChangeText={setUserName}
-              value={userName}
+              onChangeText={(text) => {
+                setNewData({ ...newData, user_name: text });
+                compareObj({ ...newData, user_name: text });
+              }}
+              value={newData.user_name}
             />
           </View>
 
@@ -206,8 +248,11 @@ export default function SignUp2() {
               style={styles.input}
               placeholder="Biografía"
               multiline={true}
-              onChangeText={setBio}
-              value={bio}
+              onChangeText={(text) => {
+                setNewData({ ...newData, bio: text });
+                compareObj({ ...newData, bio: text });
+              }}
+              value={newData.bio}
             />
           </View>
 
@@ -218,30 +263,22 @@ export default function SignUp2() {
           <View>
             <RadioGroup
               options={options}
-              selectedValues={selectedValues}
+              selectedValues={newData.newArray}
               onValueChange={handleValueChange}
             />
             {/* Puedes usar selectedOption en el resto de tu app */}
           </View>
 
-          {error ? (
-            <Text className="text-red-700	self-center">
-              No se pudo actualizar tu configuración de cuenta
-            </Text>
-          ) : (
-            <></>
+          {errorMessage && (
+            <Text className="text-red-700	self-center">{errorMessage}</Text>
           )}
-
-          {finish ? (
-            <Text className="text-lime-500	self-center">
-              Tu configuración de cuenta ha sido actualizada con éxito!!
-            </Text>
-          ) : (
-            <></>
+          {successMessage && (
+            <Text className="text-lime-500	self-center">{successMessage}</Text>
           )}
 
           <Pressable
             onPress={update}
+            disabled={isDisabled}
             style={({ pressed }) => [
               {
                 backgroundColor: pressed ? "#513Ab1" : "#462E84",
@@ -252,9 +289,14 @@ export default function SignUp2() {
                 alignItems: "center",
                 borderRadius: 8,
               },
+              isDisabled ? styles.disabledButton : null,
             ]}
           >
-            <Text className="text-white">Actualizar</Text>
+            {isLoading ? (
+              <ActivityIndicator size="large" color="white" />
+            ) : (
+              <Text className="text-white">Actualizar</Text>
+            )}
           </Pressable>
         </View>
       )}
@@ -270,5 +312,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     padding: 10,
     borderRadius: 6,
+  },
+  disabledButton: {
+    backgroundColor: "#BDBDBD",
   },
 });
