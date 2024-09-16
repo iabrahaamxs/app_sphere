@@ -14,6 +14,7 @@ import { Pencil, Camera, UserName } from "../components/Icons";
 import { getItem } from "../utils/AsyncStorage";
 import { UserApi } from "../api/userApi";
 import { CategorieApi } from "../api/categorieApi";
+import { uploadImage } from "../utils/cloudinary";
 
 const User_icon = require("../assets/User_icon.png");
 
@@ -21,6 +22,21 @@ export default function SignUp2() {
   // radio button
 
   const [selectedValues, setSelectedValues] = useState(["3", "5", "6"]);
+  const [deselected, setDeselected] = useState([
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+  ]);
+  function removeCommonElements(array1, array2) {
+    const elementsToRemove = new Set(array2);
+
+    return array1.filter((element) => !elementsToRemove.has(element));
+  }
 
   const handleValueChange = (value) => {
     setSelectedValues((prevSelectedValues) =>
@@ -44,6 +60,7 @@ export default function SignUp2() {
   const [imagen, setImagen] = useState(
     "https://variety.com/wp-content/uploads/2023/10/SuperMarioRunTA-e1697227587140.webp?w=1000&h=667&crop=1"
   );
+  const [newImagen, setNewImagen] = useState("");
 
   const User = {
     userName: "abrahaam",
@@ -52,16 +69,22 @@ export default function SignUp2() {
 
   const [userName, setUserName] = useState("");
   const [bio, setBio] = useState("");
+  const [id, setId] = useState("");
+  const [error, setError] = useState(false);
+  const [finish, setFinish] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const id = await getItem("id");
-      const { bio, user_name, user_photo } = await UserApi.getProfile(id);
+      const { bio, user_name, user_photo, user_id } = await UserApi.getProfile(
+        id
+      );
       const categoriesData = await CategorieApi.getCategories(id);
       const newArray = categoriesData.map((item) => item.value.toString());
 
       setBio(bio);
       setUserName(user_name);
+      setId(user_id);
       setImagen(user_photo);
       setSelectedValues(newArray);
     };
@@ -82,7 +105,40 @@ export default function SignUp2() {
 
     if (!result.canceled) {
       setImagen(result.assets[0].uri);
+      setNewImagen(result.assets[0].uri);
     }
+  };
+
+  const update = async () => {
+    const categoriesOff = removeCommonElements(deselected, selectedValues);
+
+    if (newImagen) {
+      const response = await uploadImage(newImagen);
+      //aqui enviar url a la bbdd
+
+      const up = await UserApi.updateSettings(
+        response.secure_url,
+        userName,
+        bio,
+        selectedValues,
+        categoriesOff,
+        id
+      );
+
+      up ? setFinish(true) : setError(true);
+
+      return;
+    }
+
+    console.log(
+      imagen,
+      userName,
+      bio,
+      selectedValues,
+      res,
+      id,
+      "sin imagen en la nube"
+    );
   };
 
   return (
@@ -168,8 +224,24 @@ export default function SignUp2() {
             {/* Puedes usar selectedOption en el resto de tu app */}
           </View>
 
+          {error ? (
+            <Text className="text-red-700	self-center">
+              No se pudo actualizar tu configuración de cuenta
+            </Text>
+          ) : (
+            <></>
+          )}
+
+          {finish ? (
+            <Text className="text-lime-500	self-center">
+              Tu configuración de cuenta ha sido actualizada con éxito!!
+            </Text>
+          ) : (
+            <></>
+          )}
+
           <Pressable
-            onPress={() => console.log(selectedValues)}
+            onPress={update}
             style={({ pressed }) => [
               {
                 backgroundColor: pressed ? "#513Ab1" : "#462E84",

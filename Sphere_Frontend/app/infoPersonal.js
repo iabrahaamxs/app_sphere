@@ -22,7 +22,7 @@ import {
 } from "../components/Icons";
 import { getItem } from "../utils/AsyncStorage";
 import { UserApi } from "../api/userApi";
-import { timeElapsed } from "../utils/FormatDate";
+import { formatDMY, formatYMD, timeElapsed } from "../utils/FormatDate";
 import { getCountries } from "../api/countriesApi";
 
 export default function EditProfile() {
@@ -37,9 +37,11 @@ export default function EditProfile() {
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [birthday, setBirthday] = React.useState("");
+  const [birthday, setBirthday] = React.useState(new Date());
   const [country, setCountry] = React.useState("");
   const [gender, setGender] = React.useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [countries, setCountries] = useState([]);
   const [countryModal, setCountryModal] = useState(false);
@@ -65,6 +67,7 @@ export default function EditProfile() {
       setPhone(user.phone || "");
       setBirthday(user.birthdate || "");
       setCountry(user.country || "");
+      setCountryId(user.country_id || "");
       setGender(user.gender || "");
     }
   }, [user]);
@@ -75,6 +78,7 @@ export default function EditProfile() {
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setDate(currentDate);
+    setBirthday(currentDate);
     setShow(true);
   };
 
@@ -90,6 +94,31 @@ export default function EditProfile() {
 
   const showDatepicker = () => {
     showMode("date");
+  };
+
+  const update = async () => {
+    const res = await UserApi.updateInformation(
+      name,
+      lastName,
+      email,
+      phone,
+      formatYMD(birthday),
+      countryId,
+      gender,
+      user.user_id
+    );
+
+    if (res) {
+      setErrorMessage("");
+      setSuccessMessage(
+        "Tu información personal ha sido actualizada con éxito!!"
+      );
+    } else {
+      setSuccessMessage("");
+      setErrorMessage("No se pudo actualizar tu información personal");
+    }
+
+    //console.log(user, "es userrr");
   };
 
   return (
@@ -158,9 +187,9 @@ export default function EditProfile() {
             <Calendar />
             <Pressable style={styles.input} onPress={showDatepicker}>
               {show ? (
-                <Text> {date.toLocaleDateString()}</Text>
+                <Text> {formatDMY(birthday)}</Text>
               ) : (
-                <Text>{timeElapsed(birthday)}</Text>
+                <Text>{formatDMY(birthday)}</Text>
               )}
             </Pressable>
           </View>
@@ -209,6 +238,7 @@ export default function EditProfile() {
             <SelectDropdown
               data={genders}
               onSelect={(selectedItem, index) => {
+                setGender(selectedItem.title);
                 console.log(selectedItem, index);
               }}
               renderButton={(selectedItem, isOpened) => {
@@ -238,17 +268,25 @@ export default function EditProfile() {
             />
           </View>
 
+          {errorMessage && (
+            <Text className="text-red-700	self-center">{errorMessage}</Text>
+          )}
+          {successMessage && (
+            <Text className="text-lime-500	self-center">{successMessage}</Text>
+          )}
+
           <Pressable
-            style={{
-              backgroundColor: false ? "#513Ab1" : "#462E84",
+            onPress={update}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? "#513Ab1" : "#462E84",
               height: 40,
               margin: 8,
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 8,
-            }}
+            })}
           >
-            <Text className="text-white">Actualizar</Text>
+            <Text className="text-white">Actualizaaaaaaaar</Text>
           </Pressable>
         </View>
       ) : (

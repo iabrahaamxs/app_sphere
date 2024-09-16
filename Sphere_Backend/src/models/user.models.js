@@ -67,7 +67,7 @@ const findByUserName = async (user_name) => {
 const findByUserId = async (user_id) => {
   const { rows } = await poll.query(
     `
-    SELECT user_id, countries.country, name, last_name, user_name, phone, email, user_photo, bio, birthdate, gender, user_created_at, user_updated_at  
+    SELECT user_id, users.country as country_id, countries.country, name, last_name, user_name, phone, email, user_photo, bio, birthdate, gender, user_created_at, user_updated_at  
       FROM users JOIN countries 
       ON users.country = countries. country_id
       WHERE user_id = $1`,
