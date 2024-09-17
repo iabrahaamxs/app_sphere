@@ -1,24 +1,32 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { FlatList, Image, Text, View } from "react-native";
+import { FlatList, Image, RefreshControl, Text, View } from "react-native";
 import Post from "../../components/Post";
-import { getPosts } from "./search";
 import { getItem } from "../../utils/AsyncStorage";
 import { PostApi } from "../../api/postsApi";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const jwt = await getItem("jwt");
-      const postsData = await PostApi.getFollowersPosts(jwt);
-      setPosts(postsData);
-    };
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  }, [fetchData]);
+
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const fetchData = useCallback(async () => {
+    const jwt = await getItem("jwt");
+    const postsData = await PostApi.getFollowersPosts(jwt);
+    setPosts(postsData);
+  }, []);
+
   return (
     <View>
       <StatusBar style="auto" />
@@ -50,12 +58,11 @@ export default function Home() {
       <FlatList
         className="pt-2 bg-white "
         data={posts}
-        renderItem={({ item }) => (
-          <View>
-            <Post item={item} />
-          </View>
-        )}
-        keyExtractor={(item) => item.post_id}
+        renderItem={({ item }) => <Post item={item} />}
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        }
+        keyExtractor={(item) => item.post_id.toString()}
       />
     </View>
   );

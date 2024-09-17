@@ -2,6 +2,7 @@ import { SignJWT } from "jose";
 import { JWT_PRIVATE_KEY } from "../config.js";
 import { UserModel } from "../models/user.models.js";
 import { token } from "morgan";
+import { CategorieModel } from "../models/categories.models.js";
 
 const createUser = async (req, res) => {
   try {
@@ -45,6 +46,18 @@ const createUser = async (req, res) => {
     if (error?.code === "23505") {
       return res.status(409).json({ menssage: "Email already exists" });
     }
+    return res.status(500).json({ menssage: "Internal server error" });
+  }
+};
+
+const getUsers = async (req, res) => {
+  try {
+    const data = req.query;
+
+    const users = await UserModel.getUsers(data.txt);
+
+    return res.json(users);
+  } catch (error) {
     return res.status(500).json({ menssage: "Internal server error" });
   }
 };
@@ -111,7 +124,7 @@ const updateInfoUser = async (req, res) => {
     if (user) {
       return res
         .status(400)
-        .json({ menssage: "User (email or phone) already exists" });
+        .json({ menssage: "User (email or phone) already exists", ok: false });
     }
 
     const userInfoUpdated = await UserModel.editInfoPersonal(data);
@@ -136,6 +149,22 @@ const updateSettingUser = async (req, res) => {
     }
 
     const usersettingUpdated = await UserModel.editSettingPersonal(data);
+
+    // insertar categorias si no existen
+    for (let i = 0; i < data.categoriesOn.length; i++) {
+      const categorie = await CategorieModel.findCategorie(
+        data.user_id,
+        data.categoriesOn[i]
+      );
+      if (!categorie) {
+        CategorieModel.create(data.user_id, data.categoriesOn[i]);
+      }
+    }
+
+    // eliminar categorias si existen
+    for (let i = 0; i < data.categoriesOff.length; i++) {
+      CategorieModel.update(data.user_id, data.categoriesOff[i]);
+    }
 
     return res.json(usersettingUpdated);
   } catch (error) {
@@ -194,6 +223,7 @@ const updatePasswordUser = async (req, res) => {
 
 export const UserController = {
   createUser,
+  getUsers,
   loginUser,
   profileUser,
   updateInfoUser,

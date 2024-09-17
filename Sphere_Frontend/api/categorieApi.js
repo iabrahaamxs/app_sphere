@@ -38,7 +38,9 @@ const getCategories = async (id) => {
 
     return categories;
   } catch (error) {
-    return { msg: "error getcategories" };
+    console.log('{ msg: "error getcategories" }');
+
+    return [];
   }
 };
 

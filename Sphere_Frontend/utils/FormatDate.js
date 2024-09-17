@@ -77,3 +77,35 @@ export function timeElapsed(dateString) {
   const seconds = Math.floor(diffMs / msInSecond);
   return seconds === 1 ? `hace ${seconds} segundo` : `hace ${seconds} segundos`;
 }
+
+export function formatDMY(dateString) {
+  const date = new Date(dateString);
+
+  // Get the date parts in numerical format
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Months are zero-indexed
+  const year = date.getFullYear();
+
+  // Pad single digits with zeros
+  const formattedDay = day.toString().padStart(2, "0");
+  const formattedMonth = month.toString().padStart(2, "0");
+
+  // Return the formatted date as a string
+  return `${formattedDay}/${formattedMonth}/${year}`;
+}
+
+export function formatYMD(dateString) {
+  const date = new Date(dateString);
+
+  // Get the date parts in numerical format
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Months are zero-indexed
+  const year = date.getFullYear();
+
+  // Pad single digits with zeros
+  const formattedDay = day.toString().padStart(2, "0");
+  const formattedMonth = month.toString().padStart(2, "0");
+
+  // Return the formatted date as a string
+  return `${year}-${formattedMonth}-${formattedDay}`;
+}

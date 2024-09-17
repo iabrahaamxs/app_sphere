@@ -41,8 +41,44 @@ const getFollowersPosts = async (jwt) => {
   }
 };
 
+const getHashtags = async (tag) => {
+  try {
+    const res = await axiosManager.get(`/search/hashtag/${tag}`);
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error getHashtags" }');
+
+    return [];
+  }
+};
+
+const getPostsByTag = async (tag) => {
+  try {
+    const res = await axiosManager.get(`/search/hashtag/posts/${tag}`);
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error getPostsByTag" }');
+
+    return [];
+  }
+};
+
+const getPostsByDescription = async (txt) => {
+  try {
+    const res = await axiosManager.get(`/search/posts/${txt}`);
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error getPostsByDescription" }');
+
+    return [];
+  }
+};
+
 export const PostApi = {
   getPosts,
   getFavorites,
   getFollowersPosts,
+  getHashtags,
+  getPostsByTag,
+  getPostsByDescription,
 };

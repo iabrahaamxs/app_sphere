@@ -53,6 +53,78 @@ const getFollowed = async (id) => {
   }
 };
 
+const searchUsers = async (txt) => {
+  try {
+    const res = await axiosManager.get("/search/users", {
+      params: {
+        txt: txt,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error searchUsers" }');
+
+    return [];
+  }
+};
+
+const updateInformation = async (
+  name,
+  last_name,
+  email,
+  phone,
+  birthdate,
+  country,
+  gender,
+  user_id
+) => {
+  try {
+    const res = await axiosManager.put("/information", {
+      name,
+      last_name,
+      email,
+      phone,
+      birthdate,
+      country,
+      gender,
+      user_id,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error updateInformation" }');
+
+    return false;
+  }
+};
+
+const updateSettings = async (
+  user_photo,
+  user_name,
+  bio,
+  categoriesOn,
+  categoriesOff,
+  user_id
+) => {
+  try {
+    const res = await axiosManager.put("/setting", {
+      user_photo,
+      user_name,
+      bio,
+      categoriesOn,
+      categoriesOff,
+      user_id,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error updateSettings" }');
+
+    return false;
+  }
+};
+
 // const getUser = async (userName) => {
 //   try {
 //     const res = await axiosManager.get("/user", {
@@ -72,5 +144,8 @@ export const UserApi = {
   getProfile,
   getFollows,
   getFollowed,
+  searchUsers,
+  updateInformation,
+  updateSettings,
   //getUser,
 };

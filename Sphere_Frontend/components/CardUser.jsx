@@ -1,10 +1,16 @@
+import { Link, router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 
 const CardUser = ({ user }) => {
-  const { name, last_name, user_photo, user_name } = user;
+  const { user_id, name, last_name, user_photo, user_name } = user;
   return (
     <View className="w-[100%] flex-row justify-between	items-center px-2 mb-2">
-      <View className="flex-row">
+      <Pressable
+        onPress={() => {
+          router.navigate(`/user/${user_id}`);
+        }}
+        className="flex-row basis-2/3"
+      >
         <Image
           source={{ uri: user_photo }}
           style={{
@@ -21,7 +27,8 @@ const CardUser = ({ user }) => {
             {name} {last_name}
           </Text>
         </View>
-      </View>
+      </Pressable>
+
       <Pressable className="w-[100] border-2 rounded-lg p-1 items-center mr-4">
         <Text>follow</Text>
       </Pressable>
