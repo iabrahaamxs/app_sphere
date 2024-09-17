@@ -194,39 +194,38 @@ export default function AccountSettings() {
               headerShadowVisible: false,
             }}
           />
-
-          <View className="items-center justify-center self-center">
-            {newData.user_photo ? (
-              <Image
-                source={{ uri: newData.user_photo }}
-                style={{
-                  resizeMode: "cover",
-                  width: 130,
-                  height: 130,
-                  borderRadius: 99999,
-                  borderWidth: 2,
-                  borderColor: "#462E84",
-                }}
-              />
-            ) : (
-              <Image
-                source={User_icon}
-                style={{
-                  resizeMode: "contain",
-                  width: 130,
-                  height: 130,
-                  borderRadius: 99999,
-                  borderWidth: 2,
-                  borderColor: "#462E84",
-                }}
-              />
-            )}
-            <View className="w-8 h-8 absolute right-1.5	bottom-1 bg-white rounded-full items-center justify-center">
-              <Pressable onPress={upImage}>
+          <Pressable onPress={upImage} className="self-center rounded-full">
+            <View className="items-center justify-center self-center">
+              {newData.user_photo ? (
+                <Image
+                  source={{ uri: newData.user_photo }}
+                  style={{
+                    resizeMode: "cover",
+                    width: 130,
+                    height: 130,
+                    borderRadius: 99999,
+                    borderWidth: 2,
+                    borderColor: "#462E84",
+                  }}
+                />
+              ) : (
+                <Image
+                  source={User_icon}
+                  style={{
+                    resizeMode: "contain",
+                    width: 130,
+                    height: 130,
+                    borderRadius: 99999,
+                    borderWidth: 2,
+                    borderColor: "#462E84",
+                  }}
+                />
+              )}
+              <View className="w-8 h-8 absolute right-1.5	bottom-1 bg-white rounded-full items-center justify-center">
                 <Camera />
-              </Pressable>
+              </View>
             </View>
-          </View>
+          </Pressable>
           <Text className="self-center my-1">Editar foto de perfil</Text>
 
           <View className="flex-row items-center ml-3">
