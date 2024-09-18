@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,6 +13,7 @@ import { Link, router } from "expo-router";
 import { Eye, Eye_Off, LockIcon, MailIcon, UserIcon } from "./Icons";
 import { UserApi } from "../api/userApi";
 import { setItem } from "../utils/AsyncStorage";
+import { validateInputsLogin } from "../utils/Validations";
 const icon = require("../assets/sphereColor.png");
 
 export function Login() {
@@ -19,6 +21,42 @@ export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleLogin = async () => {
+    const validationError = validateInputsLogin(email, password);
+
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage("");
+
+    try {
+      const auth = await UserApi.login({
+        email: email.toLowerCase(),
+        password: password,
+      });
+
+      if (auth.jwt) {
+        await setItem("jwt", auth.jwt);
+        await setItem("user_name", auth.user_name);
+        await setItem("id", auth.user_id);
+        router.replace("/home");
+      } else {
+        setErrorMessage(
+          "Credenciales inválidas, por favor verifica tus datos."
+        );
+      }
+    } catch (error) {
+      setErrorMessage("Error al iniciar sesión, por favor intenta nuevamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
@@ -69,6 +107,10 @@ export function Login() {
           </View>
         </View>
 
+        {errorMessage ? (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        ) : null}
+
         <Link href="/recoverPassword" className="self-end pr-3">
           <Text>Olvidaste tu contraseña?</Text>
         </Link>
@@ -82,21 +124,14 @@ export function Login() {
             alignItems: "center",
             borderRadius: 8,
           })}
-          onPress={async () => {
-            const auth = await UserApi.login({
-              email: email.toLocaleLowerCase(),
-              password: password,
-            });
-
-            if (auth.jwt) {
-              setItem("jwt", auth.jwt);
-              setItem("user_name", auth.user_name);
-              setItem("id", auth.user_id);
-              router.replace("/home");
-            }
-          }}
+          onPress={handleLogin}
+          disabled={loading}
         >
-          <Text className="text-white">Iniciar Sesión</Text>
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-white">Iniciar Sesión</Text>
+          )}
         </Pressable>
 
         <View className="flex-row justify-center mt-4">
@@ -117,5 +152,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     padding: 10,
     borderRadius: 6,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginVertical: 8,
   },
 });
