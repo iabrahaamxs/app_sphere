@@ -9,9 +9,9 @@ const create = async (data) => {
     [
       data.name,
       data.last_name,
-      data.user_name,
+      data.user_name.toLowerCase(),
       data.phone,
-      data.email,
+      data.email.toLowerCase(),
       data.password,
       data.user_photo,
       data.bio,
@@ -164,6 +164,39 @@ const editPassword = async (data) => {
   return rows[0];
 };
 
+const findEmail = async (email) => {
+  const { rows } = await poll.query(
+    `
+    SELECT * FROM users 
+      WHERE email = $1 `,
+    [email]
+  );
+
+  return rows[0];
+};
+
+const findPhone = async (phone) => {
+  const { rows } = await poll.query(
+    `
+    SELECT * FROM users 
+      WHERE phone = $1 `,
+    [phone]
+  );
+
+  return rows[0];
+};
+
+const findUserName = async (user_name) => {
+  const { rows } = await poll.query(
+    `
+    SELECT * FROM users 
+      WHERE user_name = $1 `,
+    [user_name]
+  );
+
+  return rows[0];
+};
+
 export const UserModel = {
   create,
   getUsers,
@@ -176,4 +209,7 @@ export const UserModel = {
   findEditSetting,
   editSettingPersonal,
   editPassword,
+  findEmail,
+  findPhone,
+  findUserName,
 };

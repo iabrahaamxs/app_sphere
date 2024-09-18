@@ -1,3 +1,8 @@
+import { Link, Stack } from "expo-router";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { getCountries } from "../api/countriesApi";
+import { setItem } from "../utils/AsyncStorage";
 import {
   Text,
   View,
@@ -6,9 +11,8 @@ import {
   Pressable,
   Modal,
   ScrollView,
-  FlatList,
+  ActivityIndicator,
 } from "react-native";
-import { Link, Stack } from "expo-router";
 import {
   UserIcon,
   MailIcon,
@@ -17,21 +21,37 @@ import {
   Earth,
   Gender,
 } from "../components/Icons";
-import SelectDropdown from "react-native-select-dropdown";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getCountries } from "../api/countriesApi";
-import { setItem } from "../utils/AsyncStorage";
+import { validateFieldsSignUp } from "../utils/Validations";
 
 export default function SignUp() {
+  const [userData, setUserData] = useState({
+    name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    user_name: "",
+    country: 0,
+    gender: "",
+  });
+  const [countries, setCountries] = useState([]);
+  const [countryTXT, setCountryTXT] = useState(null);
+  //const [name, setName] = useState("");
+  //const [lastName, setLastName] = useState("");
+  //const [email, setEmail] = useState("");
+  //const [phone, setPhone] = useState("");
+  //const [userName, setUserName] = useState("");
+  //const [country, setCountry] = useState(0);
+  //const [gender, setGender] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const NewUser = {};
+  const [countryModal, setCountryModal] = useState(false);
+  const [genderModal, setGenderModal] = useState(false);
   const genders = [
     { title: "Masculino", id: 1 },
     { title: "Femenino", id: 2 },
   ];
-
-  const [countries, setCountries] = useState([]);
-  const [countryTXT, setCountryTXT] = useState(null);
 
   useEffect(() => {
     async function fetchCountries() {
@@ -42,29 +62,29 @@ export default function SignUp() {
     fetchCountries();
   }, []);
 
-  const router = useRouter();
+  const handleInputChange = (field, value) => {
+    setUserData({
+      ...userData,
+      [field]: value,
+    });
+  };
 
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [userName, setUserName] = useState("");
-  const [country, setCountry] = useState(0);
-  const [gender, setGender] = useState("");
+  const handleNextStep = async () => {
+    setLoading(true);
 
-  const NewUser = {};
+    const errorMessage = await validateFieldsSignUp(userData);
+    if (errorMessage) {
+      setLoading(false);
+      setErrorMessage(errorMessage);
+      //console.log(errorMessage);
+      return;
+    }
 
-  // const storeData = async (value) => {
-  //   try {
-  //     const jsonValue = JSON.stringify(value);
-  //     await AsyncStorage.setItem("new-user", jsonValue);
-  //   } catch (e) {
-  //     console.log("error del storeData");
-  //   }
-  // };
-
-  const [countryModal, setCountryModal] = useState(false);
-  const [genderModal, setGenderModal] = useState(false);
+    await setItem("new-user", userData);
+    router.push("/signUp2");
+    setErrorMessage("");
+    setLoading(false);
+  };
 
   return (
     <View className="flex-1 pl-1 bg-white">
@@ -85,7 +105,8 @@ export default function SignUp() {
         <TextInput
           style={styles.input}
           placeholder="Nombre"
-          onChangeText={setName}
+          onChangeText={(value) => handleInputChange("name", value)}
+          value={userData.name}
         />
       </View>
 
@@ -94,7 +115,8 @@ export default function SignUp() {
         <TextInput
           style={styles.input}
           placeholder="Apellido"
-          onChangeText={setLastName}
+          onChangeText={(value) => handleInputChange("last_name", value)}
+          value={userData.last_name}
         />
       </View>
 
@@ -104,7 +126,8 @@ export default function SignUp() {
           style={styles.input}
           placeholder="Correo electronico"
           keyboardType="email-address"
-          onChangeText={setEmail}
+          onChangeText={(value) => handleInputChange("email", value)}
+          value={userData.email}
         />
       </View>
 
@@ -114,7 +137,8 @@ export default function SignUp() {
           style={styles.input}
           placeholder="Numero de telefono"
           keyboardType="number-pad"
-          onChangeText={setPhone}
+          onChangeText={(value) => handleInputChange("phone", value)}
+          value={userData.phone}
         />
       </View>
 
@@ -123,7 +147,8 @@ export default function SignUp() {
         <TextInput
           style={styles.input}
           placeholder="Nombre de usuario"
-          onChangeText={setUserName}
+          onChangeText={(value) => handleInputChange("user_name", value)}
+          value={userData.user_name}
         />
       </View>
 
@@ -135,11 +160,11 @@ export default function SignUp() {
               <ScrollView>
                 {countries.map((country) => (
                   <Pressable
-                    onPress={() => [
-                      setCountryModal(false),
-                      setCountryTXT(country.country),
-                      setCountry(country.country_id),
-                    ]}
+                    onPress={() => {
+                      setCountryModal(false);
+                      setCountryTXT(country.country);
+                      handleInputChange("country", country.country_id);
+                    }}
                     className="border-[0.5px] h-8 justify-center"
                     key={country.country_id}
                   >
@@ -149,24 +174,6 @@ export default function SignUp() {
                   </Pressable>
                 ))}
               </ScrollView>
-              {/* <FlatList
-                data={countries}
-                renderItem={({item}) => (
-                  <Pressable
-                    onPress={() => [
-                      setCountryModal(false),
-                      setCountryTXT(item.country),
-                      setCountry(item.country_id),
-                    ]}
-                    className="border-[0.5px] h-8 justify-center"
-                    key={item.country_id}
-                  >
-                    <Text className="self-center justify-center">
-                      {item.country}
-                    </Text>
-                  </Pressable>
-                )}
-              /> */}
             </View>
           </View>
         </Modal>
@@ -188,10 +195,10 @@ export default function SignUp() {
             <View className="w-[80%] h-[auto] bg-white py-2">
               {genders.map((gender) => (
                 <Pressable
-                  onPress={() => [
-                    setGenderModal(false),
-                    setGender(gender.title),
-                  ]}
+                  onPress={() => {
+                    setGenderModal(false);
+                    handleInputChange("gender", gender.title);
+                  }}
                   className="border-[0.5px] h-8 justify-center mb-1"
                   key={gender.id}
                 >
@@ -205,39 +212,35 @@ export default function SignUp() {
         </Modal>
         <Pressable style={styles.input} onPress={() => setGenderModal(true)}>
           <View>
-            {!gender ? (
+            {!userData.gender ? (
               <Text className="opacity-50">Género</Text>
             ) : (
-              <Text>{gender}</Text>
+              <Text>{userData.gender}</Text>
             )}
           </View>
         </Pressable>
       </View>
-      <Link href="/signUp2" asChild>
-        <Pressable
-          onPress={() => [
-            (NewUser.name = name),
-            (NewUser.last_name = lastName),
-            (NewUser.phone = phone),
-            (NewUser.email = email.toLocaleLowerCase()),
-            (NewUser.user_name = userName),
-            (NewUser.country = country),
-            (NewUser.gender = gender),
-            //storeData(NewUser),
-            setItem("new-user", NewUser),
-          ]}
-          style={{
-            backgroundColor: false ? "#513Ab1" : "#462E84",
-            height: 40,
-            margin: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 8,
-          }}
-        >
-          <Text className="text-white">Continuar</Text>
-        </Pressable>
-      </Link>
+
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
+
+      <Pressable
+        onPress={handleNextStep}
+        disabled={loading}
+        style={({ pressed }) => ({
+          backgroundColor: pressed ? "#513Ab1" : "#462E84",
+          height: 40,
+          margin: 8,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 8,
+        })}
+      >
+        <Text className="text-white">
+          {loading ? <ActivityIndicator color="#fff" /> : "Continuar"}
+        </Text>
+      </Pressable>
 
       <View className="flex-row justify-center mt-4">
         <Text>¿Ya tiene una cuenta?</Text>
@@ -258,7 +261,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     flexGrow: 1,
   },
-
   dropdownItemStyle: {
     width: "100%",
     flexDirection: "row",
@@ -266,5 +268,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 8,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginVertical: 8,
   },
 });
