@@ -112,7 +112,7 @@ export default function MyProfile() {
             <Pressable
               onPress={async () => {
                 await clear();
-                router.replace("/");
+                router.replace("/login");
               }}
             >
               <Logout color="white" />

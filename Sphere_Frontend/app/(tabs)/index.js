@@ -1,15 +1,37 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { FlatList, Image, RefreshControl, Text, View } from "react-native";
 import Post from "../../components/Post";
 import { getItem } from "../../utils/AsyncStorage";
 import { PostApi } from "../../api/postsApi";
 import { useCallback, useEffect, useState } from "react";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
-
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        const jwt = await getItem("jwt");
+        if (!jwt) {
+          router.replace("/login");
+        } else {
+          await fetchData();
+        }
+      } catch (error) {
+        console.log("Error during app initialization:", error);
+      } finally {
+        setIsLoading(false);
+        await SplashScreen.hideAsync();
+      }
+    };
+    initializeApp();
+  }, []);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -17,15 +39,15 @@ export default function Home() {
     setRefreshing(false);
   }, [fetchData]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = useCallback(async () => {
     const jwt = await getItem("jwt");
     const postsData = await PostApi.getFollowersPosts(jwt);
     setPosts(postsData);
   }, []);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <View>
