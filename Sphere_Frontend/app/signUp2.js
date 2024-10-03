@@ -5,9 +5,10 @@ import {
   TextInput,
   Pressable,
   Image,
+  ActivityIndicator,
 } from "react-native";
-import { Link, router, Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { router, Stack } from "expo-router";
+import React, { useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import RadioGroup from "../components/RadioButton";
 import * as ImagePicker from "expo-image-picker";
@@ -19,12 +20,10 @@ import {
   Calendar,
   Camera,
 } from "../components/Icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserApi } from "../api/userApi";
-import { getAllItems, getItem, setItem } from "../utils/AsyncStorage";
+import { getItem, setItem } from "../utils/AsyncStorage";
 import { CategorieApi } from "../api/categorieApi";
-
-const User_icon = require("../assets/User_icon.png");
+import { uploadImage } from "../utils/cloudinary";
 
 export default function SignUp2() {
   const [showPassword, setShowPassword] = useState(true);
@@ -32,9 +31,13 @@ export default function SignUp2() {
   const [selectedValues, setSelectedValues] = useState([]);
   const [show, setShow] = useState(false);
   const [bio, setBio] = useState("");
+  const [photoBase, setPhotoBase] = useState(
+    "https://res.cloudinary.com/dyfhxp9nh/image/upload/v1727979582/20240803_213228_zqzk2r.png"
+  );
   const [photo, setPhoto] = useState("");
   const [date, setDate] = useState(new Date());
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   let User = {};
 
   const options = [
@@ -94,6 +97,37 @@ export default function SignUp2() {
     }
   };
 
+  const createAccount = async () => {
+    User = await getItem("new-user");
+
+    if (photo) {
+      const res = await uploadImage(photo);
+      User.user_photo = res.secure_url;
+    } else {
+      User.user_photo = photoBase;
+    }
+
+    User.bio = bio;
+    User.password = password;
+    User.birthdate =
+      date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+
+    const userCreated = await UserApi.register(User);
+
+    if (userCreated.jwt) {
+      const cat = await CategorieApi.create(
+        {
+          categories: selectedValues,
+        },
+        userCreated.jwt
+      );
+      await setItem("jwt", userCreated.jwt);
+      await setItem("user_name", userCreated.user_name);
+      await setItem("id", userCreated.user_id);
+      router.replace("/home");
+    }
+  };
+
   return (
     <View className="flex-1 pl-1 bg-white">
       <Stack.Screen
@@ -109,31 +143,17 @@ export default function SignUp2() {
       </Text>
 
       <View className="items-center justify-center self-center">
-        {photo ? (
-          <Image
-            source={{ uri: photo }}
-            style={{
-              resizeMode: "contain",
-              width: 130,
-              height: 130,
-              borderRadius: 99999,
-              borderWidth: 2,
-              borderColor: "#462E84",
-            }}
-          />
-        ) : (
-          <Image
-            source={User_icon}
-            style={{
-              resizeMode: "contain",
-              width: 130,
-              height: 130,
-              borderRadius: 99999,
-              borderWidth: 2,
-              borderColor: "#462E84",
-            }}
-          />
-        )}
+        <Image
+          source={{ uri: photo ? photo : photoBase }}
+          style={{
+            resizeMode: "contain",
+            width: 130,
+            height: 130,
+            borderRadius: 99999,
+            borderWidth: 2,
+            borderColor: "#462E84",
+          }}
+        />
         <View className="w-8 h-8 absolute right-1.5	bottom-1 bg-white rounded-full items-center justify-center">
           <Pressable onPress={upImage}>
             <Camera />
@@ -214,33 +234,8 @@ export default function SignUp2() {
       </View>
 
       <Pressable
-        onPress={async () => {
-          User = await getItem("new-user");
-          User.user_photo = photo;
-          User.bio = bio;
-          User.password = password;
-          User.birthdate =
-            date.getFullYear() +
-            "-" +
-            (date.getMonth() + 1) +
-            "-" +
-            date.getDate();
-
-          const userCreated = await UserApi.register(User);
-
-          if (userCreated.jwt) {
-            const cat = await CategorieApi.create(
-              {
-                categories: selectedValues,
-              },
-              userCreated.jwt
-            );
-            await setItem("jwt", userCreated.jwt);
-            await setItem("user_name", userCreated.user_name);
-            await setItem("id", userCreated.user_id);
-            router.replace("/home");
-          }
-        }}
+        onPress={createAccount}
+        disabled={loading}
         style={({ pressed }) => [
           {
             backgroundColor: pressed ? "#513Ab1" : "#462E84",
@@ -252,7 +247,9 @@ export default function SignUp2() {
           },
         ]}
       >
-        <Text className="text-white">Crear Cuenta</Text>
+        <Text className="text-white">
+          {loading ? <ActivityIndicator color="#fff" /> : "Crear Cuenta"}
+        </Text>
       </Pressable>
     </View>
   );
