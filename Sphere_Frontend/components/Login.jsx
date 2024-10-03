@@ -45,7 +45,7 @@ export function Login() {
         await setItem("jwt", auth.jwt);
         await setItem("user_name", auth.user_name);
         await setItem("id", auth.user_id);
-        router.replace("/home");
+        router.replace("/");
       } else {
         setErrorMessage(
           "Credenciales inválidas, por favor verifica tus datos."

@@ -125,18 +125,15 @@ const updateSettings = async (
   }
 };
 
-// const getUser = async (userName) => {
-//   try {
-//     const res = await axiosManager.get("/user", {
-//       params: {
-//         user_name: userName,
-//       },
-//     });
-//     return res.data;
-//   } catch (error) {
-//     return { msg: "error getUser" };
-//   }
-// };
+const validateNewUser = async (data) => {
+  try {
+    const res = await axiosManager.post("/register/validate", data);
+
+    return res.data;
+  } catch (error) {
+    return { msg: "error validateNewUser" };
+  }
+};
 
 export const UserApi = {
   login,
@@ -147,5 +144,5 @@ export const UserApi = {
   searchUsers,
   updateInformation,
   updateSettings,
-  //getUser,
+  validateNewUser,
 };

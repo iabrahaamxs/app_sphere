@@ -1,7 +1,6 @@
 import { SignJWT } from "jose";
 import { JWT_PRIVATE_KEY } from "../config.js";
 import { UserModel } from "../models/user.models.js";
-import { token } from "morgan";
 import { CategorieModel } from "../models/categories.models.js";
 
 const createUser = async (req, res) => {
@@ -11,14 +10,14 @@ const createUser = async (req, res) => {
     //hacer validaciones aqui
 
     const user = await UserModel.findUser(
-      data.email,
-      data.user_name,
+      data.email.toLowerCase(),
+      data.user_name.toLowerCase(),
       data.phone
     );
     if (user) {
       return res.status(400).json({
         ok: false,
-        menssage: "User (email, user_name, phone) already exists",
+        message: "User (email, user_name, phone) already exists",
       });
     }
 
@@ -44,9 +43,49 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     if (error?.code === "23505") {
-      return res.status(409).json({ menssage: "Email already exists" });
+      return res.status(409).json({ message: "Email already exists" });
     }
-    return res.status(500).json({ menssage: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const validateUser = async (req, res) => {
+  try {
+    const data = req.body;
+
+    const email = await UserModel.findEmail(data.email.toLowerCase());
+
+    if (email) {
+      return res.json({
+        ok: false,
+        message: "El correo electrónico ya existe",
+      });
+    }
+
+    const phone = await UserModel.findPhone(data.phone);
+
+    if (phone) {
+      return res.json({
+        ok: false,
+        message: "El teléfono ya existe",
+      });
+    }
+
+    const userName = await UserModel.findUserName(data.user_name.toLowerCase());
+
+    if (userName) {
+      return res.json({
+        ok: false,
+        message: "El nombre de usuario ya existe",
+      });
+    }
+
+    return res.json({
+      ok: true,
+      message: "new user continue",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -58,7 +97,7 @@ const getUsers = async (req, res) => {
 
     return res.json(users);
   } catch (error) {
-    return res.status(500).json({ menssage: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -68,9 +107,12 @@ const loginUser = async (req, res) => {
 
     //aqui hacer validaciones
 
-    const user = await UserModel.loginValidation(data.email, data.password);
+    const user = await UserModel.loginValidation(
+      data.email.toLowerCase(),
+      data.password
+    );
     if (!user) {
-      return res.status(404).json({ menssage: "Incorrect email or password" });
+      return res.status(404).json({ message: "Incorrect email or password" });
     }
 
     const jwtConstructor = new SignJWT({
@@ -92,7 +134,7 @@ const loginUser = async (req, res) => {
       user_id: user.user_id,
     });
   } catch (error) {
-    return res.status(500).json({ menssage: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -106,7 +148,7 @@ const profileUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       ok: false,
-      menssage: "ERROR SERVER",
+      message: "ERROR SERVER",
     });
   }
 };
@@ -124,7 +166,7 @@ const updateInfoUser = async (req, res) => {
     if (user) {
       return res
         .status(400)
-        .json({ menssage: "User (email or phone) already exists", ok: false });
+        .json({ message: "User (email or phone) already exists", ok: false });
     }
 
     const userInfoUpdated = await UserModel.editInfoPersonal(data);
@@ -133,7 +175,7 @@ const updateInfoUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       ok: false,
-      menssage: "ERROR SERVER",
+      message: "ERROR SERVER",
     });
   }
 };
@@ -145,7 +187,7 @@ const updateSettingUser = async (req, res) => {
     const user = await UserModel.findEditSetting(data.user_name, data.user_id);
 
     if (user) {
-      return res.status(400).json({ menssage: "Username already exists" });
+      return res.status(400).json({ message: "Username already exists" });
     }
 
     const usersettingUpdated = await UserModel.editSettingPersonal(data);
@@ -170,7 +212,7 @@ const updateSettingUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       ok: false,
-      menssage: "ERROR SERVER",
+      message: "ERROR SERVER",
     });
   }
 };
@@ -182,47 +224,21 @@ const updatePasswordUser = async (req, res) => {
     const user = await UserModel.editPassword(data);
 
     if (!user) {
-      return res.status(400).json({ menssage: "Password incorrect" });
+      return res.status(400).json({ message: "Password incorrect" });
     }
 
     return res.json(user);
   } catch (error) {
     return res.status(500).json({
       ok: false,
-      menssage: "ERROR SERVER",
+      message: "ERROR SERVER",
     });
   }
 };
 
-/*export const authToken = async (req, res) => {
-  const { authorization } = req.headers;
-
-  if (!authorization) return res.status(401);
-
-  try {
-    const encoder = new TextEncoder();
-    const { payload } = await jwtVerify(
-      authorization,
-      encoder.encode(JWT_PRIVATE_KEY)
-    );
-
-    const { rows } = await poll.query(
-      "SELECT * FROM users WHERE user_name = $1",
-      [payload.user_name]
-    );
-
-    if (!rows.length > 0) return res.sendStatus(401);
-
-    delete rows[0].password;
-
-    return res.json(rows);
-  } catch (error) {
-    return res.sendStatus(401);
-  }
-};*/
-
 export const UserController = {
   createUser,
+  validateUser,
   getUsers,
   loginUser,
   profileUser,
