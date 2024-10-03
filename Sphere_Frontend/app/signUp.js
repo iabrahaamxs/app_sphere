@@ -35,13 +35,6 @@ export default function SignUp() {
   });
   const [countries, setCountries] = useState([]);
   const [countryTXT, setCountryTXT] = useState(null);
-  //const [name, setName] = useState("");
-  //const [lastName, setLastName] = useState("");
-  //const [email, setEmail] = useState("");
-  //const [phone, setPhone] = useState("");
-  //const [userName, setUserName] = useState("");
-  //const [country, setCountry] = useState(0);
-  //const [gender, setGender] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -76,7 +69,6 @@ export default function SignUp() {
     if (errorMessage) {
       setLoading(false);
       setErrorMessage(errorMessage);
-      //console.log(errorMessage);
       return;
     }
 

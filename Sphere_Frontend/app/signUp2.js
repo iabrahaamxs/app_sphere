@@ -29,8 +29,24 @@ const User_icon = require("../assets/User_icon.png");
 export default function SignUp2() {
   const [showPassword, setShowPassword] = useState(true);
   const [showPassword2, setShowPassword2] = useState(true);
-
+  const [selectedValues, setSelectedValues] = useState([]);
   const [show, setShow] = useState(false);
+  const [bio, setBio] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [password, setPassword] = useState("");
+  let User = {};
+
+  const options = [
+    { value: "1", label: "Acción" },
+    { value: "2", label: "Aventura" },
+    { value: "3", label: "Arcade" },
+    { value: "4", label: "Deporte" },
+    { value: "5", label: "Estrategía" },
+    { value: "6", label: "Simulación" },
+    { value: "7", label: "Mesa" },
+    { value: "8", label: "Musicales" },
+  ];
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -54,8 +70,6 @@ export default function SignUp2() {
 
   // radio button
 
-  const [selectedValues, setSelectedValues] = useState([]);
-
   const handleValueChange = (value) => {
     setSelectedValues((prevSelectedValues) =>
       prevSelectedValues.includes(value)
@@ -63,17 +77,6 @@ export default function SignUp2() {
         : [...prevSelectedValues, value]
     );
   };
-
-  const options = [
-    { value: "1", label: "Acción" },
-    { value: "2", label: "Aventura" },
-    { value: "3", label: "Arcade" },
-    { value: "4", label: "Deporte" },
-    { value: "5", label: "Estrategía" },
-    { value: "6", label: "Simulación" },
-    { value: "7", label: "Mesa" },
-    { value: "8", label: "Musicales" },
-  ];
 
   const upImage = async () => {
     await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -90,21 +93,6 @@ export default function SignUp2() {
       setPhoto(result.assets[0].uri);
     }
   };
-  let User = {};
-
-  const [bio, setBio] = useState("");
-  const [photo, setPhoto] = useState("");
-  const [date, setDate] = useState(new Date());
-  const [password, setPassword] = useState("");
-
-  // useEffect(() => {
-  //   async function fetchCountries() {
-  //     User = await getItem("new-user");
-  //     console.log(User);
-  //   }
-
-  //   fetchCountries();
-  // }, []);
 
   return (
     <View className="flex-1 pl-1 bg-white">
