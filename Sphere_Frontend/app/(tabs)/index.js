@@ -50,7 +50,7 @@ export default function Home() {
   }
 
   return (
-    <View>
+    <View >
       <StatusBar style="auto" />
 
       <Stack.Screen

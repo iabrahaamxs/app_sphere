@@ -24,7 +24,7 @@ const getPosts = async (req, res) => {
   const rows = await PostModel.getPosts(id);
 
   if (rows.length === 0) {
-    return res.status(404).json({ menssage: "User without post" });
+    return res.json(rows);
   }
 
   //obtiene las fotos de cada post
