@@ -1,17 +1,17 @@
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-const CardFollows = ({ followed, follows }) => {
+const CardFollows = ({ followed, follows, asChild }) => {
   return (
     <View style={styles.containerCards}>
-      <Link href={`/userFollower/0`} asChild>
+      <Link href={`/userFollower/0`} asChild={asChild}>
         <Pressable style={styles.card}>
           <Text style={styles.number}>{followed.length}</Text>
           <Text style={styles.label}>Seguidos</Text>
         </Pressable>
       </Link>
 
-      <Link href={`/userFollower/1`} asChild>
+      <Link href={`/userFollower/1`} asChild={asChild}>
         <Pressable style={styles.card}>
           <Text style={styles.number}>{follows.length}</Text>
           <Text style={styles.label}>Seguidores</Text>

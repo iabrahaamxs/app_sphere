@@ -172,7 +172,7 @@ export default function MyProfile() {
 
             <Categories categories={categories} />
 
-            <CardFollows followed={followed} follows={follows} />
+            <CardFollows followed={followed} follows={follows} asChild/>
           </View>
 
           <View style={styles.container}>

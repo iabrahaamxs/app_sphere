@@ -8,9 +8,7 @@ const getFavorites = async (req, res) => {
     const favorites = await FavoriteModel.getFavorite(id);
 
     if (!favorites.length > 0) {
-      return res
-        .status(404)
-        .json({ menssage: "User does not have favorites posts" });
+      return res.json(favorites);
     }
 
     //obtiene las fotos de cada post

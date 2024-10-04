@@ -15,10 +15,6 @@ const getFollowed = async (req, res) => {
 
   const users = await FollowModel.getFollowed(id);
 
-  if (!users.length > 0) {
-    return res.status(404).json({ menssage: "User does not have followed" });
-  }
-
   res.json(users);
 };
 
@@ -27,10 +23,6 @@ export const getfollowers = async (req, res) => {
   const { id } = req.params;
 
   const followers = await FollowModel.getfollowers(id);
-
-  if (followers.length === 0) {
-    return res.status(404).json({ menssage: "User without followers" });
-  }
 
   res.json(followers);
 };

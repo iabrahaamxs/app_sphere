@@ -84,7 +84,7 @@ export default function Search() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <View className="flex-1 p-3">
+            <View className="flex-1 p-3 w-[113%] self-center">
               <TextInput
                 style={{
                   height: 40,
@@ -201,107 +201,5 @@ export default function Search() {
   );
 }
 
-export function getPosts() {
-  return [
-    {
-      id: "1",
-      userId: "1",
-      userName: "Luiss",
-      date: "11/08/2024",
-      description: "primer post #primero #ucla",
-      photo:
-        "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
-    },
-    {
-      id: "2",
-      userId: "2",
-      userName: "Maria",
-      date: "11/08/2024",
-      description:
-        "segundooo este tendra mas textoooooooo para ver como se veeeeee post #segundo #ucla",
-      photo:
-        "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
-    },
-    {
-      id: "3",
-      userId: "5",
-      userName: "Pedroo",
-      date: "10/08/2024",
-      description: "tresss post #tressSS #ucla",
-      photo:
-        "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
-    },
-    {
-      id: "4",
-      userId: "1",
-      userName: "Luiss",
-      date: "10/08/2024",
-      description: "primer post tambieeen #primero #ucla",
-      photo:
-        "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
-    },
-    {
-      id: "5",
-      userId: "3",
-      userName: "Carlosss",
-      date: "09/08/2024",
-      description: "primer post tambieeen #primera #ucla",
-      photo:
-        "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
-    },
-    {
-      id: "0",
-      userId: "4",
-      userName: "Juann",
-      date: "08/08/2024",
-      description: "primer post #prim #ucla",
-      photo:
-        "https://s0.smartresize.com/wallpaper/376/67/HD-wallpaper-video-game-charactors-creatures-game-video-charactors.jpg",
-    },
-  ];
-}
 
-export function getUser() {
-  return [
-    {
-      id: "1",
-      name: "Luis",
-      userName: "luiss1",
-      bio: "esta es la cuenta de Luis",
-      photo:
-        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
-    },
-    {
-      id: "2",
-      name: "Maria",
-      userName: "Mariaa1",
-      bio: "esta es la cuenta de maria",
-      photo:
-        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
-    },
-    {
-      id: "3",
-      name: "Carlos",
-      userName: "carloss1",
-      bio: "esta es la cuenta de carlos",
-      photo:
-        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
-    },
-    {
-      id: "4",
-      name: "Juan",
-      userName: "juann1",
-      bio: "esta es la cuenta de Juan",
-      photo:
-        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
-    },
-    {
-      id: "5",
-      name: "Pedroo",
-      userName: "pedrooo1999",
-      bio: "esta es la cuenta de pedro",
-      photo:
-        "https://us.123rf.com/450wm/saripuddin/saripuddin2301/saripuddin230100001/197800879-gamer-esport-gaming-mascota-logo-dise%C3%B1o-ilustraci%C3%B3n-vector-perfil-de-un-hombre-barbudo-con-capucha.jpg",
-    },
-  ];
-}
+
