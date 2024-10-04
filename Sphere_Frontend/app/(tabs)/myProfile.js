@@ -30,6 +30,7 @@ import { PostApi } from "../../api/postsApi";
 import { formatDate } from "../../utils/FormatDate";
 import CardFollows from "../../components/CardFollows";
 import Categories from "../../components/Categories";
+import CoverPhoto from "../../components/coverPhoto";
 
 export default function MyProfile() {
   //react-native-tab-view para post y fav
@@ -120,15 +121,9 @@ export default function MyProfile() {
               <Logout color="white" />
             </Pressable>
           </View>
-          <Image
-            source={{ uri: Profile.user_photo }}
-            style={{
-              resizeMode: "cover",
-              width: "110%",
-              height: 140,
-              alignSelf: "center",
-            }}
-          />
+
+          <CoverPhoto photo={Profile.user_photo} />
+
           <View className="w-[100%] bg-white mt-[-6] rounded-t-xl items-center z-20">
             <Image
               className="mt-[-65]"
@@ -172,7 +167,7 @@ export default function MyProfile() {
 
             <Categories categories={categories} />
 
-            <CardFollows followed={followed} follows={follows} asChild/>
+            <CardFollows followed={followed} follows={follows} asChild />
           </View>
 
           <View style={styles.container}>

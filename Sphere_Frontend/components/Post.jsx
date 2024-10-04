@@ -56,7 +56,7 @@ const Post = ({ item }) => {
           aspectRatio: 4 / 3,
         }}
       />
-      <View className="flex-row divide-x mt-1 ">
+      <View className="flex-row divide-x mt-1 h-8">
         <Pressable className="w-[33%] justify-center items-center">
           <Heart />
         </Pressable>

@@ -26,6 +26,7 @@ import { CategorieApi } from "../../api/categorieApi";
 import { PostApi } from "../../api/postsApi";
 import CardFollows from "../../components/CardFollows";
 import Categories from "../../components/Categories";
+import CoverPhoto from "../../components/coverPhoto";
 
 export default function UserProfile() {
   const { userProfile } = useLocalSearchParams();
@@ -75,15 +76,7 @@ export default function UserProfile() {
               <Share color="white" />
             </Pressable>
           </View>
-          <Image
-            source={{ uri: user.user_photo }}
-            style={{
-              resizeMode: "cover",
-              width: "110%",
-              height: 140,
-              alignSelf: "center",
-            }}
-          />
+          <CoverPhoto photo={user.user_photo} />
           <View className="w-[100%] bg-white mt-[-6] rounded-t-xl items-center z-20">
             <Image
               className="mt-[-65]"
