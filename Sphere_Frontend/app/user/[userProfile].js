@@ -20,12 +20,10 @@ import {
   UserFollow,
   UserUnfollow,
 } from "../../components/Icons";
-import { getUser } from "../(tabs)/search";
 import { UserApi } from "../../api/userApi";
 import { formatDate } from "../../utils/FormatDate";
 import { CategorieApi } from "../../api/categorieApi";
 import { PostApi } from "../../api/postsApi";
-//const User_icon = require("../../assets/User_icon.png");
 
 export default function UserProfile() {
   const { userProfile } = useLocalSearchParams();
@@ -84,7 +82,7 @@ export default function UserProfile() {
               alignSelf: "center",
             }}
           />
-          <View className="w-[100%] h-[410] bg-white mt-[-6] rounded-t-xl items-center z-20">
+          <View className="w-[100%] bg-white mt-[-6] rounded-t-xl items-center z-20">
             <Image
               className="mt-[-65]"
               source={{ uri: user.user_photo }}
@@ -136,23 +134,35 @@ export default function UserProfile() {
               <Text className="ml-1.5">{formatDate(user.user_created_at)}</Text>
             </View>
 
-            <ScrollView
-              className="mr-auto mt-2 mb-4 relative"
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
-              <View className="flex-row h-7 pl-2 pr-2">
-                {categories.map((categorie) => (
-                  <Pressable
-                    className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1"
-                    key={categorie.value}
-                  >
-                    <Compass className="ml-2" size={20} name={categorie.icon} />
-                    <Text className="ml-2 mr-2">{categorie.name}</Text>
-                  </Pressable>
-                ))}
+            {categories.length > 0 ? (
+              <View className="mr-auto h-11 justify-center items-center">
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{
+                    alignItems: "center",
+                    flexGrow: 1,
+                  }}
+                  style={{ flexGrow: 0 }}
+                >
+                  <View className="flex-row h-7 pl-2 pr-2">
+                    {categories.map((categorie) => (
+                      <Pressable
+                        className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1"
+                        key={categorie.value}
+                      >
+                        <Compass
+                          className="ml-2"
+                          size={20}
+                          name={categorie.icon}
+                        />
+                        <Text className="ml-2 mr-2">{categorie.name}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </ScrollView>
               </View>
-            </ScrollView>
+            ) : null}
 
             <View className="flex-row  justify-between w-[80%] mb-5">
               <View className="w-[120] border-2 rounded-lg p-1 items-center">
@@ -196,7 +206,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    minHeight: 700
+    minHeight: 700,
   },
   box: {
     width: "32%", // Ancho de cada elemento (30% para 3 columnas con espacio entre)

@@ -24,6 +24,7 @@ import { UserApi } from "../api/userApi";
 import { getItem, setItem } from "../utils/AsyncStorage";
 import { CategorieApi } from "../api/categorieApi";
 import { uploadImage } from "../utils/cloudinary";
+import { validatePasswords } from "../utils/Validations";
 
 export default function SignUp2() {
   const [showPassword, setShowPassword] = useState(true);
@@ -37,7 +38,9 @@ export default function SignUp2() {
   const [photo, setPhoto] = useState("");
   const [date, setDate] = useState(new Date());
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   let User = {};
 
   const options = [
@@ -98,6 +101,15 @@ export default function SignUp2() {
   };
 
   const createAccount = async () => {
+    setLoading(true);
+
+    const error = validatePasswords(password, password2);
+    if (error) {
+      setLoading(false);
+      setErrorMessage(error);
+      return;
+    }
+
     User = await getItem("new-user");
 
     if (photo) {
@@ -124,8 +136,10 @@ export default function SignUp2() {
       await setItem("jwt", userCreated.jwt);
       await setItem("user_name", userCreated.user_name);
       await setItem("id", userCreated.user_id);
-      router.replace("/home");
+      router.replace("/");
     }
+    setErrorMessage("");
+    setLoading(false);
   };
 
   return (
@@ -188,6 +202,7 @@ export default function SignUp2() {
           placeholder="Contraseña"
           keyboardType="default"
           secureTextEntry={showPassword}
+          onChangeText={setPassword}
         />
         <View className="absolute right-8">
           <Pressable
@@ -207,7 +222,7 @@ export default function SignUp2() {
           placeholder="Repite tu contraseña"
           keyboardType="default"
           secureTextEntry={showPassword2}
-          onChangeText={setPassword}
+          onChangeText={setPassword2}
         />
         <View className="absolute right-8">
           <Pressable
@@ -232,6 +247,10 @@ export default function SignUp2() {
         />
         {/* Puedes usar selectedOption en el resto de tu app */}
       </View>
+
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
 
       <Pressable
         onPress={createAccount}
@@ -263,5 +282,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     padding: 10,
     borderRadius: 6,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginVertical: 8,
   },
 });

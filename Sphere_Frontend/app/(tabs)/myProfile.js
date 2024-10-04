@@ -169,11 +169,12 @@ export default function MyProfile() {
             </View>
 
             <ScrollView
-              className="mr-auto mt-2 relative"
+              className="mr-auto mt-2 relative "
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
               <View className="flex-row h-7 pl-2 pr-2">
+
                 {categories.map((categorie) => (
                   <Pressable
                     className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1"
@@ -281,5 +282,17 @@ const styles = StyleSheet.create({
     margin: 2,
     resizeMode: "cover",
     borderRadius: 5,
+  },
+  btnFollow: {
+    padding: 20,
+    borderRadius: 10,
+    // Propiedades para sombra en iOS
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    // Propiedades para sombra en Android
+    elevation: 10,
+    marginTop: 30,
   },
 });
