@@ -30,7 +30,7 @@ import { PostApi } from "../../api/postsApi";
 import { formatDate } from "../../utils/FormatDate";
 import CardFollows from "../../components/CardFollows";
 import Categories from "../../components/Categories";
-import CoverPhoto from "../../components/coverPhoto";
+import CoverPhoto from "../../components/CoverPhoto";
 
 export default function MyProfile() {
   //react-native-tab-view para post y fav

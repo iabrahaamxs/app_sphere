@@ -26,7 +26,7 @@ import { CategorieApi } from "../../api/categorieApi";
 import { PostApi } from "../../api/postsApi";
 import CardFollows from "../../components/CardFollows";
 import Categories from "../../components/Categories";
-import CoverPhoto from "../../components/coverPhoto";
+import CoverPhoto from "../../components/CoverPhoto";
 
 export default function UserProfile() {
   const { userProfile } = useLocalSearchParams();
