@@ -24,6 +24,8 @@ import { UserApi } from "../../api/userApi";
 import { formatDate } from "../../utils/FormatDate";
 import { CategorieApi } from "../../api/categorieApi";
 import { PostApi } from "../../api/postsApi";
+import CardFollows from "../../components/CardFollows";
+import Categories from "../../components/Categories";
 
 export default function UserProfile() {
   const { userProfile } = useLocalSearchParams();
@@ -134,46 +136,9 @@ export default function UserProfile() {
               <Text className="ml-1.5">{formatDate(user.user_created_at)}</Text>
             </View>
 
-            {categories.length > 0 ? (
-              <View className="mr-auto h-11 justify-center items-center">
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{
-                    alignItems: "center",
-                    flexGrow: 1,
-                  }}
-                  style={{ flexGrow: 0 }}
-                >
-                  <View className="flex-row h-7 pl-2 pr-2">
-                    {categories.map((categorie) => (
-                      <Pressable
-                        className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1"
-                        key={categorie.value}
-                      >
-                        <Compass
-                          className="ml-2"
-                          size={20}
-                          name={categorie.icon}
-                        />
-                        <Text className="ml-2 mr-2">{categorie.name}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </ScrollView>
-              </View>
-            ) : null}
+            <Categories categories={categories} />
 
-            <View className="flex-row  justify-between w-[80%] mb-5">
-              <View className="w-[120] border-2 rounded-lg p-1 items-center">
-                <Text className="text-base font-bold">{followed.length}</Text>
-                <Text>Seguidos</Text>
-              </View>
-              <View className="w-[120] border-2 rounded-lg p-1 items-center">
-                <Text className="text-base font-bold">{follows.length}</Text>
-                <Text>Seguidores</Text>
-              </View>
-            </View>
+            <CardFollows followed={followed} follows={follows} />
           </View>
           <View style={styles.container}>
             <Text className="p-2 text-base">Publicaciones</Text>

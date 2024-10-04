@@ -28,6 +28,8 @@ import { UserApi } from "../../api/userApi";
 import { CategorieApi } from "../../api/categorieApi";
 import { PostApi } from "../../api/postsApi";
 import { formatDate } from "../../utils/FormatDate";
+import CardFollows from "../../components/CardFollows";
+import Categories from "../../components/Categories";
 
 export default function MyProfile() {
   //react-native-tab-view para post y fav
@@ -127,7 +129,7 @@ export default function MyProfile() {
               alignSelf: "center",
             }}
           />
-          <View className="w-[100%] h-[410] bg-white mt-[-6] rounded-t-xl items-center z-20">
+          <View className="w-[100%] bg-white mt-[-6] rounded-t-xl items-center z-20">
             <Image
               className="mt-[-65]"
               source={{ uri: Profile.user_photo }}
@@ -168,41 +170,11 @@ export default function MyProfile() {
               </Text>
             </View>
 
-            <ScrollView
-              className="mr-auto mt-2 relative "
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
-              <View className="flex-row h-7 pl-2 pr-2">
+            <Categories categories={categories} />
 
-                {categories.map((categorie) => (
-                  <Pressable
-                    className="bg-[#6D7278]/10 flex-row rounded-xl items-center mr-1 p-1"
-                    key={categorie.value}
-                  >
-                    <Compass className="ml-2" size={20} name={categorie.icon} />
-                    <Text className="ml-2 mr-2">{categorie.name}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            </ScrollView>
-
-            <View className="flex-row  justify-between w-[80%] mb-4">
-              <Link href={`/userFollower/0`} asChild>
-                <Pressable className="w-[120] border-2 rounded-lg p-1 items-center ">
-                  <Text className="text-base font-bold">{followed.length}</Text>
-                  <Text>Seguidos</Text>
-                </Pressable>
-              </Link>
-
-              <Link href={`/userFollower/1`} asChild>
-                <Pressable className="w-[120] border-2 rounded-lg p-1 items-center ">
-                  <Text className="text-base font-bold">{follows.length}</Text>
-                  <Text>Seguidores</Text>
-                </Pressable>
-              </Link>
-            </View>
+            <CardFollows followed={followed} follows={follows} />
           </View>
+
           <View style={styles.container}>
             <View className="p-2 flex-row justify-between w-[85%] self-center	">
               <Pressable
@@ -282,17 +254,5 @@ const styles = StyleSheet.create({
     margin: 2,
     resizeMode: "cover",
     borderRadius: 5,
-  },
-  btnFollow: {
-    padding: 20,
-    borderRadius: 10,
-    // Propiedades para sombra en iOS
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    // Propiedades para sombra en Android
-    elevation: 10,
-    marginTop: 30,
   },
 });
