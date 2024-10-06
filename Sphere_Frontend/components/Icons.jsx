@@ -148,5 +148,5 @@ export const House = (props) => (
 );
 
 export const SendCircle = (props) => (
-  <MaterialCommunityIcons name="send-circle" size={24} color="black" {...props}/>
+  <MaterialCommunityIcons name="send" size={24} color="black" {...props}/>
 );
