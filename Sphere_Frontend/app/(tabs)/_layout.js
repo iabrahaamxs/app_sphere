@@ -1,5 +1,7 @@
-import { Tabs } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import { House, LupaIcon, Settings, UserIcon } from "../../components/Icons";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
   return (
@@ -7,6 +9,18 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#462E84",
+        tabBarStyle: {
+          position: "absolute",
+          height: 60,
+          backgroundColor: "#fff",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.12,
+          shadowRadius: 5,
+          elevation: 10,
+        },
       }}
     >
       <Tabs.Screen
@@ -23,6 +37,26 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <LupaIcon color={color} />,
         }}
       />
+
+      {/* Botón central personalizado */}
+      <Tabs.Screen
+        name="create"
+        options={{
+          tabBarButton: (props) => (
+            <Link href={`/createPost`} asChild>
+              <TouchableOpacity
+                style={styles.addButton}
+                // onPress={() => {
+                //   // Aquí defines lo que ocurre al presionar el botón central
+                // }}
+              >
+                <Ionicons name="add" size={30} color="#fff" />
+              </TouchableOpacity>
+            </Link>
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="editProfile"
         options={{
@@ -40,3 +74,20 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  addButton: {
+    backgroundColor: "#462E84",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: -30, // Esto eleva el botón por encima de la barra de pestañas
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+});
