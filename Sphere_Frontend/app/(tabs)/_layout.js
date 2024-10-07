@@ -10,7 +10,6 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: "#462E84",
         tabBarStyle: {
-          position: "absolute",
           height: 60,
           backgroundColor: "#fff",
           //borderTopLeftRadius: 20,
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: -30, // Esto eleva el botón por encima de la barra de pestañas
+    marginTop: -27.5, // Esto eleva el botón por encima de la barra de pestañas
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,

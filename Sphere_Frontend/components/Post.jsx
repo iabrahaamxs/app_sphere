@@ -15,8 +15,8 @@ const Post = ({ item }) => {
   fetchData();
 
   return (
-    <View className="mb-2">
-      <View className="flex-row items-center px-2 ">
+    <View className="mb-2 bg-white">
+      <View className="flex-row items-center px-2 py-1">
         <Link
           href={`${
             item.post_user == id ? "/myProfile" : "/user/" + item.post_user
@@ -56,8 +56,8 @@ const Post = ({ item }) => {
           aspectRatio: 4 / 3,
         }}
       />
-      <View className="flex-row divide-x mt-1 h-8">
-        <Pressable className="w-[33%] justify-center items-center">
+      <View className="flex-row divide-x my-1 h-8">
+        <Pressable className="w-[33%] justify-center items-center flex-row">
           <Heart />
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center">

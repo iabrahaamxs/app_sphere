@@ -21,7 +21,7 @@ import {
   Camera,
 } from "../components/Icons";
 import { UserApi } from "../api/userApi";
-import { getItem, setItem } from "../utils/AsyncStorage";
+import { clear, getItem, setItem } from "../utils/AsyncStorage";
 import { CategorieApi } from "../api/categorieApi";
 import { uploadImage } from "../utils/cloudinary";
 import { validatePasswords } from "../utils/Validations";
@@ -127,12 +127,13 @@ export default function SignUp2() {
     const userCreated = await UserApi.register(User);
 
     if (userCreated.jwt) {
-      const cat = await CategorieApi.create(
+      await CategorieApi.create(
         {
           categories: selectedValues,
         },
         userCreated.jwt
       );
+      await clear();
       await setItem("jwt", userCreated.jwt);
       await setItem("user_name", userCreated.user_name);
       await setItem("id", userCreated.user_id);

@@ -50,7 +50,7 @@ export default function Home() {
   }
 
   return (
-    <View >
+    <View>
       <StatusBar style="auto" />
 
       <Stack.Screen
@@ -78,9 +78,8 @@ export default function Home() {
       />
 
       <FlatList
-        className="pt-2 bg-white "
         data={posts}
-        renderItem={({ item }) => <Post item={item} />}
+        renderItem={({ item }) => <Post item={item} className="mb-2"/>}
         refreshControl={
           <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
         }

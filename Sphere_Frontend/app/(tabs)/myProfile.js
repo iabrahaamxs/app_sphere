@@ -23,7 +23,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import PagerView from "react-native-pager-view";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { clear, getItem } from "../../utils/AsyncStorage";
+import { clear, getAllItems, getItem } from "../../utils/AsyncStorage";
 import { UserApi } from "../../api/userApi";
 import { CategorieApi } from "../../api/categorieApi";
 import { PostApi } from "../../api/postsApi";

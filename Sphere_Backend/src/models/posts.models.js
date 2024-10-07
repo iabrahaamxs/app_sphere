@@ -25,7 +25,7 @@ const getPosts = async (user) => {
 const getFollowersPosts = async (user_id) => {
   const { rows } = await poll.query(
     `
-    SELECT p.post_id, p.post_user, u.user_name, u.name, u.last_name, u.user_photo, p.description, p.post_created_at, p.post_updated_at
+    SELECT DISTINCT p.post_id, p.post_user, u.user_name, u.name, u.last_name, u.user_photo, p.description, p.post_created_at, p.post_updated_at
       FROM posts p
       JOIN followers f ON p.post_user = f.followed_user
       JOIN users u ON p.post_user = u.user_id
