@@ -1,6 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export const UserIcon = (props) => (
   <FontAwesome name="user-o" size={24} color="black" {...props} />
@@ -144,4 +145,8 @@ export const Comment = (props) => (
 
 export const House = (props) => (
   <FontAwesome6 name="house" size={24} color="black" {...props} />
+);
+
+export const SendCircle = (props) => (
+  <MaterialCommunityIcons name="send" size={24} color="black" {...props}/>
 );

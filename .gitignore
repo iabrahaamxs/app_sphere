@@ -4,3 +4,4 @@ Sphere_Backend/.env
 Sphere_Frontend/node_modules/
 Sphere_Frontend/.expo/
 Sphere_Frontend/.env
+Sphere_Frontend/package-lock.json

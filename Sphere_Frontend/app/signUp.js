@@ -236,7 +236,7 @@ export default function SignUp() {
 
       <View className="flex-row justify-center mt-4">
         <Text>¿Ya tiene una cuenta?</Text>
-        <Link href="/" className="pl-1">
+        <Link href="/login" className="pl-1">
           <Text className="font-bold">Inicia sesión</Text>
         </Link>
       </View>

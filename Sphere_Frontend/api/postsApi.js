@@ -1,5 +1,17 @@
 import axiosManager from "./apiManager";
 
+const create = async (post_user, description, photo) => {
+  try {
+    const res = await axiosManager.post("/posts", {
+      post_user,
+      description,
+      photo,
+    });
+  } catch (error) {
+    console.log("error createPost");
+  }
+};
+
 const getPosts = async (id) => {
   try {
     const res = await axiosManager.get(`/posts/${id}`);
@@ -75,6 +87,7 @@ const getPostsByDescription = async (txt) => {
 };
 
 export const PostApi = {
+  create,
   getPosts,
   getFavorites,
   getFollowersPosts,
