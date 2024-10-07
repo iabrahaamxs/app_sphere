@@ -1,14 +1,63 @@
-import { Text, View, StyleSheet, TextInput, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { Link, Stack } from "expo-router";
 import React, { useState } from "react";
 import { Eye, Eye_Off, LockIcon } from "../components/Icons";
+import { validatePasswords } from "../utils/Validations";
+import { UserApi } from "../api/userApi";
+import { getItem } from "../utils/AsyncStorage";
 
 export default function Security() {
   const [showPassword, setShowPassword] = useState(true);
   const [showPassword2, setShowPassword2] = useState(true);
   const [showPassword3, setShowPassword3] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirPassword, setConfirPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const update = async () => {
+    setLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    const validateNew = validatePasswords(newPassword, confirPassword);
+    if (validateNew) {
+      setErrorMessage(validateNew);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const id = await getItem("id");
+      const res = await UserApi.updatePassword(newPassword, id, password);
+
+      if (!res) {
+        setErrorMessage("Contraseña incorrecta");
+        setLoading(false);
+        return;
+      }
+
+      setErrorMessage("");
+      setSuccessMessage("Contraseña actualizada con éxito");
+    } catch (error) {
+      // Captura de cualquier error en la petición
+      setErrorMessage("Ocurrió un error. Inténtalo de nuevo más tarde.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <View className="flex-1 pl-1 bg-white ">
+    <View className="flex-1 bg-white ">
       <Stack.Screen
         options={{
           headerShown: true,
@@ -20,7 +69,7 @@ export default function Security() {
 
       <View className="mt-[40%]">
         <Text className="text-base font-medium self-center mb-4">
-          Editar contraseña actual{" "}
+          Editar contraseña actual
         </Text>
         <View className="flex-row items-center ml-3">
           <LockIcon />
@@ -29,6 +78,7 @@ export default function Security() {
             placeholder="Contraseña"
             keyboardType="default"
             secureTextEntry={showPassword}
+            onChangeText={setPassword}
           />
           <View className="absolute right-8">
             <Pressable
@@ -48,6 +98,7 @@ export default function Security() {
             placeholder="Nueva contraseña"
             keyboardType="default"
             secureTextEntry={showPassword2}
+            onChangeText={setNewPassword}
           />
           <View className="absolute right-8">
             <Pressable
@@ -69,6 +120,7 @@ export default function Security() {
             placeholder="Repite tu nueva contraseña"
             keyboardType="default"
             secureTextEntry={showPassword3}
+            onChangeText={setConfirPassword}
           />
           <View className="absolute right-8">
             <Pressable
@@ -78,13 +130,20 @@ export default function Security() {
                   : setShowPassword3(true);
               }}
             >
-              {showPassword2 ? <Eye_Off /> : <Eye />}
+              {showPassword3 ? <Eye_Off /> : <Eye />}
             </Pressable>
           </View>
         </View>
       </View>
+      {errorMessage && (
+        <Text className="text-red-700	self-center">{errorMessage}</Text>
+      )}
+      {successMessage && (
+        <Text className="text-lime-500	self-center">{successMessage}</Text>
+      )}
 
       <Pressable
+        onPress={update}
         style={({ pressed }) => [
           {
             backgroundColor: pressed ? "#513Ab1" : "#462E84",
@@ -97,7 +156,11 @@ export default function Security() {
           },
         ]}
       >
-        <Text className="text-white">Actualizar</Text>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text className="text-white">Actualizar</Text>
+        )}
       </Pressable>
     </View>
   );

@@ -135,6 +135,21 @@ const validateNewUser = async (data) => {
   }
 };
 
+const updatePassword = async (new_password, user_id, password) => {
+  try {
+    const res = await axiosManager.put("/password", {
+      new_password,
+      user_id,
+      password,
+    });
+
+    return res.data.ok;
+  } catch (error) {
+    console.log("error updatePassword");
+    return;
+  }
+};
+
 export const UserApi = {
   login,
   register,
@@ -145,4 +160,5 @@ export const UserApi = {
   updateInformation,
   updateSettings,
   validateNewUser,
+  updatePassword,
 };
