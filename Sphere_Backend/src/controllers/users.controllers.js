@@ -221,13 +221,17 @@ const updatePasswordUser = async (req, res) => {
   try {
     const data = req.body;
 
-    const user = await UserModel.editPassword(data);
+    const user = await UserModel.editPassword(
+      data.new_password,
+      data.user_id,
+      data.password
+    );
 
     if (!user) {
-      return res.status(400).json({ message: "Password incorrect" });
+      return res.json({ ok: false, message: "Contraseña incorrecta" });
     }
 
-    return res.json(user);
+    return res.json({ ok: true, message: "Contraseña actualizada con éxito" });
   } catch (error) {
     return res.status(500).json({
       ok: false,

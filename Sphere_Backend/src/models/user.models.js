@@ -151,14 +151,14 @@ const editSettingPersonal = async (data) => {
   return rows[0];
 };
 
-const editPassword = async (data) => {
+const editPassword = async (new_password, user_id, password) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
       SET password = $1, user_updated_at = CURRENT_TIMESTAMP
       WHERE user_id = $2 AND password = $3
       RETURNING *`,
-    [data.new_password, data.user_id, data.password]
+    [new_password, user_id, password]
   );
 
   return rows[0];

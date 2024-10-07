@@ -117,8 +117,6 @@ export default function EditProfile() {
       setSuccessMessage("");
       setErrorMessage("No se pudo actualizar tu información personal");
     }
-
-    //console.log(user, "es userrr");
   };
 
   return (

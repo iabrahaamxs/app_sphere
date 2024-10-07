@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { UserController } from "../controllers/users.controllers.js";
-import { verifyToken } from "../middlewares/jwt.middlewares.js";
 
 const router = Router();
 
