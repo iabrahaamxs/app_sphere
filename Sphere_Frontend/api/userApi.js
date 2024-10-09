@@ -150,6 +150,19 @@ const updatePassword = async (new_password, user_id, password) => {
   }
 };
 
+const forgotPassword = async (email) => {
+  try {
+    const res = await axiosManager.post("/forgot-password", {
+      email,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log("error forgotPassword");
+    return;
+  }
+};
+
 export const UserApi = {
   login,
   register,
@@ -161,4 +174,5 @@ export const UserApi = {
   updateSettings,
   validateNewUser,
   updatePassword,
+  forgotPassword,
 };

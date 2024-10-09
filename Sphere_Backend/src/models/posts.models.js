@@ -41,17 +41,17 @@ const getPostsTag = async (tag) => {
   const { rows } = await poll.query(
     `
     WITH extracted_hashtags AS (
-	SELECT
-		unnest(regexp_matches(description, '#[a-zA-Z0-9_]+', 'g')) AS hashtag
-		FROM posts
-    	WHERE post_deleted_at IS NULL
-	)
-	SELECT 
-    	hashtag,
-    	COUNT(*) AS post_count
-			FROM extracted_hashtags
-			WHERE hashtag ILIKE $1
-			GROUP BY hashtag`,
+	    SELECT
+	    	LOWER(unnest(regexp_matches(description, '#[a-zA-Z0-9_]+', 'g'))) AS hashtag
+	      FROM posts
+	      WHERE post_deleted_at IS NULL
+    )
+      SELECT 
+	      hashtag,
+	      COUNT(*) AS post_count
+          FROM extracted_hashtags
+          WHERE hashtag ILIKE $1
+          GROUP BY hashtag;`,
     [`#${tag}%`]
   );
   return rows;
