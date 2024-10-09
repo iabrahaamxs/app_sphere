@@ -2,6 +2,7 @@ import { SignJWT } from "jose";
 import { JWT_PRIVATE_KEY } from "../config.js";
 import { UserModel } from "../models/user.models.js";
 import { CategorieModel } from "../models/categories.models.js";
+import { emailHelper } from "../middlewares/send.email.js";
 
 const createUser = async (req, res) => {
   try {
@@ -240,6 +241,43 @@ const updatePasswordUser = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await UserModel.findEmail(email.toLowerCase());
+
+    if (!user) {
+      return res.json({ ok: false, message: "usuario no existe" });
+    }
+
+    const jwtConstructor = new SignJWT({
+      user_name: user.user_name,
+      user_id: user.user_id,
+    });
+
+    const encoder = new TextEncoder();
+    const token = await jwtConstructor
+      .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+      .setIssuedAt()
+      .setExpirationTime("1h")
+      .sign(encoder.encode(JWT_PRIVATE_KEY));
+
+    const info = await emailHelper(email, token);
+
+    return res.json({
+      ok: true,
+      message: "Email enviado con éxito",
+      email: info.response,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      message: "ERROR SERVER",
+    });
+  }
+};
+
 export const UserController = {
   createUser,
   validateUser,
@@ -249,4 +287,5 @@ export const UserController = {
   updateInfoUser,
   updateSettingUser,
   updatePasswordUser,
+  forgotPassword,
 };
