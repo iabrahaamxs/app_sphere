@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosManager = axios.create({
-  baseURL: "http://192.168.0.104:4000",
+  baseURL: "https://app-sphere.onrender.com",
   //responseType: 'json',
   //withCredentials: true
 });
