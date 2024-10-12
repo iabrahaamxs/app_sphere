@@ -1,5 +1,6 @@
 import { Image, Pressable, Text, View } from "react-native";
-import { Bookmark, Comment, Ellipsis, Heart } from "./Icons";
+import { Bookmark, Comment, Ellipsis} from "./Icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState } from "react";
@@ -7,12 +8,25 @@ import { getItem } from "../utils/AsyncStorage";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
+  const [liked, setLiked] = useState(false); 
+  const [likesCount, setLikesCount] = useState(item.likes); 
 
   const fetchData = async () => {
     const id = await getItem("id");
     setId(id);
   };
   fetchData();
+
+  const handleLike = () => {
+    setLiked(!liked); // Cambia el estado de liked
+    if (liked) {
+      // Si ya está likeado, resta un like
+      setLikesCount(likesCount - 1);
+    } else {
+      // Si no está likeado, suma un like
+      setLikesCount(likesCount + 1);
+    }
+  };
 
   return (
     <View className="mb-2 bg-white">
@@ -57,8 +71,15 @@ const Post = ({ item }) => {
         }}
       />
       <View className="flex-row divide-x my-1 h-8">
-        <Pressable className="w-[33%] justify-center items-center flex-row">
-          <Heart />
+        <Pressable className="w-[33%] justify-center items-center flex-row" onPress={handleLike}>
+        <MaterialCommunityIcons
+            name={liked ? "heart" : "heart-outline"} 
+            size={24}
+            color={liked ? "red" : "black"} 
+        />
+            {likesCount > 0 && (
+              <Text className="ml-2">{likesCount}</Text>
+            )}
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center">
           <Comment />
