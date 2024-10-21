@@ -241,6 +241,22 @@ const updatePasswordUser = async (req, res) => {
   }
 };
 
+const restorePassword = async (req, res) => {
+  try {
+    const id = req.user_id;
+    const { password } = req.body;
+
+    await UserModel.retorePassword(password, id);
+
+    return res.json({ ok: true, message: "Contraseña actualizada con éxito" });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      message: "ERROR SERVER",
+    });
+  }
+};
+
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -287,5 +303,6 @@ export const UserController = {
   updateInfoUser,
   updateSettingUser,
   updatePasswordUser,
+  restorePassword,
   forgotPassword,
 };

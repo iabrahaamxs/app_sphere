@@ -5,7 +5,7 @@ export const verifyToken = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization)
-    return res.status(401).json({ message: "Token not provided" });
+    return res.status(401).json({ ok: false, message: "Token not provided" });
 
   try {
     const encoder = new TextEncoder();
@@ -19,6 +19,6 @@ export const verifyToken = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Invalid token" });
+    return res.status(400).json({ ok: false, message: "Invalid token" });
   }
 };

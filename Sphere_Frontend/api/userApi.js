@@ -163,6 +163,27 @@ const forgotPassword = async (email) => {
   }
 };
 
+const restorePassword = async (jwt, password) => {
+  try {
+    const res = await axiosManager.put(
+      "/restore-password",
+      {
+        password,
+      },
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    console.log("error restorePassword");
+    return { ok: false };
+  }
+};
+
 export const UserApi = {
   login,
   register,
@@ -175,4 +196,5 @@ export const UserApi = {
   validateNewUser,
   updatePassword,
   forgotPassword,
+  restorePassword,
 };

@@ -2,13 +2,11 @@ import { Stack } from "expo-router";
 import { FlatList, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { getPosts } from "./(tabs)/search";
 import Post from "../components/Post";
 import { PostApi } from "../api/postsApi";
 
 export default function PostsTag() {
   const { tag } = useLocalSearchParams();
-  // const posts = getPosts();
   const [filteredPosts, setFilteredPosts] = useState([]);
 
   const fetchData = async () => {
