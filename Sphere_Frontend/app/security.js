@@ -144,6 +144,7 @@ export default function Security() {
 
       <Pressable
         onPress={update}
+        disabled={loading}
         style={({ pressed }) => [
           {
             backgroundColor: pressed ? "#513Ab1" : "#462E84",

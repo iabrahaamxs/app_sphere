@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UserController } from "../controllers/users.controllers.js";
+import { verifyToken } from "../middlewares/jwt.middlewares.js";
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.get("/search/users", UserController.getUsers);
 router.put("/information", UserController.updateInfoUser);
 router.put("/setting", UserController.updateSettingUser);
 router.put("/password", UserController.updatePasswordUser);
+router.put("/restore-password", verifyToken, UserController.restorePassword);
 router.post("/forgot-password", UserController.forgotPassword);
 
 export default router;

@@ -164,6 +164,19 @@ const editPassword = async (new_password, user_id, password) => {
   return rows[0];
 };
 
+const retorePassword = async (new_password, user_id) => {
+  const { rows } = await poll.query(
+    `
+    UPDATE users 
+      SET password = $1, user_updated_at = CURRENT_TIMESTAMP
+      WHERE user_id = $2
+      RETURNING *`,
+    [new_password, user_id]
+  );
+
+  return rows[0];
+};
+
 const findEmail = async (email) => {
   const { rows } = await poll.query(
     `
@@ -209,6 +222,7 @@ export const UserModel = {
   findEditSetting,
   editSettingPersonal,
   editPassword,
+  retorePassword,
   findEmail,
   findPhone,
   findUserName,

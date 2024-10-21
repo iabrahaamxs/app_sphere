@@ -18,7 +18,7 @@ export const emailHelper = async (to, token) => {
     subject: "Restablecer contraseña",
     text: `Recibiste este correo porque solicitaste restablecer tu contraseña.
     Haz clic en el siguiente enlace, o pégalo en tu navegador:
-    http://tu-app.com/reset-password/${token}
+    exp://192.168.0.104:8081/--/restorePassword/${token}?
     `,
   };
 
