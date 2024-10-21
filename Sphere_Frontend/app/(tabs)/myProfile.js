@@ -12,18 +12,17 @@ import {
 import {
   Location,
   Calendar,
-  Compass,
   Share,
   Grid,
   Bookmark,
   Logout,
 } from "../../components/Icons";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import PagerView from "react-native-pager-view";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { clear, getAllItems, getItem } from "../../utils/AsyncStorage";
+import { clear, getItem } from "../../utils/AsyncStorage";
 import { UserApi } from "../../api/userApi";
 import { CategorieApi } from "../../api/categorieApi";
 import { PostApi } from "../../api/postsApi";
@@ -200,26 +199,41 @@ export default function MyProfile() {
               }}
             >
               <View style={styles.grid} key="0">
-                {posts.map((post) => (
-                  <Image
+                {posts.map((post, index) => (
+                  <Pressable
                     key={post.post_id}
                     style={styles.box}
-                    source={{
-                      uri: post.photos[0].photo,
+                    onPress={() => {
+                      router.push(`/viewPosts/${post.post_user}-${index}`);
+                      console.log("Pressed post:", post.post_user, index);
                     }}
-                  />
+                  >
+                    <Image
+                      style={styles.image}
+                      source={{
+                        uri: post.photos[0].photo,
+                      }}
+                    />
+                  </Pressable>
                 ))}
               </View>
 
               <View style={styles.grid} key="1">
                 {favorites.map((fav) => (
-                  <Image
+                  <Pressable
                     key={fav.favorite_id}
-                    style={styles.box}
-                    source={{
-                      uri: fav.photos[0].photo,
+                    onPress={() => {
+                      console.log("Pressed favorite:", fav.favorite_id);
                     }}
-                  />
+                    style={styles.box}
+                  >
+                    <Image
+                      style={styles.image}
+                      source={{
+                        uri: fav.photos[0].photo,
+                      }}
+                    />
+                  </Pressable>
                 ))}
               </View>
             </PagerView>
@@ -241,13 +255,16 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   box: {
-    width: "32%",
+    width: "32%", // El contenedor Pressable tiene el tamaño
     height: 100,
     aspectRatio: 1,
-    justifyContent: "center",
-    alignItems: "center",
     margin: 2,
-    resizeMode: "cover",
+    borderRadius: 5,
+  },
+  image: {
+    width: "100%", // La imagen ocupa todo el espacio del Pressable
+    height: "100%",
+    resizeMode: "cover", // Mantiene la propiedad de cover para que la imagen se ajuste
     borderRadius: 5,
   },
 });
