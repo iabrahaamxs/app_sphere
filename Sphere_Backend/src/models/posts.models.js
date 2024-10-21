@@ -14,7 +14,7 @@ const create = async (user_id, description) => {
 const getPosts = async (user) => {
   const { rows } = await poll.query(
     `
-    SELECT p.post_id, p.description, p.post_created_at, u.name, u.user_photo
+    SELECT p.post_id, p.post_user, p.description, p.post_created_at, u.name, u.user_photo
       FROM 
         posts p
       JOIN 

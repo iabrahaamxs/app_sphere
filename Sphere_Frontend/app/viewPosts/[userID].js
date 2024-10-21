@@ -12,7 +12,7 @@ export default function PostsUser() {
   const fetchData = async () => {
     if (userID) {
       const postsData = await PostApi.getPosts(userID);
-      console.log(postsData);
+      console.log("id", userID);
 
       setPosts(postsData);
     }
@@ -28,7 +28,7 @@ export default function PostsUser() {
         options={{
           headerShown: true,
           headerStyle: {},
-          headerTitle: `${posts[0].name}`,
+          headerTitle: `${"mesi"}`,
           headerShadowVisible: false,
         }}
       />
