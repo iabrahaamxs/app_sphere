@@ -2,22 +2,25 @@ import { Stack } from "expo-router";
 import { FlatList, Text, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { PostApi } from "../../api/postsApi";
 
 export default function PostsUser() {
-  const { post } = useLocalSearchParams();
+  const { userID } = useLocalSearchParams();
 
-  //   const [filteredPosts, setFilteredPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
 
-  //   const fetchData = async () => {
-  //     if (tag) {
-  //       const postsData = await PostApi.getPostsByTag(tag);
-  //       setFilteredPosts(postsData);
-  //     }
-  //   };
+  const fetchData = async () => {
+    if (userID) {
+      const postsData = await PostApi.getPosts(userID);
+      console.log(postsData);
 
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, [tag]);
+      setPosts(postsData);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [userID]);
 
   return (
     <View>
@@ -25,7 +28,7 @@ export default function PostsUser() {
         options={{
           headerShown: true,
           headerStyle: {},
-          headerTitle: `#${"hola"}`,
+          headerTitle: `${posts[0].name}`,
           headerShadowVisible: false,
         }}
       />
@@ -38,7 +41,7 @@ export default function PostsUser() {
         )}
         keyExtractor={(item, index) => index}
       /> */}
-      <Text>{post}</Text>
+      <Text>{userID}</Text>
     </View>
   );
 }

@@ -204,7 +204,7 @@ export default function MyProfile() {
                     key={post.post_id}
                     style={styles.box}
                     onPress={() => {
-                      router.push(`/viewPosts/${post.post_user}-${index}`);
+                      router.push(`/viewPosts/${post.post_user}`);
                       console.log("Pressed post:", post.post_user, index);
                     }}
                   >

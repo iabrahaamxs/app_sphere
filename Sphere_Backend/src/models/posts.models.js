@@ -14,8 +14,13 @@ const create = async (user_id, description) => {
 const getPosts = async (user) => {
   const { rows } = await poll.query(
     `
-    SELECT * FROM posts 
-        WHERE post_user = $1
+    SELECT p.post_id, p.description, p.post_created_at, u.name, u.user_photo
+      FROM 
+        posts p
+      JOIN 
+        users u ON p.post_user = u.user_id
+      WHERE 
+        p.post_user = $1
         ORDER BY post_created_at DESC`,
     [user]
   );
