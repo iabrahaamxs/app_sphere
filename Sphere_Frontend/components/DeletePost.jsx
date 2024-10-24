@@ -58,10 +58,10 @@ const styles = StyleSheet.create({
     },
     modalMessage: {
         fontSize: 14,
-        color: 'gray',
+        color: 'black',
         textAlign: 'center',
         marginBottom: 20,
-        textAlign: 'left',
+        textAlign: 'left',       
     },
     buttonContainer: {
         flexDirection: 'row',
