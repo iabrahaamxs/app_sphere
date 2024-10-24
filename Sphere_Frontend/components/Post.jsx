@@ -5,14 +5,13 @@ import { Link, router} from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState } from "react";
 import { getItem } from "../utils/AsyncStorage";
-import DeletePost from "./DeletePost";
+import PostOptionsMenu from "./PostOptionsMenu";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
   const [liked, setLiked] = useState(false); 
   const [likesCount, setLikesCount] = useState(item.likes); 
-
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false); 
 
   const fetchData = async () => {
     const id = await getItem("id");
@@ -34,24 +33,12 @@ const Post = ({ item }) => {
 
     const handleCommentPress = () => {
       router.push(`../createComment`); 
+    };
+     // Función para abrir el menú de opciones
+  const handlePostOptionsMenuPress = () => {
+    setIsPostOptionsMenu(true); // Muestra el menú
   };
 
-  // Función para abrir el modal de eliminación
-  const handleEllipsisPress = () => {
-    setIsDeleteModalVisible(true); 
-  };
-
-  // Función para cancelar la eliminación
-  const handleCancelDelete = () => {
-    setIsDeleteModalVisible(false);
-  };
-
-  // Función para eliminar la publicación
-  const handleDeletePost = () => {
-    //Agregar funcionalidad 
-    setIsDeleteModalVisible(false);
-    console.log("Publicación eliminada"); //prueba en consola
-  };
 
   return (
     <View className="mb-2 bg-white">
@@ -82,17 +69,23 @@ const Post = ({ item }) => {
         <Text className="text-xs leading-8	">
           {timeElapsed(item.post_created_at)}
         </Text>
+        <Pressable onPress={handlePostOptionsMenuPress}
+        className="absolute right-3" 
+          style={{
+            marginRight: 15,   
+            padding: 8,
+            width  : 40,
+            alignItems: "center",
+            
 
-        <Pressable onPress={handleEllipsisPress} className="absolute right-3">
-          <Ellipsis /> 
-          <DeletePost
-            isVisible={isDeleteModalVisible}
-            onCancel={handleCancelDelete}
-            onDelete={handleDeletePost}
-          />    
+          }}>
+          <Ellipsis/>
+          <PostOptionsMenu
+            isVisible={isPostOptionsMenu} 
+            onCancel={() => setIsPostOptionsMenu(false)} 
+          />
         </Pressable>
-    
-
+        
       </View>
       <Text className="px-2">{item.description}</Text>
       <Image
