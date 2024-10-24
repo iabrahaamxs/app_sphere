@@ -1,7 +1,7 @@
 import { Image, Pressable, Text, View } from "react-native";
 import { Bookmark, Comment, Ellipsis} from "./Icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, router} from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState } from "react";
 import { getItem } from "../utils/AsyncStorage";
@@ -26,6 +26,11 @@ const Post = ({ item }) => {
       // Si no está likeado, suma un like
       setLikesCount(likesCount + 1);
     }
+  };
+
+
+    const handleCommentPress = () => {
+      router.push(`../createComment`); 
   };
 
   return (
@@ -81,7 +86,7 @@ const Post = ({ item }) => {
               <Text className="ml-2">{likesCount}</Text>
             )}
         </Pressable>
-        <Pressable className="w-[33%] justify-center items-center">
+        <Pressable className="w-[33%] justify-center items-center"  onPress={handleCommentPress} >
           <Comment />
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center">
