@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+        backgroundColor: 'rgba(0, 0, 0, 0.6)', 
     },
     menuViewTop: {
         flexDirection: 'row',
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         padding: 20,
         justifyContent: 'space-around',
         borderTopLeftRadius: 20, 
-        borderTopRightRadius: 20,                
+        borderTopRightRadius: 20,                   
     },
     verticalLine: {
         width: 2, 
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center', // Centra el ícono verticalmente
         alignItems: 'center', // Centra el ícono horizontalmente
         marginRight: 10, // Espacio entre el ícono y el texto
+        
     },
     optionText: {
         fontSize: 16,        
