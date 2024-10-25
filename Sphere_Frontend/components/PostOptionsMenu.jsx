@@ -39,7 +39,7 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel }) => {
                                     <Feather 
                                         name="trash-2" 
                                         size={24} 
-                                        color="black" // Color del ícono
+                                        color="black" 
                                     />
                                 </View>
                                 <Text style={styles.optionText}>Eliminar</Text>
@@ -55,7 +55,7 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel }) => {
                                     <Feather 
                                         name="edit" 
                                         size={24} 
-                                        color="black" // Color del ícono
+                                        color="black" 
                                     />
                                 </View>
                                 <Text style={styles.optionText}>Editar</Text>
@@ -99,15 +99,15 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     iconContainer: {
-        width: 40, // Ancho de la circunferencia
-        height: 40, // Alto de la circunferencia
-        borderRadius: 20, // Para hacerla circular
-        backgroundColor: 'white', // Color de fondo
-        borderWidth: 2, // Ancho del borde
-        borderColor: 'black', // Color del borde
-        justifyContent: 'center', // Centra el ícono verticalmente
-        alignItems: 'center', // Centra el ícono horizontalmente
-        marginRight: 10, // Espacio entre el ícono y el texto
+        width: 40, 
+        height: 40, 
+        borderRadius: 20, 
+        backgroundColor: 'white', 
+        borderWidth: 2, 
+        borderColor: 'black', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginRight: 10, 
         
     },
     optionText: {
