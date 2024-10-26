@@ -51,24 +51,25 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
             behavior="padding"
         >
 
-        <View style={styles.likeIconContainer}>
-            <Pressable onPress={handleLike} style={styles.likeContent}>
-                <View style={{ flex: 1 }}>
-                {likesCount > 0 && (
-                    <Text style={styles.likeCount}>
-                        {likesCount === 1 ? "1 Me gusta" : `${likesCount} Me gustas`}
-                    </Text>
-                )}
-                </View>
-    
+    <View style={styles.likeIconContainer}>
+
+    <View style={{ flex: 1 }}>
+        {likesCount > 0 && (
+            <Text style={styles.likeCount}>
+                {likesCount === 1 ? "1 Me gusta" : `${likesCount} Me gustas`}
+            </Text>
+        )}
+    </View>
+
+    <Pressable onPress={handleLike} style={styles.heartIcon}>
         <MaterialCommunityIcons
             name={liked ? "heart" : "heart-outline"}
             size={28}
             color={liked ? "#462E84" : "#462E84"}
-            style={styles.heartIcon}
         />
-            </Pressable>
-        </View>
+    </Pressable>
+    </View>
+
 
 
         {/* Lista de comentarios */}
