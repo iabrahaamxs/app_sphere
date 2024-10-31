@@ -47,7 +47,6 @@ export default function PostsUser() {
         )}
         keyExtractor={(item) => item.post_id}
       />
-      <Text>{userID}</Text>
     </View>
   );
 }
