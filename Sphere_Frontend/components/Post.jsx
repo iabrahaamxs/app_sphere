@@ -3,7 +3,7 @@ import { Bookmark, Comment, Ellipsis} from "./Icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link, router} from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getItem } from "../utils/AsyncStorage";
 import PostOptionsMenu from "./PostOptionsMenu";
 
@@ -13,19 +13,23 @@ const Post = ({ item }) => {
   const [likesCount, setLikesCount] = useState(item.likes); 
   const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false); 
 
-  const fetchData = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
     const id = await getItem("id");
     setId(id);
   };
   fetchData();
+}, []);
+
+const isOwner = item.post_user === id;
 
   const handleLike = () => {
-    setLiked(!liked); // Cambia el estado de liked
+    setLiked(!liked); 
     if (liked) {
-      // Si ya está likeado, resta un like
+      
       setLikesCount(likesCount - 1);
     } else {
-      // Si no está likeado, suma un like
+      
       setLikesCount(likesCount + 1);
     }
   };
@@ -33,10 +37,9 @@ const Post = ({ item }) => {
 
     const handleCommentPress = () => {
       router.push(`../createComment`); 
-    };
-     // Función para abrir el menú de opciones
+    };     
   const handlePostOptionsMenuPress = () => {
-    setIsPostOptionsMenu(true); // Muestra el menú
+    setIsPostOptionsMenu(true); 
   };
 
 
@@ -75,15 +78,16 @@ const Post = ({ item }) => {
             marginRight: 15,   
             padding: 8,
             width  : 40,
-            alignItems: "center",
-            
-
-          }}>
-          <Ellipsis/>
-          <PostOptionsMenu
-            isVisible={isPostOptionsMenu} 
-            onCancel={() => setIsPostOptionsMenu(false)} 
-          />
+            alignItems: "center",            
+        }}>
+        <Ellipsis/>
+          {isPostOptionsMenu && (
+            <PostOptionsMenu
+              isVisible={isPostOptionsMenu}
+              onCancel={() => setIsPostOptionsMenu(false)}
+              isOwner={isOwner} 
+            />
+          )}
         </Pressable>
         
       </View>
