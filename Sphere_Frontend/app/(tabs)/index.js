@@ -79,7 +79,7 @@ export default function Home() {
 
       <FlatList
         data={posts}
-        renderItem={({ item }) => <Post item={item} className="mb-2"/>}
+        renderItem={({ item }) => <Post item={item} className="mb-2" />}
         refreshControl={
           <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
         }
