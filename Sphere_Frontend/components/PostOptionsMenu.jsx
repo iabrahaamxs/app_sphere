@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
-import Feather from '@expo/vector-icons/Feather';
 import DeletePost from './DeletePost';
-import { Bookmark } from "./Icons";
+import { Bookmark, Trash, Edit, UserFollow, UserUnfollow } from './Icons'; 
 
 const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) => {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-    const [follow, setFollow] = useState(isFollowing); 
+    const [follow, setFollow] = useState(isFollowing);
 
     useEffect(() => {
-        setFollow(isFollowing); 
+        setFollow(isFollowing);
     }, [isFollowing]);
 
     const handleDeletePress = () => {
@@ -23,11 +22,11 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
     const handleDeletePost = () => {
         setIsDeleteModalVisible(false);
         console.log("Publicación eliminada");
-        onCancel(); 
+        onCancel();
     };
 
     const handleFollowPress = () => {
-        setFollow(!follow); 
+        setFollow(!follow);
     };
 
     return (
@@ -46,29 +45,19 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
                                 <>
                                     <Pressable style={styles.optionButton} onPress={handleDeletePress}>
                                         <View style={styles.iconContainer}>
-                                            <Feather 
-                                            name="trash-2" 
-                                            size={24} 
-                                            color="black" />
+                                            <Trash size={24} color="black" /> 
                                         </View>
                                         <Text style={styles.optionText}>Eliminar</Text>
                                     </Pressable>                  
                                     <Pressable style={styles.optionButton} onPress={onEdit}>
                                         <View style={styles.iconContainer}>
-                                            <Feather 
-                                            name="edit" 
-                                            size={24} 
-                                            color="black" 
-                                            />
+                                            <Edit size={24} color="black" /> 
                                         </View>
                                         <Text style={styles.optionText}>Editar</Text>
                                     </Pressable>
                                     <Pressable style={styles.optionButton}>
                                         <View style={styles.iconContainer}>
-                                            <Bookmark 
-                                            size={24} 
-                                            color="black" 
-                                            />                    
+                                            <Bookmark size={24} color="black" /> 
                                         </View>
                                         <Text style={styles.optionText}>Agregar a favoritos</Text>
                                     </Pressable>
@@ -80,10 +69,7 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
                                         onPress={handleFollowPress}
                                     >
                                         <View style={styles.iconContainer}>
-                                            <Feather 
-                                            name={follow ? "user-x" : "user-plus"} 
-                                            size={24}  
-                                            />
+                                            {follow ? <UserUnfollow size={24} /> : <UserFollow size={24} />} 
                                         </View>
                                         <Text style={[styles.optionText]}>
                                             {follow ? "Dejar de seguir" : "Seguir"}
@@ -91,10 +77,7 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
                                     </Pressable>
                                     <Pressable style={styles.optionButton}>
                                         <View style={styles.iconContainer}>
-                                            <Bookmark 
-                                            size={24} 
-                                            color="black" 
-                                            />                    
+                                            <Bookmark size={24} color="black" />
                                         </View>
                                         <Text style={styles.optionText}>Agregar a favoritos</Text>
                                     </Pressable>

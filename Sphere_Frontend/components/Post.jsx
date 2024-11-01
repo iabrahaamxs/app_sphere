@@ -1,6 +1,5 @@
 import { Image, Pressable, Text, View } from "react-native";
-import { Bookmark, Comment, Ellipsis} from "./Icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Bookmark, Comment, Ellipsis, HeartIcon } from "./Icons"; 
 import { Link, router} from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
@@ -75,7 +74,7 @@ const isOwner = item.post_user === id;
         <Pressable onPress={handlePostOptionsMenuPress}
         className="absolute right-3" 
           style={{
-            marginRight: 15,   
+            marginRight: 5,   
             padding: 8,
             width  : 40,
             alignItems: "center",            
@@ -104,11 +103,7 @@ const isOwner = item.post_user === id;
       />
       <View className="flex-row divide-x my-1 h-8">
         <Pressable className="w-[33%] justify-center items-center flex-row" onPress={handleLike}>
-        <MaterialCommunityIcons
-            name={liked ? "heart" : "heart-outline"} 
-            size={24}
-            color={liked ? "red" : "black"} 
-        />
+        <HeartIcon liked={liked} color = "black" />
             {likesCount > 0 && (
               <Text className="ml-2">{likesCount}</Text>
             )}
