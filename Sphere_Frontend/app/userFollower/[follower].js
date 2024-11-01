@@ -84,7 +84,7 @@ export default function Follower() {
   }, []);
 
   return (
-    <View className="flex-1 pl-1 bg-white ">
+    <View className="flex-1 bg-white ">
       {Object.keys(Profile).length != 0 ? (
         <>
           <Stack.Screen
@@ -125,7 +125,7 @@ export default function Follower() {
               <TextInput
                 style={{
                   height: 40,
-                  width: 380,
+                  width: "100%",
                   backgroundColor: "#f3f3f3",
                   padding: 10,
                   paddingStart: 40,

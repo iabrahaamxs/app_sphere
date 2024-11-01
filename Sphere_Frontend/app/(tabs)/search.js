@@ -88,7 +88,7 @@ export default function Search() {
               <TextInput
                 style={{
                   height: 40,
-                  width: 380,
+                  width: "93%",
                   backgroundColor: "#f3f3f3",
                   padding: 10,
                   paddingStart: 40,
@@ -200,6 +200,3 @@ export default function Search() {
     </View>
   );
 }
-
-
-
