@@ -1,29 +1,34 @@
 import { Image, Pressable, Text, View } from "react-native";
-import { Bookmark, Comment, Ellipsis} from "./Icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Bookmark, Comment, Ellipsis, HeartIcon } from "./Icons"; 
 import { Link, router} from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getItem } from "../utils/AsyncStorage";
+import PostOptionsMenu from "./PostOptionsMenu";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
   const [liked, setLiked] = useState(false); 
   const [likesCount, setLikesCount] = useState(item.likes); 
+  const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false); 
 
-  const fetchData = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
     const id = await getItem("id");
     setId(id);
   };
   fetchData();
+}, []);
+
+const isOwner = item.post_user === id;
 
   const handleLike = () => {
-    setLiked(!liked); // Cambia el estado de liked
+    setLiked(!liked); 
     if (liked) {
-      // Si ya está likeado, resta un like
+      
       setLikesCount(likesCount - 1);
     } else {
-      // Si no está likeado, suma un like
+      
       setLikesCount(likesCount + 1);
     }
   };
@@ -31,7 +36,11 @@ const Post = ({ item }) => {
 
     const handleCommentPress = () => {
       router.push(`../createComment`); 
+    };     
+  const handlePostOptionsMenuPress = () => {
+    setIsPostOptionsMenu(true); 
   };
+
 
   return (
     <View className="mb-2 bg-white">
@@ -62,7 +71,24 @@ const Post = ({ item }) => {
         <Text className="text-xs leading-8	">
           {timeElapsed(item.post_created_at)}
         </Text>
-        <Ellipsis className="absolute right-3" />
+        <Pressable onPress={handlePostOptionsMenuPress}
+        className="absolute right-3" 
+          style={{
+            marginRight: 5,   
+            padding: 8,
+            width  : 40,
+            alignItems: "center",            
+        }}>
+        <Ellipsis/>
+          {isPostOptionsMenu && (
+            <PostOptionsMenu
+              isVisible={isPostOptionsMenu}
+              onCancel={() => setIsPostOptionsMenu(false)}
+              isOwner={isOwner} 
+            />
+          )}
+        </Pressable>
+        
       </View>
       <Text className="px-2">{item.description}</Text>
       <Image
@@ -77,11 +103,7 @@ const Post = ({ item }) => {
       />
       <View className="flex-row divide-x my-1 h-8">
         <Pressable className="w-[33%] justify-center items-center flex-row" onPress={handleLike}>
-        <MaterialCommunityIcons
-            name={liked ? "heart" : "heart-outline"} 
-            size={24}
-            color={liked ? "red" : "black"} 
-        />
+        <HeartIcon liked={liked} color = "black" />
             {likesCount > 0 && (
               <Text className="ml-2">{likesCount}</Text>
             )}

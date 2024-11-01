@@ -2,6 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export const UserIcon = (props) => (
   <FontAwesome name="user-o" size={24} color="black" {...props} />
@@ -149,4 +150,24 @@ export const House = (props) => (
 
 export const SendCircle = (props) => (
   <MaterialCommunityIcons name="send" size={24} color="black" {...props}/>
+);
+
+export const Trash = (props) => (
+  <Feather name="trash-2" size={24} color="black" {...props} />
+);
+
+export const Edit = (props) => (
+  <Feather name="edit" size={24} color="black" {...props} />
+);
+
+export const SendIcon = ({ size = 24, color = "gray" }) => (
+  <Ionicons name="send-sharp" size={size} color={color} />
+);
+
+export const HeartIcon = ({ liked, size = 28, color = "#462E84", likedColor = "#462E84" }) => (
+  <MaterialCommunityIcons
+    name={liked ? "heart" : "heart-outline"}
+    size={size}
+    color={liked ? likedColor : color} 
+  />
 );
