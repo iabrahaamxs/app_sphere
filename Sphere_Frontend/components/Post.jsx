@@ -1,10 +1,11 @@
 import { Image, Pressable, Text, View } from "react-native";
 import { Bookmark, Comment, Ellipsis, HeartIcon } from "./Icons"; 
-import { Link, router} from "expo-router";
+import { Link, router } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
 import { getItem } from "../utils/AsyncStorage";
 import PostOptionsMenu from "./PostOptionsMenu";
+import { isOlderThan24Hours } from "../utils/DateUtils";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
@@ -12,50 +13,42 @@ const Post = ({ item }) => {
   const [likesCount, setLikesCount] = useState(item.likes); 
   const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false); 
 
+  const postDate = new Date(item.post_created_at);
+  const isEditableDeletable = !isOlderThan24Hours(postDate);
+
   useEffect(() => {
     const fetchData = async () => {
-    const id = await getItem("id");
-    setId(id);
-  };
-  fetchData();
-}, []);
+      const id = await getItem("id");
+      setId(id);
+    };
+    fetchData();
+  }, []);
 
-const isOwner = item.post_user === id;
+  const isOwner = item.post_user === id;
 
   const handleLike = () => {
     setLiked(!liked); 
-    if (liked) {
-      
-      setLikesCount(likesCount - 1);
-    } else {
-      
-      setLikesCount(likesCount + 1);
-    }
+    setLikesCount(liked ? likesCount - 1 : likesCount + 1);
   };
 
+  const handleCommentPress = () => {
+    router.push(`../createComment`); 
+  };     
 
-    const handleCommentPress = () => {
-      router.push(`../createComment`); 
-    };     
   const handlePostOptionsMenuPress = () => {
     setIsPostOptionsMenu(true); 
   };
-
 
   return (
     <View className="mb-2 bg-white">
       <View className="flex-row items-center px-2 py-1">
         <Link
-          href={`${
-            item.post_user == id ? "/myProfile" : "/user/" + item.post_user
-          }`}
+          href={`${item.post_user == id ? "/myProfile" : "/user/" + item.post_user}`}
           asChild
         >
           <Pressable className="flex-row items-center">
             <Image
-              source={{
-                uri: item.user_photo,
-              }}
+              source={{ uri: item.user_photo }}
               style={{
                 resizeMode: "contain",
                 width: 50,
@@ -65,36 +58,36 @@ const isOwner = item.post_user === id;
                 borderColor: "#462E84",
               }}
             />
-            <Text className="text-base mx-2 ">{item.name} ·</Text>
+            <Text className="text-base mx-2">{item.name} ·</Text>
           </Pressable>
         </Link>
-        <Text className="text-xs leading-8	">
+        <Text className="text-xs leading-8">
           {timeElapsed(item.post_created_at)}
         </Text>
-        <Pressable onPress={handlePostOptionsMenuPress}
-        className="absolute right-3" 
+        <Pressable
+          onPress={handlePostOptionsMenuPress}
+          className="absolute right-3"
           style={{
-            marginRight: 5,   
+            marginRight: 5,
             padding: 8,
-            width  : 40,
-            alignItems: "center",            
-        }}>
-        <Ellipsis/>
+            width: 40,
+            alignItems: "center",
+          }}
+        >
+          <Ellipsis />
           {isPostOptionsMenu && (
             <PostOptionsMenu
               isVisible={isPostOptionsMenu}
               onCancel={() => setIsPostOptionsMenu(false)}
-              isOwner={isOwner} 
+              isOwner={isOwner}
+              isEditableDeletable={isEditableDeletable} // Nueva propiedad
             />
           )}
         </Pressable>
-        
       </View>
       <Text className="px-2">{item.description}</Text>
       <Image
-        source={{
-          uri: item.photos[0].photo,
-        }}
+        source={{ uri: item.photos[0].photo }}
         style={{
           resizeMode: "cover",
           width: "100%",
@@ -103,12 +96,10 @@ const isOwner = item.post_user === id;
       />
       <View className="flex-row divide-x my-1 h-8">
         <Pressable className="w-[33%] justify-center items-center flex-row" onPress={handleLike}>
-        <HeartIcon liked={liked} color = "black" />
-            {likesCount > 0 && (
-              <Text className="ml-2">{likesCount}</Text>
-            )}
+          <HeartIcon liked={liked} color="black" />
+          {likesCount > 0 && <Text className="ml-2">{likesCount}</Text>}
         </Pressable>
-        <Pressable className="w-[33%] justify-center items-center"  onPress={handleCommentPress} >
+        <Pressable className="w-[33%] justify-center items-center" onPress={handleCommentPress}>
           <Comment />
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center">

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
 import DeletePost from './DeletePost';
-import { Bookmark, Trash, Edit, UserFollow, UserUnfollow } from './Icons'; 
+import TimeLimitModal from './TimeLimitModal';
+import { Bookmark, Trash, Edit, UserFollow, UserUnfollow } from './Icons';
 
-const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) => {
+const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing, isEditableDeletable }) => {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [isTimeLimitModalVisible, setIsTimeLimitModalVisible] = useState(false);
+    const [timeLimitMessage, setTimeLimitMessage] = useState('');
     const [follow, setFollow] = useState(isFollowing);
 
     useEffect(() => {
@@ -12,7 +15,21 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
     }, [isFollowing]);
 
     const handleDeletePress = () => {
-        setIsDeleteModalVisible(true);
+        if (!isEditableDeletable) {
+            setTimeLimitMessage("No puedes eliminar tu publicación debido a que las 24 horas transcurrieron");
+            setIsTimeLimitModalVisible(true);
+        } else {
+            setIsDeleteModalVisible(true);
+        }
+    };
+
+    const handleEditPress = () => {
+        if (!isEditableDeletable) {
+            setTimeLimitMessage("No puedes editar tu publicación debido a que las 24 horas transcurrieron");
+            setIsTimeLimitModalVisible(true);
+        } else {
+            onEdit();
+        }
     };
 
     const handleCancelDelete = () => {
@@ -28,7 +45,9 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
     const handleFollowPress = () => {
         setFollow(!follow);
     };
-
+    const handleCloseTimeLimitModal = () => {
+        setIsTimeLimitModalVisible(false);
+    };
     return (
         <Modal 
             transparent={true} 
@@ -43,18 +62,28 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
                             <View style={styles.separator}></View>
                             {isOwner ? (
                                 <>
-                                    <Pressable style={styles.optionButton} onPress={handleDeletePress}>
+                                    <Pressable 
+                                        style={styles.optionButton} 
+                                        onPress={handleDeletePress}
+                                    >
                                         <View style={styles.iconContainer}>
                                             <Trash size={24} color="black" /> 
                                         </View>
-                                        <Text style={styles.optionText}>Eliminar</Text>
-                                    </Pressable>                  
-                                    <Pressable style={styles.optionButton} onPress={onEdit}>
+                                        <Text style={styles.optionText}>
+                                            {"Eliminar"}
+                                        </Text>
+                                    </Pressable>
+                                    <Pressable 
+                                        style={styles.optionButton} 
+                                        onPress={handleEditPress}
+                                    >
                                         <View style={styles.iconContainer}>
                                             <Edit size={24} color="black" /> 
                                         </View>
-                                        <Text style={styles.optionText}>Editar</Text>
-                                    </Pressable>
+                                        <Text style={styles.optionText}>
+                                            {"Editar"}
+                                        </Text>
+                                    </Pressable>                                    
                                     <Pressable style={styles.optionButton}>
                                         <View style={styles.iconContainer}>
                                             <Bookmark size={24} color="black" /> 
@@ -65,16 +94,16 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
                             ) : (
                                 <>
                                     <Pressable 
-                                        style={[styles.optionButton]} 
+                                        style={styles.optionButton} 
                                         onPress={handleFollowPress}
                                     >
                                         <View style={styles.iconContainer}>
                                             {follow ? <UserUnfollow size={24} /> : <UserFollow size={24} />} 
                                         </View>
-                                        <Text style={[styles.optionText]}>
+                                        <Text style={styles.optionText}>
                                             {follow ? "Dejar de seguir" : "Seguir"}
                                         </Text>
-                                    </Pressable>
+                                    </Pressable>                                    
                                     <Pressable style={styles.optionButton}>
                                         <View style={styles.iconContainer}>
                                             <Bookmark size={24} color="black" />
@@ -93,6 +122,13 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing }) 
                     isVisible={isDeleteModalVisible}
                     onCancel={handleCancelDelete}
                     onDelete={handleDeletePost}
+                />
+            )}
+            {isTimeLimitModalVisible && (
+                <TimeLimitModal
+                    isVisible={isTimeLimitModalVisible}
+                    onClose={handleCloseTimeLimitModal}
+                    message={timeLimitMessage}
                 />
             )}
         </Modal>
@@ -146,5 +182,5 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         width: '20%',
         alignSelf: 'center'
-    }
+    },
 });

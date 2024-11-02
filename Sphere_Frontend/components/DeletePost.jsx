@@ -1,31 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
 
 const DeletePost = ({ isVisible, onCancel, onDelete }) => {
+    const [cancelButtonColor, setCancelButtonColor] = useState('rgba(221, 221, 221, 0.2)');
+    const [deleteButtonColor, setDeleteButtonColor] = useState('rgba(221, 221, 221, 0.2)');
+
+    const handleCancelPressIn = () => {
+        setCancelButtonColor('#B8B3D3'); 
+    };
+
+    const handleCancelPressOut = () => {
+        setCancelButtonColor('rgba(221, 221, 221, 0.2)'); 
+    };
+
+    const handleDeletePressIn = () => {
+        setDeleteButtonColor('#B8B3D3'); 
+    };
+
+    const handleDeletePressOut = () => {
+        setDeleteButtonColor('rgba(221, 221, 221, 0.2)'); 
+    };
+
     return (
-    <Modal
-        transparent={true}
-        animationType="slide"
-        visible={isVisible}
-        onRequestClose={onCancel}
-    >
-        <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>¿Eliminar esta publicación?</Text>
-            <Text style={styles.modalMessage}>
-                Si lo haces se eliminará esta {"\n"}publicación de forma permanente
-            </Text>
-            <View style={styles.buttonContainer}>
-            <Pressable style={[styles.button, styles.cancelButton]} onPress={onCancel}>
-                <Text style={styles.cancelText}>Cancelar</Text>
-            </Pressable>
-            <Pressable style={[styles.button, styles.deleteButton]} onPress={onDelete}>
-                <Text style={styles.deleteText}>Eliminar</Text>
-            </Pressable>
+        <Modal
+            transparent={true}
+            animationType="slide"
+            visible={isVisible}
+            onRequestClose={onCancel}
+        >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalTitle}>¿Eliminar esta publicación?</Text>
+                    <Text style={styles.modalMessage}>
+                        Si lo haces se eliminará esta {"\n"}publicación de forma permanente
+                    </Text>
+                    <View style={styles.buttonContainer}>
+                        <Pressable
+                            style={[styles.button, { backgroundColor: cancelButtonColor }]} 
+                            onPress={onCancel}
+                            onPressIn={handleCancelPressIn} 
+                            onPressOut={handleCancelPressOut} 
+                        >
+                            <Text style={styles.cancelText}>Cancelar</Text>
+                        </Pressable>
+                        <Pressable
+                            style={[styles.button, { backgroundColor: deleteButtonColor }]} 
+                            onPress={onDelete}
+                            onPressIn={handleDeletePressIn} 
+                            onPressOut={handleDeletePressOut} 
+                        >
+                            <Text style={styles.deleteText}>Eliminar</Text>
+                        </Pressable>
+                    </View>
+                </View>
             </View>
-        </View>
-        </View>
-    </Modal>
+        </Modal>
     );
 };
 
@@ -67,16 +96,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-        justifyContent: 'flex-end',
         paddingTop: 10,
-        paddingLeft:18,
+        paddingLeft: 18,
     },
     button: {
         flex: 1,
         padding: 10,
         alignItems: 'center',
         marginHorizontal: 5,
-        
     },
     cancelButton: {
         backgroundColor: 'rgba(221, 221, 221, 0.2)',
