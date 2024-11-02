@@ -171,3 +171,7 @@ export const HeartIcon = ({ liked, size = 28, color = "#462E84", likedColor = "#
     color={liked ? likedColor : color} 
   />
 );
+
+export const BackIcon = () => (
+  <MaterialCommunityIcons name="arrow-left" size={30} color="#462E84" />
+);
