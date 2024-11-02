@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, FlatList, Image, Pressable, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { timeElapsed } from '../utils/FormatDate';
-import { SendIcon, HeartIcon } from './Icons'; 
+import { SendIcon, HeartIcon } from './Icons';
+import { useRouter } from "expo-router";
 
 const CommentBox = ({ comments, onSendComment, postId }) => {
+    const router = useRouter();
     const [newComment, setNewComment] = useState('');
     const insets = useSafeAreaInsets();
     const [liked, setLiked] = useState(false); 
@@ -18,8 +20,15 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
     };
 
     const handleLike = () => {
-        setLiked(!liked);
-        setLikesCount(prev => liked ? prev - 1 : prev + 1);
+        setLiked(prevLiked => !prevLiked);
+        setLikesCount(prevCount => liked ? prevCount - 1 : prevCount + 1);
+    };
+
+    const goToLikesScreen = () => {
+        router.push({
+            pathname: "/likesScreen",
+            params: { postId },
+        });
     };
 
     const renderComment = ({ item }) => (
@@ -39,7 +48,7 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
             </View>
         </View>
     );
-    
+
     return (
         <KeyboardAvoidingView
             style={[styles.container, { paddingBottom: insets.bottom }]}
@@ -48,9 +57,11 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
             <View style={styles.likeIconContainer}>
                 <View style={{ flex: 1 }}>
                     {likesCount > 0 && (
-                        <Text style={styles.likeCount}>
-                            {likesCount === 1 ? "1 Me gusta" : `${likesCount} Me gustas`}
-                        </Text>
+                        <Pressable onPress={goToLikesScreen}>
+                            <Text style={styles.likeCount}>
+                                {likesCount === 1 ? "1 Me gusta" : `${likesCount} Me gustas`}
+                            </Text>
+                        </Pressable>
                     )}
                 </View>
                 <Pressable onPress={handleLike} style={styles.heartIcon}>
