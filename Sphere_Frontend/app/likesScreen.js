@@ -18,7 +18,7 @@ const LikesScreen = () => {
                 name: 'Nombre',
                 last_name: 'Apellido',
                 user_photo: 'https://st2.depositphotos.com/1809585/7376/i/600/depositphotos_73762843-stock-photo-girl-smiling-with-perfect-smile.jpg',
-                user_name: 'nombreUsuario',
+                user_name: 'Usuario',
             },
         ];
 
