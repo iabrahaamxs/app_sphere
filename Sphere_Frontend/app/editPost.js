@@ -67,7 +67,7 @@ export default function EditPost() {
         />
 
         <View style={{ marginTop: 20 }}>
-          <ImageIcon size={300} color="gray" /> 
+          <ImageIcon size={200} color="gray" /> 
         </View>
       </View>
 
