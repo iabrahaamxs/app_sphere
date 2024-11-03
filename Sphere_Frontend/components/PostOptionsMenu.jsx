@@ -3,12 +3,14 @@ import { View, Text, Pressable, StyleSheet, Modal, TouchableWithoutFeedback } fr
 import DeletePost from './DeletePost';
 import TimeLimitModal from './TimeLimitModal';
 import { Bookmark, Trash, Edit, UserFollow, UserUnfollow } from './Icons';
+import { useRouter } from 'expo-router';
 
-const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing, isEditableDeletable }) => {
+const PostOptionsMenu = ({ isVisible, onCancel, isOwner, isFollowing, isEditableDeletable }) => {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [isTimeLimitModalVisible, setIsTimeLimitModalVisible] = useState(false);
     const [timeLimitMessage, setTimeLimitMessage] = useState('');
     const [follow, setFollow] = useState(isFollowing);
+    const router = useRouter();
 
     useEffect(() => {
         setFollow(isFollowing);
@@ -28,7 +30,7 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing, is
             setTimeLimitMessage("No puedes editar tu publicación debido a que las 24 horas transcurrieron");
             setIsTimeLimitModalVisible(true);
         } else {
-            onEdit();
+            router.push('/editPost'); 
         }
     };
 
@@ -48,6 +50,7 @@ const PostOptionsMenu = ({ isVisible, onEdit, onCancel, isOwner, isFollowing, is
     const handleCloseTimeLimitModal = () => {
         setIsTimeLimitModalVisible(false);
     };
+
     return (
         <Modal 
             transparent={true} 
