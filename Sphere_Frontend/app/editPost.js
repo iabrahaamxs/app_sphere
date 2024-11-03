@@ -6,7 +6,7 @@ import { Stack, useRouter } from "expo-router";
 export default function EditPost() { 
 
   const [sending, setSending] = useState(false);
-  const router = useRouter(); // Inicializa el router
+  const router = useRouter(); 
 
   const sendPost = async () => {
     setSending(true);
