@@ -90,8 +90,9 @@ const Post = ({ item }) => {
         source={{ uri: item.photos[0].photo }}
         style={{
           resizeMode: "cover",
-          width: "100%",
+          width: "97%",
           aspectRatio: 4 / 3,
+          alignSelf: 'center',
         }}
       />
       <View className="flex-row divide-x my-1 h-8">
