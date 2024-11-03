@@ -1,18 +1,21 @@
 import {  ActivityIndicator, TextInput, View, Pressable, Modal} from "react-native";
 import React, { useState } from "react";
 import { SendCircle } from "../components/Icons";
-import { Stack } from "expo-router"; 
+import { Stack, useRouter } from "expo-router"; 
 
 export default function EditPost() { 
 
   const [sending, setSending] = useState(false);
+  const router = useRouter(); // Inicializa el router
 
   const sendPost = async () => {
     setSending(true);
     try {
       // Aquí va logica para editar a la Api
 
-      console.log("Publicación editada:", description);
+      console.log("Publicación editada");
+      router.back();
+
     } catch (error) {
       console.error("Error al editar la publicación:", error);
     } finally {
