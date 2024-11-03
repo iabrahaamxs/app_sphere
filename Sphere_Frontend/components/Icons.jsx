@@ -3,6 +3,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Entypo } from '@expo/vector-icons';
 
 export const UserIcon = (props) => (
   <FontAwesome name="user-o" size={24} color="black" {...props} />
@@ -174,4 +175,8 @@ export const HeartIcon = ({ liked, size = 28, color = "#462E84", likedColor = "#
 
 export const BackIcon = () => (
   <MaterialCommunityIcons name="arrow-left" size={30} color="#462E84" />
+);
+
+export const ImageIcon = ({ size = 24, color = 'black' }) => (
+  <Entypo name="image" size={size} color={color} />
 );
