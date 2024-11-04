@@ -38,9 +38,9 @@ const LogoutConfirmation = ({ isVisible, onClose, onConfirm }) => {
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalTitle}>Cerrar sesión</Text>
+                    <Text style={styles.modalTitle}>Cerrar Sesión</Text>
                     <Text style={styles.modalMessage}>
-                        ¿Estás seguro de que deseas cerrar sesión?
+                        ¿Estás seguro?
                     </Text>
                     <View style={styles.buttonContainer}>
                         <Pressable
@@ -57,7 +57,7 @@ const LogoutConfirmation = ({ isVisible, onClose, onConfirm }) => {
                             onPressIn={handleLogoutPressIn} 
                             onPressOut={handleLogoutPressOut}               
                         >
-                            <Text style={styles.confirmText}>Salir</Text>
+                            <Text style={styles.confirmText}>Cerrar Sesión</Text>
                         </Pressable>
                     </View>
                 </View>
