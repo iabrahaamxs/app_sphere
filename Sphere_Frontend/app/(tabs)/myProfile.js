@@ -204,8 +204,14 @@ export default function MyProfile() {
                     key={post.post_id}
                     style={styles.box}
                     onPress={() => {
-                      router.push(`/viewPosts/${post.post_user}%${index}`);
-                      console.log("Pressed post:", post.post_user, index);
+                      router.push({
+                        pathname: "/viewPosts",
+                        params: {
+                          title: "Publicaciones",
+                          postsString: JSON.stringify(posts),
+                          index: index,
+                        },
+                      });
                     }}
                   >
                     <Image

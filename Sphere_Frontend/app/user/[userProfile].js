@@ -7,7 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -136,14 +136,28 @@ export default function UserProfile() {
           <View style={styles.container}>
             <Text className="p-2 text-base">Publicaciones</Text>
             <View style={styles.grid}>
-              {posts.map((post) => (
-                <Image
+              {posts.map((post, index) => (
+                <Pressable
                   key={post.post_id}
                   style={styles.box}
-                  source={{
-                    uri: post.photos[0].photo,
+                  onPress={() => {
+                    router.push({
+                      pathname: "/viewPosts",
+                      params: {
+                        title: "Publicaciones",
+                        postsString: JSON.stringify(posts),
+                        index: index,
+                      },
+                    });
                   }}
-                />
+                >
+                  <Image
+                    style={styles.image}
+                    source={{
+                      uri: post.photos[0].photo,
+                    }}
+                  />
+                </Pressable>
               ))}
             </View>
           </View>
@@ -161,19 +175,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   grid: {
-    flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    minHeight: 700,
   },
   box: {
-    width: "32%", // Ancho de cada elemento (30% para 3 columnas con espacio entre)
+    width: "32%", // El contenedor Pressable tiene el tamaño
     height: 100,
-    aspectRatio: 1, // Proporción de altura para mantener la forma de cuadrado
-    justifyContent: "center",
-    alignItems: "center",
+    aspectRatio: 1,
     margin: 2,
-    resizeMode: "cover",
+    borderRadius: 5,
+  },
+  image: {
+    width: "100%", // La imagen ocupa todo el espacio del Pressable
+    height: "100%",
+    resizeMode: "cover", // Mantiene la propiedad de cover para que la imagen se ajuste
     borderRadius: 5,
   },
 });
