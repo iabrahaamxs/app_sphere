@@ -124,9 +124,10 @@ const styles = StyleSheet.create({
     },
     commentBox: {
         backgroundColor: 'rgba(221, 221, 221, 0.2)', 
-        padding: 8,  
+        padding: 9,  
         borderRadius: 15, 
         marginRight: 9,
+        alignSelf: 'flex-start',
     },
     commentHeader: {
         flexDirection: 'row', 
