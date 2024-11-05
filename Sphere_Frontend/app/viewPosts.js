@@ -36,15 +36,14 @@ export default function PostsUser() {
             <Post item={item} />
           </View>
         )}
-        keyExtractor={(item) => item.post_id.toString()}
+        keyExtractor={(item, index) => index.toString()}
         onScrollToIndexFailed={(info) => {
-          // Reintentar el desplazamiento después de un retraso si falla
           setTimeout(() => {
             ref.current?.scrollToIndex({
               index: info.index,
               animated: false,
             });
-          }, 0); // Ajusta el tiempo según sea necesario
+          }, 0);
         }}
       />
     </View>

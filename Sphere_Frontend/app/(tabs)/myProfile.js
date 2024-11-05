@@ -225,13 +225,22 @@ export default function MyProfile() {
               </View>
 
               <View style={styles.grid} key="1">
-                {favorites.map((fav) => (
+                {favorites.map((fav, index) => (
                   <Pressable
                     key={fav.favorite_id}
-                    onPress={() => {
-                      console.log("Pressed favorite:", fav.favorite_id);
-                    }}
                     style={styles.box}
+                    onPress={() => {
+                      console.log(favorites);
+
+                      router.push({
+                        pathname: "/viewPosts",
+                        params: {
+                          title: "Favoritos",
+                          postsString: JSON.stringify(favorites),
+                          index: index,
+                        },
+                      });
+                    }}
                   >
                     <Image
                       style={styles.image}
