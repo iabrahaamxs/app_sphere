@@ -30,15 +30,17 @@ import { formatDate } from "../../utils/FormatDate";
 import CardFollows from "../../components/CardFollows";
 import Categories from "../../components/Categories";
 import CoverPhoto from "../../components/CoverPhoto";
+import LogoutConfirmation from "../../components/LogoutConfirmation";
 
 export default function MyProfile() {
-  //react-native-tab-view para post y fav
+  // react-native-tab-view para post y fav
   const insets = useSafeAreaInsets();
   const [viewPost, setViewPost] = useState(true);
   const [posts, setPosts] = useState([]);
   const [favorites, setFavorites] = useState([]);
-
+  
   const ref = useRef();
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
 
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
@@ -112,10 +114,7 @@ export default function MyProfile() {
         >
           <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-end	">
             <Pressable
-              onPress={async () => {
-                await clear();
-                router.replace("/login");
-              }}
+              onPress={() => setShowLogoutModal(true)} 
             >
               <Logout color="white" />
             </Pressable>
@@ -253,6 +252,14 @@ export default function MyProfile() {
               </View>
             </PagerView>
           </View>
+          <LogoutConfirmation
+            isVisible={showLogoutModal}
+            onClose={() => setShowLogoutModal(false)}
+            onConfirm={async () => {
+              await clear();
+              router.replace("/login");
+            }}
+          />
         </ScrollView>
       )}
     </View>
