@@ -2,7 +2,19 @@ import { poll } from "../db.js";
 
 const getFollowed = async (id) => {
   const { rows } = await poll.query(
-    "SELECT followers.follow_id, followers.follower_user, users.name, users.last_name, users.user_id, users.user_name, users.user_photo, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.followed_user = users.user_id WHERE follower_user = $1 AND follow_deleted_at IS NULL",
+    `SELECT f.id, 
+       f.follower_user, 
+       u.name, 
+       u.last_name, 
+       u.id AS user_id, 
+       u.user_name, 
+       u.photo, 
+       f.created_at, 
+       f.deleted_at
+        FROM followers f
+        JOIN users u ON f.followed_user = u.id
+        WHERE f.follower_user = $1
+        AND f.deleted_at IS NULL`,
     [id]
   );
 
@@ -11,7 +23,19 @@ const getFollowed = async (id) => {
 
 const getfollowers = async (id) => {
   const { rows } = await poll.query(
-    "SELECT followers.follow_id, users.user_id, users.name, users.last_name, users.user_name, users.user_photo, followers.followed_user, followers.follow_created_at, followers.follow_deleted_at FROM followers JOIN users ON followers.follower_user = users.user_id WHERE followed_user = $1 AND follow_deleted_at IS NULL",
+    `SELECT f.id, 
+       u.id AS user_id, 
+       u.name, 
+       u.last_name, 
+       u.user_name, 
+       u.photo, 
+       f.followed_user, 
+       f.created_at, 
+       f.deleted_at
+        FROM followers f
+        JOIN users u ON f.follower_user = u.id
+        WHERE f.followed_user = $1
+        AND f.deleted_at IS NULL`,
     [id]
   );
   return rows;
@@ -27,7 +51,12 @@ const follow = async (data) => {
 
 const unfollow = async (data) => {
   const { rows } = await poll.query(
-    "UPDATE followers SET follow_deleted_at = CURRENT_TIMESTAMP WHERE follower_user = $1 AND followed_user = $2 AND follow_deleted_at IS NULL RETURNING *",
+    `UPDATE followers 
+        SET deleted_at = CURRENT_TIMESTAMP 
+        WHERE follower_user = $1 
+        AND followed_user = $2 
+        AND deleted_at IS NULL 
+        RETURNING *`,
     [data.follower_user, data.followed_user]
   );
   return rows;

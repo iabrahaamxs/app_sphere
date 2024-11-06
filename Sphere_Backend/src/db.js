@@ -5,6 +5,7 @@ import {
   DB_PASSWORD,
   DB_PORT,
   DB_USER,
+  BD_SSL,
 } from "./config.js";
 
 export const poll = new pg.Pool({
@@ -14,5 +15,5 @@ export const poll = new pg.Pool({
   password: DB_PASSWORD,
   database: DB_DATABASE,
   port: DB_PORT,
-  ssl: true,
+  ssl: BD_SSL,
 });

@@ -24,9 +24,11 @@ const createUser = async (req, res) => {
 
     const newUser = await UserModel.create(data);
 
+    
+
     const jwtConstructor = new SignJWT({
       user_name: newUser.user_name,
-      user_id: newUser.user_id,
+      user_id: newUser.id,
     });
 
     const encoder = new TextEncoder();
@@ -118,7 +120,7 @@ const loginUser = async (req, res) => {
 
     const jwtConstructor = new SignJWT({
       user_name: user.user_name,
-      user_id: user.user_id,
+      user_id: user.id,
     });
 
     const encoder = new TextEncoder();
@@ -199,8 +201,9 @@ const updateSettingUser = async (req, res) => {
         data.user_id,
         data.categoriesOn[i]
       );
+
       if (!categorie) {
-        CategorieModel.create(data.user_id, data.categoriesOn[i]);
+        await CategorieModel.create(data.user_id, data.categoriesOn[i]);
       }
     }
 

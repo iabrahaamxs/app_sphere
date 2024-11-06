@@ -9,7 +9,7 @@ const createPost = async (req, res) => {
 
     const rows = await PostModel.create(data.post_user, data.description);
 
-    const photo = await PhotoModel.create(rows.post_id, data.photo);
+    const photo = await PhotoModel.create(rows.id, data.photo);
 
     return res.json(rows);
   } catch (error) {

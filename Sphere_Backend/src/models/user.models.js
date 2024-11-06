@@ -3,7 +3,7 @@ import { poll } from "../db.js";
 const create = async (data) => {
   const { rows } = await poll.query(
     `
-    INSERT INTO users (name, last_name, user_name, phone, email, password, user_photo, bio, birthdate, gender, country) 
+    INSERT INTO users (name, last_name, user_name, phone, email, password, photo, bio, birthdate, gender, country) 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
       RETURNING *`,
     [
@@ -52,10 +52,22 @@ const findUser = async (email, user_name, phone) => {
 const findByUserName = async (user_name) => {
   const { rows } = await poll.query(
     `
-    SELECT user_id, countries.country, name, last_name, user_name, phone, email, user_photo, bio, birthdate, gender, user_created_at, user_updated_at  
-      FROM users JOIN countries 
-      ON users.country = countries. country_id
-      WHERE user_name = $1`,
+    SELECT u.id, 
+      c.country, 
+      u.name, 
+      u.last_name, 
+      u.user_name, 
+      u.phone, 
+      u.email, 
+      u.photo, 
+      u.bio, 
+      u.birthdate, 
+      u.gender, 
+      u.created_at, 
+      u.updated_at
+        FROM users u
+        JOIN countries c ON u.country = c.id
+        WHERE u.user_name = $1;`,
     [user_name]
   );
 
@@ -67,10 +79,24 @@ const findByUserName = async (user_name) => {
 const findByUserId = async (user_id) => {
   const { rows } = await poll.query(
     `
-    SELECT user_id, users.country as country_id, countries.country, name, last_name, user_name, phone, email, user_photo, bio, birthdate, gender, user_created_at, user_updated_at  
-      FROM users JOIN countries 
-      ON users.country = countries. country_id
-      WHERE user_id = $1`,
+    SELECT u.id, 
+      u.country, 
+      c.country, 
+      u.name, 
+      u.last_name, 
+      u.user_name, 
+      u.phone, 
+      u.email, 
+      u.photo AS user_photo, 
+      u.bio, 
+      u.birthdate, 
+      u.gender, 
+      u.created_at, 
+      u.updated_at
+        FROM users u
+        JOIN countries c ON u.country = c.id
+        WHERE u.id = $1;
+`,
     [user_id]
   );
 
@@ -97,7 +123,7 @@ const findEditInfo = async (email, phone, user_id) => {
     SELECT * FROM users
       WHERE (email = $1 
       OR phone = $2)
-      AND NOT user_id = $3`,
+      AND NOT id = $3`,
     [email, phone, user_id]
   );
 
@@ -108,8 +134,8 @@ const editInfoPersonal = async (data) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
-      SET name = $1, last_name = $2, email = $3, phone = $4, birthdate = $5, country = $6, gender = $7, user_updated_at = CURRENT_TIMESTAMP
-      WHERE user_id = $8 
+      SET name = $1, last_name = $2, email = $3, phone = $4, birthdate = $5, country = $6, gender = $7, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $8 
       RETURNING *`,
     [
       data.name,
@@ -131,7 +157,7 @@ const findEditSetting = async (user_name, user_id) => {
     `
     SELECT * FROM users
       WHERE user_name = $1
-      AND NOT user_id = $2`,
+      AND NOT id = $2`,
     [user_name, user_id]
   );
 
@@ -142,8 +168,8 @@ const editSettingPersonal = async (data) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
-      SET user_photo = $1, user_name = $2, bio = $3, user_updated_at = CURRENT_TIMESTAMP
-      WHERE user_id = $4 
+      SET photo = $1, user_name = $2, bio = $3, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $4 
       RETURNING *`,
     [data.user_photo, data.user_name, data.bio, data.user_id]
   );
@@ -155,8 +181,8 @@ const editPassword = async (new_password, user_id, password) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
-      SET password = $1, user_updated_at = CURRENT_TIMESTAMP
-      WHERE user_id = $2 AND password = $3
+      SET password = $1, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $2 AND password = $3
       RETURNING *`,
     [new_password, user_id, password]
   );
@@ -168,8 +194,8 @@ const retorePassword = async (new_password, user_id) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
-      SET password = $1, user_updated_at = CURRENT_TIMESTAMP
-      WHERE user_id = $2
+      SET password = $1, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $2
       RETURNING *`,
     [new_password, user_id]
   );

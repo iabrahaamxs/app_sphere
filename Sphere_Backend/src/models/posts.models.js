@@ -3,9 +3,9 @@ import { poll } from "../db.js";
 const create = async (user_id, description) => {
   const { rows } = await poll.query(
     `
-    INSERT INTO posts (post_user, description) 
-        VALUES ($1, $2) 
-        RETURNING *`,
+    INSERT INTO posts ("user", description) 
+      VALUES ($1, $2) 
+      RETURNING *`,
     [user_id, description]
   );
   return rows[0];
@@ -14,14 +14,16 @@ const create = async (user_id, description) => {
 const getPosts = async (user) => {
   const { rows } = await poll.query(
     `
-    SELECT p.post_id, p.post_user, p.description, p.post_created_at, u.name, u.user_photo
-      FROM 
-        posts p
-      JOIN 
-        users u ON p.post_user = u.user_id
-      WHERE 
-        p.post_user = $1
-        ORDER BY post_created_at DESC`,
+    SELECT p.id, 
+      p."user", 
+      p.description, 
+      p.created_at, 
+      u.name, 
+      u.photo
+        FROM posts p
+        JOIN users u ON p."user" = u.id
+        WHERE p."user" = $1
+        ORDER BY p.created_at DESC`,
     [user]
   );
   return rows;
@@ -30,12 +32,20 @@ const getPosts = async (user) => {
 const getFollowersPosts = async (user_id) => {
   const { rows } = await poll.query(
     `
-    SELECT DISTINCT p.post_id, p.post_user, u.user_name, u.name, u.last_name, u.user_photo, p.description, p.post_created_at, p.post_updated_at
-      FROM posts p
-      JOIN followers f ON p.post_user = f.followed_user
-      JOIN users u ON p.post_user = u.user_id
-      WHERE f.follower_user = $1
-      ORDER BY p.post_created_at DESC;`,
+    SELECT DISTINCT p.id, 
+                p."user", 
+                u.user_name, 
+                u.name, 
+                u.last_name, 
+                u.photo, 
+                p.description, 
+                p.created_at, 
+                p.updated_at
+    FROM posts p
+    JOIN followers f ON p."user" = f.followed_user
+    JOIN users u ON p."user" = u.id
+    WHERE f.follower_user = $1
+    ORDER BY p.created_at DESC`,
     [user_id]
   );
   return rows;
@@ -49,7 +59,7 @@ const getPostsTag = async (tag) => {
 	    SELECT
 	    	LOWER(unnest(regexp_matches(description, '#[a-zA-Z0-9_]+', 'g'))) AS hashtag
 	      FROM posts
-	      WHERE post_deleted_at IS NULL
+	      WHERE deleted_at IS NULL
     )
       SELECT 
 	      hashtag,
@@ -66,12 +76,19 @@ const getPostsTag = async (tag) => {
 const getPostsByTag = async (tag) => {
   const { rows } = await poll.query(
     `
-    SELECT p.post_id, p.post_user, u.user_name, u.name, u.last_name, u.user_photo, p.description, p.post_created_at, p.post_updated_at
-      FROM posts p
-      JOIN users u ON p.post_user = u.user_id
-      WHERE description ~* $1
-      AND post_deleted_at IS NULL;
-    `,
+    SELECT p.id, 
+      p."user", 
+      u.user_name, 
+      u.name, 
+      u.last_name, 
+      u.photo, 
+      p.description, 
+      p.created_at, 
+      p.updated_at
+        FROM posts p
+        JOIN users u ON p."user" = u.id
+        WHERE p.description ~* $1
+        AND p.deleted_at IS NULL;`,
     [`#\\m${tag}\\M`]
   );
   return rows;
@@ -80,11 +97,20 @@ const getPostsByTag = async (tag) => {
 // Buscar post por palabras en la descripcion
 const getPostsByDescription = async (txt) => {
   const { rows } = await poll.query(
-    `SELECT p.post_id, p.post_user, u.user_name, u.name, u.last_name, u.user_photo, p.description, p.post_created_at, p.post_updated_at
-      FROM posts p
-      JOIN users u ON p.post_user = u.user_id
-      WHERE description ~* $1
-      AND post_deleted_at IS NULL`,
+    `SELECT p.id, 
+      p."user", 
+      u.user_name, 
+      u.name, 
+      u.last_name, 
+      u.photo, 
+      p.description, 
+      p.created_at, 
+      p.updated_at
+        FROM posts p
+        JOIN users u ON p."user" = u.id
+        WHERE p.description ~* $1
+        AND p.deleted_at IS NULL;
+`,
     [`\\m${txt}\\M`]
   );
   return rows;

@@ -56,13 +56,13 @@ const updateCategories = async (req, res) => {
         data.categoriesOn[i]
       );
       if (!categorie) {
-        CategorieModel.create(data.user_id, data.categoriesOn[i]);
+        await CategorieModel.create(data.user_id, data.categoriesOn[i]);
       }
     }
 
     // eliminar categorias si existen
     for (let i = 0; i < data.categoriesOff.length; i++) {
-      CategorieModel.update(data.user_id, data.categoriesOff[i]);
+      await CategorieModel.update(data.user_id, data.categoriesOff[i]);
     }
 
     const categories = await CategorieModel.getCategories(data.user_id);
