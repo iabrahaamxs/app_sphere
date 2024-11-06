@@ -1,6 +1,6 @@
 import { Link, Tabs } from "expo-router";
-import { House, LupaIcon, Settings, UserIcon } from "../../components/Icons";
-import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { Bookmark, House, LupaIcon, UserIcon } from "../../components/Icons";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
@@ -37,18 +37,12 @@ export default function TabsLayout() {
         }}
       />
 
-      {/* Botón central personalizado */}
       <Tabs.Screen
         name="create"
         options={{
           tabBarButton: (props) => (
             <Link href={`/createPost`} asChild>
-              <TouchableOpacity
-                style={styles.addButton}
-                // onPress={() => {
-                //   // Aquí defines lo que ocurre al presionar el botón central
-                // }}
-              >
+              <TouchableOpacity style={styles.addButton}>
                 <Ionicons name="add" size={30} color="#fff" />
               </TouchableOpacity>
             </Link>
@@ -57,10 +51,10 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="editProfile"
+        name="favorites"
         options={{
-          title: "Configuración",
-          tabBarIcon: ({ color }) => <Settings color={color} />,
+          title: "Favoritos",
+          tabBarIcon: ({ color }) => <Bookmark color={color} />,
         }}
       />
       <Tabs.Screen

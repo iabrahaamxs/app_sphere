@@ -8,6 +8,8 @@ import {
   Dimensions,
   ActivityIndicator,
   RefreshControl,
+  Platform,
+  ToastAndroid,
 } from "react-native";
 import {
   Location,
@@ -16,6 +18,7 @@ import {
   Grid,
   Bookmark,
   Logout,
+  Settings,
 } from "../../components/Icons";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -38,12 +41,19 @@ export default function MyProfile() {
   const [viewPost, setViewPost] = useState(true);
   const [posts, setPosts] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  
+
   const ref = useRef();
-  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
+
+    if (Platform.OS === "android") {
+      ToastAndroid.show("¡Nombre de usuario copiado!", ToastAndroid.SHORT);
+    } else {
+      // Para iOS, podrías agregar un mensaje alternativo, por ejemplo, con un estado
+      alert("¡Nombre de usuario copiado!"); // Como alternativa rápida para iOS
+    }
   };
 
   const postPress = () => {
@@ -113,9 +123,7 @@ export default function MyProfile() {
           showsVerticalScrollIndicator={false}
         >
           <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-end	">
-            <Pressable
-              onPress={() => setShowLogoutModal(true)} 
-            >
+            <Pressable onPress={() => setShowLogoutModal(true)}>
               <Logout color="white" />
             </Pressable>
           </View>
@@ -141,16 +149,31 @@ export default function MyProfile() {
             <Text className="text-sm mt-1">{"@" + Profile.user_name}</Text>
             <Text className="text-sm p-2">{Profile.bio}</Text>
 
-            <Pressable
-              className=" flex-row p-1.5 rounded-lg bg-[#462E84] "
-              onPress={() => {
-                copyToClipboard("@" + Profile.user_name);
-                //setFollowModal(false);
-              }}
-            >
-              <Share className="ml-2" color="white" />
-              <Text className="text-white ml-3 mr-2">Compartir perfil</Text>
-            </Pressable>
+            <View className="flex-row justify-around px-4 py-2 space-x-2">
+              {/* Botón de Configuración más pequeño */}
+              <Pressable
+                className="flex-row items-center p-1.5 rounded-lg border-[1.2px] border-[#462E84] bg-white"
+                onPress={() => router.push("/editProfile")}
+              >
+                <Settings className="ml-1 mr-1" color="#462E84" />
+                <Text className="text-[#462E84] ml-1 mr-2 text-sm">
+                  Configuración
+                </Text>
+              </Pressable>
+
+              {/* Botón de Compartir Perfil más pequeño */}
+              <Pressable
+                className="flex-row items-center p-1.5 rounded-lg bg-[#462E84]"
+                onPress={() => {
+                  copyToClipboard("@" + Profile.user_name);
+                }}
+              >
+                <Share className="ml-1 mr-1" color="white" />
+                <Text className="text-white ml-1 mr-2 text-sm">
+                  Compartir perfil
+                </Text>
+              </Pressable>
+            </View>
 
             <View className=" flex-row w-[100%] p-1 ml-2.5">
               <Location />
