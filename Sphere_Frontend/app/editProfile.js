@@ -1,7 +1,7 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { Link, Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Chevrons } from "../../components/Icons";
+import { Chevrons } from "../components/Icons";
 
 export default function EditProfile() {
   const insets = useSafeAreaInsets();
@@ -18,9 +18,8 @@ export default function EditProfile() {
         options={{
           headerShown: true,
           headerStyle: {},
-          headerTitle: "    Editar perfil",
+          headerTitle: "Editar perfil",
           headerShadowVisible: false,
-          headerLeft: () => "",
         }}
       />
       <Link href="/infoPersonal" asChild>

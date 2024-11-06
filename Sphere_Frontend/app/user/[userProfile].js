@@ -6,6 +6,8 @@ import {
   Pressable,
   ScrollView,
   ActivityIndicator,
+  Platform,
+  ToastAndroid,
 } from "react-native";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -60,6 +62,13 @@ export default function UserProfile() {
 
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
+
+    if (Platform.OS === "android") {
+      ToastAndroid.show("¡Nombre de usuario copiado!", ToastAndroid.SHORT);
+    } else {
+      // Para iOS, podrías agregar un mensaje alternativo, por ejemplo, con un estado
+      alert("¡Nombre de usuario copiado!"); // Como alternativa rápida para iOS
+    }
   };
 
   return (

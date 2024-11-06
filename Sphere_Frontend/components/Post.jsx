@@ -90,7 +90,7 @@ const Post = ({ item }) => {
         source={{ uri: item.photos[0].photo }}
         style={{
           resizeMode: "cover",
-          width: "97%",
+          width: "99%",
           aspectRatio: 4 / 3,
           alignSelf: 'center',
         }}
