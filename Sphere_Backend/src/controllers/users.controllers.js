@@ -42,7 +42,7 @@ const createUser = async (req, res) => {
       ok: true,
       jwt: token,
       user_name: newUser.user_name,
-      user_id: newUser.user_id,
+      user_id: newUser.id,
     });
   } catch (error) {
     if (error?.code === "23505") {
@@ -134,7 +134,7 @@ const loginUser = async (req, res) => {
       ok: true,
       jwt: token,
       user_name: user.user_name,
-      user_id: user.user_id,
+      user_id: user.id,
     });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });

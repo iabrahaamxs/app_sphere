@@ -80,14 +80,14 @@ const findByUserId = async (user_id) => {
   const { rows } = await poll.query(
     `
     SELECT u.id, 
-      u.country, 
+      u.country AS country_id, 
       c.country, 
       u.name, 
       u.last_name, 
       u.user_name, 
       u.phone, 
       u.email, 
-      u.photo AS user_photo, 
+      u.photo, 
       u.bio, 
       u.birthdate, 
       u.gender, 

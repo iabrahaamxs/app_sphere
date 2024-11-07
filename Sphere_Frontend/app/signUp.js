@@ -155,10 +155,10 @@ export default function SignUp() {
                     onPress={() => {
                       setCountryModal(false);
                       setCountryTXT(country.country);
-                      handleInputChange("country", country.country_id);
+                      handleInputChange("country", country.id);
                     }}
                     className="border-[0.5px] h-8 justify-center"
-                    key={country.country_id}
+                    key={country.id}
                   >
                     <Text className="self-center justify-center">
                       {country.country}

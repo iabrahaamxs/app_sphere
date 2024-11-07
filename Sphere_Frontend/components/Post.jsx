@@ -1,5 +1,5 @@
 import { Image, Pressable, Text, View } from "react-native";
-import { Bookmark, Comment, Ellipsis, HeartIcon } from "./Icons"; 
+import { Bookmark, Comment, Ellipsis, HeartIcon } from "./Icons";
 import { Link, router } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
@@ -9,11 +9,11 @@ import { isOlderThan24Hours } from "../utils/DateUtils";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
-  const [liked, setLiked] = useState(false); 
-  const [likesCount, setLikesCount] = useState(item.likes); 
-  const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false); 
+  const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(item.likes);
+  const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false);
 
-  const postDate = new Date(item.post_created_at);
+  const postDate = new Date(item.created_at);
   const isEditableDeletable = !isOlderThan24Hours(postDate);
 
   useEffect(() => {
@@ -24,31 +24,31 @@ const Post = ({ item }) => {
     fetchData();
   }, []);
 
-  const isOwner = item.post_user === id;
+  const isOwner = item.user === id;
 
   const handleLike = () => {
-    setLiked(!liked); 
+    setLiked(!liked);
     setLikesCount(liked ? likesCount - 1 : likesCount + 1);
   };
 
   const handleCommentPress = () => {
-    router.push(`../createComment`); 
-  };     
+    router.push(`../createComment`);
+  };
 
   const handlePostOptionsMenuPress = () => {
-    setIsPostOptionsMenu(true); 
+    setIsPostOptionsMenu(true);
   };
 
   return (
     <View className="mb-2 bg-white">
       <View className="flex-row items-center px-2 py-1">
         <Link
-          href={`${item.post_user == id ? "/myProfile" : "/user/" + item.post_user}`}
+          href={`${item.user == id ? "/myProfile" : "/user/" + item.user}`}
           asChild
         >
           <Pressable className="flex-row items-center">
             <Image
-              source={{ uri: item.user_photo }}
+              source={{ uri: item.photo }}
               style={{
                 resizeMode: "contain",
                 width: 50,
@@ -62,7 +62,7 @@ const Post = ({ item }) => {
           </Pressable>
         </Link>
         <Text className="text-xs leading-8">
-          {timeElapsed(item.post_created_at)}
+          {timeElapsed(item.created_at)}
         </Text>
         <Pressable
           onPress={handlePostOptionsMenuPress}
@@ -85,22 +85,28 @@ const Post = ({ item }) => {
           )}
         </Pressable>
       </View>
-      <Text className="px-2">{item.description}</Text>
+      <Text className="px-2 pb-1">{item.description}</Text>
       <Image
         source={{ uri: item.photos[0].photo }}
         style={{
           resizeMode: "cover",
           width: "99%",
           aspectRatio: 4 / 3,
-          alignSelf: 'center',
+          alignSelf: "center",
         }}
       />
       <View className="flex-row divide-x my-1 h-8">
-        <Pressable className="w-[33%] justify-center items-center flex-row" onPress={handleLike}>
+        <Pressable
+          className="w-[33%] justify-center items-center flex-row"
+          onPress={handleLike}
+        >
           <HeartIcon liked={liked} color="black" />
           {likesCount > 0 && <Text className="ml-2">{likesCount}</Text>}
         </Pressable>
-        <Pressable className="w-[33%] justify-center items-center" onPress={handleCommentPress}>
+        <Pressable
+          className="w-[33%] justify-center items-center"
+          onPress={handleCommentPress}
+        >
           <Comment />
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center">

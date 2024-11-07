@@ -29,19 +29,19 @@ const getPosts = async (req, res) => {
 
   //obtiene las fotos de cada post
   for (let index = 0; index < rows.length; index++) {
-    let photos = await PhotoModel.getPhotos(rows[index].post_id);
+    let photos = await PhotoModel.getPhotos(rows[index].id);
     rows[index].photos = photos;
   }
 
   //obtener comentarios de cada post
   for (let index = 0; index < rows.length; index++) {
-    let comments = await CommentModel.getComments(rows[index].post_id);
+    let comments = await CommentModel.getComments(rows[index].id);
     rows[index].comments = comments;
   }
 
   //obtener likes de cada post
   for (let index = 0; index < rows.length; index++) {
-    let likes = await LikeModel.getLikes(rows[index].post_id);
+    let likes = await LikeModel.getLikes(rows[index].id);
     rows[index].likes = likes;
   }
 
@@ -60,19 +60,19 @@ const getFollowersPosts = async (req, res) => {
 
     //obtiene las fotos de cada post
     for (let index = 0; index < rows.length; index++) {
-      let photos = await PhotoModel.getPhotos(rows[index].post_id);
+      let photos = await PhotoModel.getPhotos(rows[index].id);
       rows[index].photos = photos;
     }
 
     //obtener comentarios de cada post
     for (let index = 0; index < rows.length; index++) {
-      let comments = await CommentModel.getComments(rows[index].post_id);
+      let comments = await CommentModel.getComments(rows[index].id);
       rows[index].comments = comments;
     }
 
     //obtener likes de cada post
     for (let index = 0; index < rows.length; index++) {
-      let likes = await LikeModel.getLikes(rows[index].post_id);
+      let likes = await LikeModel.getLikes(rows[index].id);
       rows[index].likes = likes;
     }
 
@@ -108,19 +108,19 @@ const searchPostsByTag = async (req, res) => {
 
     //obtiene las fotos de cada post
     for (let index = 0; index < rows.length; index++) {
-      let photos = await PhotoModel.getPhotos(rows[index].post_id);
+      let photos = await PhotoModel.getPhotos(rows[index].id);
       rows[index].photos = photos;
     }
 
     //obtener comentarios de cada post
     for (let index = 0; index < rows.length; index++) {
-      let comments = await CommentModel.getComments(rows[index].post_id);
+      let comments = await CommentModel.getComments(rows[index].id);
       rows[index].comments = comments;
     }
 
     //obtener likes de cada post
     for (let index = 0; index < rows.length; index++) {
-      let likes = await LikeModel.getLikes(rows[index].post_id);
+      let likes = await LikeModel.getLikes(rows[index].id);
       rows[index].likes = likes;
     }
 
@@ -141,19 +141,19 @@ const searchPostsByDescription = async (req, res) => {
 
     //obtiene las fotos de cada post
     for (let index = 0; index < rows.length; index++) {
-      let photos = await PhotoModel.getPhotos(rows[index].post_id);
+      let photos = await PhotoModel.getPhotos(rows[index].id);
       rows[index].photos = photos;
     }
 
     //obtener comentarios de cada post
     for (let index = 0; index < rows.length; index++) {
-      let comments = await CommentModel.getComments(rows[index].post_id);
+      let comments = await CommentModel.getComments(rows[index].id);
       rows[index].comments = comments;
     }
 
     //obtener likes de cada post
     for (let index = 0; index < rows.length; index++) {
-      let likes = await LikeModel.getLikes(rows[index].post_id);
+      let likes = await LikeModel.getLikes(rows[index].id);
       rows[index].likes = likes;
     }
 

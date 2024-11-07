@@ -78,18 +78,18 @@ export default function UserProfile() {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="flex-row items-center w-[100%] h-20 mt-1 p-4 absolute z-10 justify-between">
-            <Link href="/">
+            <Pressable onPress={() => router.back()}>
               <Left color="white" />
-            </Link>
+            </Pressable>
             <Pressable onPress={() => copyToClipboard("@" + user.user_name)}>
               <Share color="white" />
             </Pressable>
           </View>
-          <CoverPhoto photo={user.user_photo} />
+          <CoverPhoto photo={user.photo} />
           <View className="w-[100%] bg-white mt-[-6] rounded-t-xl items-center z-20">
             <Image
               className="mt-[-65]"
-              source={{ uri: user.user_photo }}
+              source={{ uri: user.photo }}
               style={{
                 resizeMode: "contain",
                 width: 130,
@@ -135,7 +135,7 @@ export default function UserProfile() {
             </View>
             <View className=" flex-row w-[100%] p-1 ml-1">
               <Calendar />
-              <Text className="ml-1.5">{formatDate(user.user_created_at)}</Text>
+              <Text className="ml-1.5">{formatDate(user.created_at)}</Text>
             </View>
 
             <Categories categories={categories} />
@@ -147,7 +147,7 @@ export default function UserProfile() {
             <View style={styles.grid}>
               {posts.map((post, index) => (
                 <Pressable
-                  key={post.post_id}
+                  key={post.id}
                   style={styles.box}
                   onPress={() => {
                     router.push({

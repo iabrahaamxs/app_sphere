@@ -154,7 +154,7 @@ export default function Follower() {
                       <CardUser user={item} />
                     </View>
                   )}
-                  keyExtractor={(item) => item.follow_id}
+                  keyExtractor={(item) => item.id}
                 />
               </View>
 
@@ -167,7 +167,7 @@ export default function Follower() {
                       <CardUser user={item} />
                     </View>
                   )}
-                  keyExtractor={(item) => item.follow_id}
+                  keyExtractor={(item) => item.id}
                 />
               </View>
             </PagerView>

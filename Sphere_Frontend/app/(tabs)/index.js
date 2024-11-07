@@ -83,7 +83,7 @@ export default function Home() {
         refreshControl={
           <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
         }
-        keyExtractor={(item) => item.post_id.toString()}
+        keyExtractor={(item) => item.id.toString()}
       />
     </View>
   );

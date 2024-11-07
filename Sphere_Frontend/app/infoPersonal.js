@@ -52,6 +52,7 @@ export default function EditProfile() {
       const id = await getItem("id");
       const profileData = await UserApi.getProfile(id);
       const countryData = await getCountries();
+
       setUser(profileData);
       setCountries(countryData);
     };
@@ -105,7 +106,7 @@ export default function EditProfile() {
       formatYMD(birthday),
       countryId,
       gender,
-      user.user_id
+      user.id
     );
 
     if (res) {
@@ -203,10 +204,10 @@ export default function EditProfile() {
                         onPress={() => [
                           setCountryModal(false),
                           setCountry(country.country),
-                          setCountryId(country.country_id),
+                          setCountryId(country.id),
                         ]}
                         className="border-[0.5px] h-8 justify-center"
-                        key={country.country_id}
+                        key={country.id}
                       >
                         <Text className="self-center justify-center">
                           {country.country}
