@@ -77,7 +77,7 @@ export default function AccountSettings() {
   useEffect(() => {
     const fetchData = async () => {
       const id = await getItem("id");
-      const [{ bio, user_name, user_photo, user_id }, categoriesData] =
+      const [{ bio, user_name, photo, user_id }, categoriesData] =
         await Promise.all([
           UserApi.getProfile(id),
           CategorieApi.getCategories(id),
@@ -86,7 +86,7 @@ export default function AccountSettings() {
 
       setData({
         user_id,
-        user_photo,
+        photo,
         user_name,
         bio,
         newArray: newArray.sort(),
@@ -94,7 +94,7 @@ export default function AccountSettings() {
 
       setNewData({
         user_id,
-        user_photo,
+        photo,
         user_name,
         bio,
         newArray: newArray.sort(),
@@ -134,7 +134,7 @@ export default function AccountSettings() {
     setIsLoading(true);
     const categoriesOff = removeCommonElements(deselected, newData.newArray);
 
-    let imageUrl = newData.user_photo;
+    let imageUrl = newData.photo;
     if (newImagen) {
       const response = await uploadImage(newImagen);
       imageUrl = response.secure_url;
@@ -151,7 +151,7 @@ export default function AccountSettings() {
 
     setData({
       user_id: newData.user_id,
-      user_photo: imageUrl,
+      photo: imageUrl,
       user_name: newData.user_name,
       bio: newData.bio,
       newArray: newData.newArray.sort(),
@@ -196,9 +196,9 @@ export default function AccountSettings() {
           />
           <Pressable onPress={upImage} className="self-center rounded-full">
             <View className="items-center justify-center self-center">
-              {newData.user_photo ? (
+              {newData.photo ? (
                 <Image
-                  source={{ uri: newData.user_photo }}
+                  source={{ uri: newData.photo }}
                   style={{
                     resizeMode: "cover",
                     width: 130,

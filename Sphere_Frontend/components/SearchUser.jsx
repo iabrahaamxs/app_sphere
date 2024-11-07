@@ -14,13 +14,13 @@ const SearchUser = ({ item }) => {
 
   return (
     <Link
-      href={`${item.user_id == id ? "/myProfile" : "/user/" + item.user_id}`}
+      href={`${item.id == id ? "/myProfile" : "/user/" + item.id}`}
       asChild
     >
       <Pressable>
         <View className="flex-row ml-2 mb-1 ">
           <Image
-            source={{ uri: item.user_photo }}
+            source={{ uri: item.photo }}
             style={{
               resizeMode: "contain",
               width: 55,

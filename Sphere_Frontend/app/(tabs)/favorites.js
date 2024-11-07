@@ -7,9 +7,8 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
-import { Link, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Chevrons } from "../../components/Icons";
 import { useCallback, useEffect, useState } from "react";
 import { PostApi } from "../../api/postsApi";
 import Post from "../../components/Post";
@@ -77,18 +76,3 @@ export default function Favorites() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  pressable: {
-    padding: 20,
-    borderRadius: 10,
-    // Propiedades para sombra en iOS
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    // Propiedades para sombra en Android
-    elevation: 10,
-    marginTop: 30,
-  },
-});

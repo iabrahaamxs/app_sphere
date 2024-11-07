@@ -64,7 +64,7 @@ export default function SignUp2() {
     DateTimePickerAndroid.open({
       value: date,
       onChange,
-      maximumDate: new Date(),
+      maximumDate: new Date(), 
       mode: currentMode,
       is24Hour: false,
     });

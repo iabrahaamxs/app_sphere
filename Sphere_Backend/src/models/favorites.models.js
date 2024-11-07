@@ -14,17 +14,17 @@ const create = async (post_id, url_photo) => {
 const getFavorite = async (id) => {
   const { rows } = await poll.query(
     `
-    SELECT f.favorite_id, f.post, p.post_user, p.description, p.post_created_at, u.name, u.user_photo, f.favorite_created_at
+    SELECT f.id, f.post, p."user", p.description, p.created_at, u.name, u.photo, f.created_at AS favorite_created_at
       FROM 
         favorites f
       JOIN 
-        posts p ON f.post = p.post_id
+        posts p ON f.post = p.id
       JOIN 
-        users u ON p.post_user = u.user_id
+        users u ON p."user" = u.id
       WHERE 
-        f.favorite_user = $1
-        AND f.favorite_deleted_at IS NULL
-      ORDER BY favorite_created_at DESC`,
+        f."user" = $1
+        AND f.deleted_at IS NULL
+      ORDER BY f.created_at DESC`,
     [id]
   );
   return rows;

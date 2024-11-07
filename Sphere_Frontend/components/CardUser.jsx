@@ -2,7 +2,8 @@ import { Link, router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 
 const CardUser = ({ user }) => {
-  const { user_id, name, last_name, user_photo, user_name } = user;
+  const { user_id, name, last_name, photo, user_name } = user;
+
   return (
     <View className="w-[100%] flex-row justify-between	items-center px-2 mb-2">
       <Pressable
@@ -12,7 +13,7 @@ const CardUser = ({ user }) => {
         className="flex-row basis-2/3"
       >
         <Image
-          source={{ uri: user_photo }}
+          source={{ uri: photo }}
           style={{
             resizeMode: "contain",
             width: 50,

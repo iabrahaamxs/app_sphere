@@ -128,12 +128,12 @@ export default function MyProfile() {
             </Pressable>
           </View>
 
-          <CoverPhoto photo={Profile.user_photo} />
+          <CoverPhoto photo={Profile.photo} />
 
           <View className="w-[100%] bg-white mt-[-6] rounded-t-xl items-center z-20">
             <Image
               className="mt-[-65]"
-              source={{ uri: Profile.user_photo }}
+              source={{ uri: Profile.photo }}
               style={{
                 resizeMode: "contain",
                 width: 130,
@@ -150,7 +150,6 @@ export default function MyProfile() {
             <Text className="text-sm p-2">{Profile.bio}</Text>
 
             <View className="flex-row justify-around px-4 py-2 space-x-2">
-              {/* Botón de Configuración más pequeño */}
               <Pressable
                 className="flex-row items-center p-1.5 rounded-lg border-[1.2px] border-[#462E84] bg-white"
                 onPress={() => router.push("/editProfile")}
@@ -161,7 +160,6 @@ export default function MyProfile() {
                 </Text>
               </Pressable>
 
-              {/* Botón de Compartir Perfil más pequeño */}
               <Pressable
                 className="flex-row items-center p-1.5 rounded-lg bg-[#462E84]"
                 onPress={() => {
@@ -181,9 +179,7 @@ export default function MyProfile() {
             </View>
             <View className=" flex-row w-[100%] p-1 ml-1">
               <Calendar />
-              <Text className="ml-1.5">
-                {formatDate(Profile.user_created_at)}
-              </Text>
+              <Text className="ml-1.5">{formatDate(Profile.created_at)}</Text>
             </View>
 
             <Categories categories={categories} />
@@ -223,7 +219,7 @@ export default function MyProfile() {
               <View style={styles.grid} key="0">
                 {posts.map((post, index) => (
                   <Pressable
-                    key={post.post_id}
+                    key={post.id}
                     style={styles.box}
                     onPress={() => {
                       router.push({
@@ -249,11 +245,9 @@ export default function MyProfile() {
               <View style={styles.grid} key="1">
                 {favorites.map((fav, index) => (
                   <Pressable
-                    key={fav.favorite_id}
+                    key={fav.id}
                     style={styles.box}
                     onPress={() => {
-                      console.log(favorites);
-
                       router.push({
                         pathname: "/viewPosts",
                         params: {
