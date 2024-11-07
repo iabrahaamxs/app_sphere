@@ -7,10 +7,10 @@ const getComments = async (post_id) => {
         WHERE post = $1
         AND deleted_at IS NULL`,
     [post_id]
-  );
+  ); 
   return rows;
 };
 
 export const CommentModel = {
   getComments,
-};
+}; 
