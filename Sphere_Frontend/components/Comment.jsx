@@ -5,12 +5,30 @@ import { timeElapsed } from '../utils/FormatDate';
 import { SendIcon, HeartIcon } from './Icons';
 import { useRouter } from "expo-router";
 
+const MAX_CHARACTERS = 1000; // Máximo de caracteres permitidos
+const MAX_NEWLINES = 10; // Máximo de saltos de línea permitidos
+
 const CommentBox = ({ comments, onSendComment, postId }) => {
     const router = useRouter();
     const [newComment, setNewComment] = useState('');
     const insets = useSafeAreaInsets();
     const [liked, setLiked] = useState(false); 
     const [likesCount, setLikesCount] = useState(0);
+
+    const handleTextChange = (text) => {
+        // Limita los caracteres
+        if (text.length > MAX_CHARACTERS) {
+            return;
+        }
+
+        // Cuenta los saltos de línea y restringe si supera el máximo permitido
+        const newlines = (text.match(/\n/g) || []).length;
+        if (newlines > MAX_NEWLINES) {
+            return;
+        }
+
+        setNewComment(text);
+    };
 
     const handleSendComment = () => {
         if (newComment.trim()) {
@@ -20,8 +38,8 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
     };
 
     const handleLike = () => {
-        setLiked(prevLiked => !prevLiked);
-        setLikesCount(prevCount => liked ? prevCount - 1 : prevCount + 1);
+        setLiked((prevLiked) => !prevLiked);
+        setLikesCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
     };
 
     const goToLikesScreen = () => {
@@ -33,12 +51,9 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
 
     const renderComment = ({ item }) => (
         <View style={styles.commentContainer}>
-            <Image
-                source={{ uri: item.userPhoto }}
-                style={styles.userPhoto}
-            />
+            <Image source={{ uri: item.userPhoto }} style={styles.userPhoto} />
             <View style={styles.commentContent}>
-                <View style={styles.commentBox}> 
+                <View style={styles.commentBox}>
                     <View style={styles.commentHeader}>
                         <Text style={styles.commentUsername}>{item.username} ·</Text>
                         <Text style={styles.commentTime}>{timeElapsed(item.createdAt)}</Text>
@@ -50,10 +65,7 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
     );
 
     return (
-        <KeyboardAvoidingView
-            style={[styles.container, { paddingBottom: insets.bottom }]}
-            behavior="padding"
-        >
+        <KeyboardAvoidingView style={[styles.container, { paddingBottom: insets.bottom }]} behavior="padding">
             <View style={styles.likeIconContainer}>
                 <View style={{ flex: 1 }}>
                     {likesCount > 0 && (
@@ -81,7 +93,7 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
                 <TextInput
                     style={styles.input}
                     value={newComment}
-                    onChangeText={setNewComment}
+                    onChangeText={handleTextChange}
                     placeholder="Agrega un comentario"
                     multiline
                 />
