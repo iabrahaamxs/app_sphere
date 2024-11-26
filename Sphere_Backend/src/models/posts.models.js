@@ -111,7 +111,7 @@ const getPostsByDescription = async (txt) => {
         WHERE p.description ~* $1
         AND p.deleted_at IS NULL;
 `,
-    [`\\m${txt}\\M`]
+    [`${txt}`]
   );
   return rows;
 };
