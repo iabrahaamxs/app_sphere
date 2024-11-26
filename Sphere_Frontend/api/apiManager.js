@@ -1,10 +1,12 @@
 import axios from "axios";
 
+console.log(process.env.EXPO_PUBLIC_API_URL_BASE); 
+
 const axiosManager = axios.create({
-  baseURL: "http://192.168.0.100:4000"
+  baseURL: process.env.EXPO_PUBLIC_API_URL_BASE,
   //"https://app-sphere.onrender.com",
   //responseType: 'json',
   //withCredentials: true
 });
 
-export default axiosManager; 
+export default axiosManager;
