@@ -29,7 +29,8 @@ const getUsers = async (txt) => {
     `
     SELECT * FROM users 
       WHERE user_name 
-      ILIKE $1`,
+      ILIKE $1
+      OR name ILIKE $1;`,
     [`%${txt}%`]
   );
 
