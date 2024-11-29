@@ -160,7 +160,7 @@ const updateSettings = async (
 
 const validateNewUser = async (data) => {
   try {
-    const res = await axiosManager.post("/register/validate", data);
+    const res = await axiosManager.post("/public/user/register/validate", data);
 
     return res.data;
   } catch (error) {
