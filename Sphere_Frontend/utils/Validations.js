@@ -64,30 +64,27 @@ export const validatePasswords = (password, confirmPassword) => {
     return "Las contraseñas no coinciden.";
   }
 
-  // Verificar la longitud mínima
+  const errors = [];
+
   if (password.length < minLength) {
-    return `La contraseña debe tener al menos ${minLength} caracteres.`;
+    errors.push(`- Tener al menos ${minLength} caracteres`);
   }
-
-  // Verificar al menos una letra mayúscula
   if (!uppercaseRegex.test(password)) {
-    return "La contraseña debe incluir al menos una letra mayúscula.";
+    errors.push("- Incluir al menos una letra mayúscula");
   }
-
-  // Verificar al menos una letra minúscula
   if (!lowercaseRegex.test(password)) {
-    return "La contraseña debe incluir al menos una letra minúscula.";
+    errors.push("- Incluir al menos una letra minúscula");
   }
-
-  // Verificar al menos un número
   if (!numberRegex.test(password)) {
-    return "La contraseña debe incluir al menos un número.";
+    errors.push("- Incluir al menos un número");
   }
-
-  // Verificar al menos un carácter especial
   if (!specialCharRegex.test(password)) {
-    return "La contraseña debe incluir al menos un carácter especial.";
+    errors.push("- Incluir al menos un carácter especial");
   }
 
-  return null;
+  return errors.length > 0
+    ? `La contraseña debe cumplir los siguientes requisitos:\n${errors.join(
+        "\n"
+      )}`
+    : null;
 };

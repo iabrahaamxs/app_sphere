@@ -45,7 +45,7 @@ export default function RestorePassword() {
     try {
       const res = await UserApi.restorePassword(token, password);
 
-      if (!res.ok) {
+      if (res.error[0]) {
         setErrorMessage("Ha ocurrido un error, vuelve a intentarlo más tarde");
         setLoading(false);
         return;

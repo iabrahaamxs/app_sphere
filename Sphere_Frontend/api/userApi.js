@@ -2,7 +2,7 @@ import axiosManager from "./apiManager";
 
 const login = async (data) => {
   try {
-    const res = await axiosManager.post("/login", data);
+    const res = await axiosManager.post("/public/user/login", data);
 
     return res.data;
   } catch (error) {
@@ -13,7 +13,7 @@ const login = async (data) => {
 
 const register = async (data) => {
   try {
-    const res = await axiosManager.post("/register", data);
+    const res = await axiosManager.post("/public/user/register", data);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -21,10 +21,26 @@ const register = async (data) => {
   }
 };
 
-const getProfile = async (user) => {
+const whoami = async (jwt) => {
   try {
-    const res = await axiosManager.get(`/profile/${user}`);
-    return res.data;
+    const { data } = await axiosManager.get("/private/user/whoami", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+
+    return data.info;
+  } catch (error) {
+    console.log(error);
+    return { msg: "error whoami" };
+  }
+};
+
+const getProfile = async (id) => {
+  try {
+    const { data } = await axiosManager.get(`/public/user/profile/${id}`);
+
+    return data.info;
   } catch (error) {
     console.log(error);
     return { msg: "error getProfile" };
@@ -53,9 +69,12 @@ const getFollowed = async (id) => {
   }
 };
 
-const searchUsers = async (txt) => {
+const searchUsers = async (txt, jwt) => {
   try {
-    const res = await axiosManager.get("/search/users", {
+    const res = await axiosManager.get("private/user/search/users", {
+      headers: {
+        Authorization: jwt,
+      },
       params: {
         txt: txt,
       },
@@ -77,19 +96,26 @@ const updateInformation = async (
   birthdate,
   country,
   gender,
-  user_id
+  jwt
 ) => {
   try {
-    const res = await axiosManager.put("/information", {
-      name,
-      last_name,
-      email,
-      phone,
-      birthdate,
-      country,
-      gender,
-      user_id,
-    });
+    const res = await axiosManager.put(
+      "/private/user/information",
+      {
+        name,
+        last_name,
+        email,
+        phone,
+        birthdate,
+        country,
+        gender,
+      },
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
 
     return res.data;
   } catch (error) {
@@ -105,17 +131,24 @@ const updateSettings = async (
   bio,
   categoriesOn,
   categoriesOff,
-  user_id
+  jwt
 ) => {
   try {
-    const res = await axiosManager.put("/setting", {
-      user_photo,
-      user_name,
-      bio,
-      categoriesOn,
-      categoriesOff,
-      user_id,
-    });
+    const res = await axiosManager.put(
+      "/private/user/setting",
+      {
+        user_photo,
+        user_name,
+        bio,
+        categoriesOn,
+        categoriesOff,
+      },
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
 
     return res.data;
   } catch (error) {
@@ -135,15 +168,22 @@ const validateNewUser = async (data) => {
   }
 };
 
-const updatePassword = async (new_password, user_id, password) => {
+const updatePassword = async (new_password, password, jwt) => {
   try {
-    const res = await axiosManager.put("/password", {
-      new_password,
-      user_id,
-      password,
-    });
+    const { data } = await axiosManager.put(
+      "/private/user/password",
+      {
+        new_password,
+        password,
+      },
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
 
-    return res.data.ok;
+    return data;
   } catch (error) {
     console.log("error updatePassword");
     return;
@@ -152,7 +192,7 @@ const updatePassword = async (new_password, user_id, password) => {
 
 const forgotPassword = async (email) => {
   try {
-    const res = await axiosManager.post("/forgot-password", {
+    const res = await axiosManager.post("/public/user/forgot-password", {
       email,
     });
 
@@ -165,8 +205,8 @@ const forgotPassword = async (email) => {
 
 const restorePassword = async (jwt, password) => {
   try {
-    const res = await axiosManager.put(
-      "/restore-password",
+    const { data } = await axiosManager.put(
+      "/private/user/restore-password",
       {
         password,
       },
@@ -177,7 +217,7 @@ const restorePassword = async (jwt, password) => {
       }
     );
 
-    return res.data;
+    return data;
   } catch (error) {
     console.log("error restorePassword");
     return { ok: false };
@@ -187,6 +227,7 @@ const restorePassword = async (jwt, password) => {
 export const UserApi = {
   login,
   register,
+  whoami,
   getProfile,
   getFollows,
   getFollowed,

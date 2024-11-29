@@ -49,8 +49,8 @@ export default function EditProfile() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const id = await getItem("id");
-      const profileData = await UserApi.getProfile(id);
+      const jwt = await getItem("jwt");
+      const profileData = await UserApi.whoami(jwt);
       const countryData = await getCountries();
 
       setUser(profileData);
@@ -98,6 +98,7 @@ export default function EditProfile() {
   };
 
   const update = async () => {
+    const jwt = await getItem("jwt");
     const res = await UserApi.updateInformation(
       name,
       lastName,
@@ -106,7 +107,7 @@ export default function EditProfile() {
       formatYMD(birthday),
       countryId,
       gender,
-      user.id
+      jwt
     );
 
     if (res) {

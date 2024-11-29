@@ -90,7 +90,7 @@ export default function MyProfile() {
     const jwt = await getItem("jwt");
     const id = await getItem("id");
     //const user_name = await getItem("user_name");
-    const profileData = await UserApi.getProfile(id);
+    const profileData = await UserApi.whoami(jwt);
     const categoriesData = await CategorieApi.getCategories(id);
     const followsData = await UserApi.getFollows(id);
     const followedData = await UserApi.getFollowed(id);

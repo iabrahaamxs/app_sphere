@@ -15,6 +15,7 @@ import { LupaIcon } from "../../components/Icons";
 import { UserApi } from "../../api/userApi";
 import { PostApi } from "../../api/postsApi";
 import PagerView from "react-native-pager-view";
+import { getItem } from "../../utils/AsyncStorage";
 
 export default function Search() {
   const [text, setText] = useState("");
@@ -62,7 +63,8 @@ export default function Search() {
     // Establecer un nuevo temporizador para esperar 500ms antes de realizar la búsqueda
     debounceTimer.current = setTimeout(async () => {
       if (type === "account" && txt) {
-        const users = await UserApi.searchUsers(txt);
+        const jwt = await getItem("jwt");
+        const users = await UserApi.searchUsers(txt, jwt);
         setFilteredUsers(users);
       } else if (type === "tag" && txt) {
         const tags = await PostApi.getHashtags(txt);
