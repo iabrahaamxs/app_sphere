@@ -131,7 +131,7 @@ const findEditInfo = async (email, phone, user_id) => {
   return rows[0];
 };
 
-const editInfoPersonal = async (data) => {
+const editInfoPersonal = async (data, id) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
@@ -146,7 +146,7 @@ const editInfoPersonal = async (data) => {
       data.birthdate,
       data.country,
       data.gender,
-      data.user_id,
+      id,
     ]
   );
 
@@ -165,14 +165,14 @@ const findEditSetting = async (user_name, user_id) => {
   return rows[0];
 };
 
-const editSettingPersonal = async (data) => {
+const editSettingPersonal = async (data, id) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
       SET photo = $1, user_name = $2, bio = $3, updated_at = CURRENT_TIMESTAMP
       WHERE id = $4 
       RETURNING *`,
-    [data.user_photo, data.user_name, data.bio, data.user_id]
+    [data.user_photo, data.user_name, data.bio, id]
   );
 
   return rows[0];

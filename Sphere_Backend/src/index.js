@@ -1,6 +1,8 @@
 import express from "express";
 import { PORT } from "./config.js";
-import userRoutes from "./routes/users.routes.js";
+import { verifyToken } from "./middlewares/jwt.middlewares.js";
+import userRoutes from "./routes/private/users.routes.js";
+import userRoutesPublic from "./routes/public/users.routes.js";
 import followsRoutes from "./routes/follows.routes.js";
 import postsRoutes from "./routes/posts.routes.js";
 import categoriesRoutes from "./routes/categories.routes.js";
@@ -13,7 +15,11 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(userRoutes);
+
+app.use("/private", verifyToken);
+
+app.use("/private/user", userRoutes);
+app.use("/public/user", userRoutesPublic);
 app.use(photosRoutes);
 app.use(
   followsRoutes,

@@ -77,9 +77,10 @@ export default function AccountSettings() {
   useEffect(() => {
     const fetchData = async () => {
       const id = await getItem("id");
+      const jwt = await getItem("jwt");
       const [{ bio, user_name, photo, user_id }, categoriesData] =
         await Promise.all([
-          UserApi.getProfile(id),
+          UserApi.whoami(jwt),
           CategorieApi.getCategories(id),
         ]);
       const newArray = categoriesData.map((item) => item.value.toString());
@@ -133,6 +134,7 @@ export default function AccountSettings() {
   const update = async () => {
     setIsLoading(true);
     const categoriesOff = removeCommonElements(deselected, newData.newArray);
+    const jwt = await getItem("jwt");
 
     let imageUrl = newData.photo;
     if (newImagen) {
@@ -146,7 +148,7 @@ export default function AccountSettings() {
       newData.bio,
       newData.newArray,
       categoriesOff,
-      newData.user_id
+      jwt
     );
 
     setData({

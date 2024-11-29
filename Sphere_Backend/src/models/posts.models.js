@@ -41,11 +41,18 @@ const getFollowersPosts = async (user_id) => {
                 p.description, 
                 p.created_at, 
                 p.updated_at
-    FROM posts p
-    JOIN followers f ON p."user" = f.followed_user
-    JOIN users u ON p."user" = u.id
-    WHERE f.follower_user = $1
-    ORDER BY p.created_at DESC`,
+FROM posts p
+JOIN users u ON p."user" = u.id
+LEFT JOIN followers f ON p."user" = f.followed_user AND f.follower_user = $1
+LEFT JOIN (
+    SELECT post, COUNT(*) AS like_count
+    FROM likes
+    GROUP BY post
+    HAVING COUNT(*) > 3
+) l ON p.id = l.post
+WHERE f.follower_user = $1 OR l.like_count > 3
+ORDER BY p.created_at DESC;
+`,
     [user_id]
   );
   return rows;

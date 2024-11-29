@@ -24,8 +24,6 @@ const createUser = async (req, res) => {
 
     const newUser = await UserModel.create(data);
 
-    
-
     const jwtConstructor = new SignJWT({
       user_name: newUser.user_name,
       user_id: newUser.id,
@@ -48,7 +46,11 @@ const createUser = async (req, res) => {
     if (error?.code === "23505") {
       return res.status(409).json({ message: "Email already exists" });
     }
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
+    });
   }
 };
 
@@ -88,7 +90,11 @@ const validateUser = async (req, res) => {
       message: "new user continue",
     });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
+    });
   }
 };
 
@@ -100,7 +106,11 @@ const getUsers = async (req, res) => {
 
     return res.json(users);
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      message: "Internal server error",
+      error: [{ message: "Internal server error" }],
+      info: null,
+    });
   }
 };
 
@@ -137,7 +147,27 @@ const loginUser = async (req, res) => {
       user_id: user.id,
     });
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
+    });
+  }
+};
+
+const whoami = async (req, res) => {
+  const userid = req.user_id;
+
+  try {
+    const user = await UserModel.findByUserId(userid);
+
+    return res.json({ message: "", error: [], info: user });
+  } catch (error) {
+    return res.status(500).json({
+      message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
+    });
   }
 };
 
@@ -147,38 +177,43 @@ const profileUser = async (req, res) => {
   try {
     const user = await UserModel.findByUserId(userid);
 
-    return res.json(user);
+    return res.json({ message: "", error: [], info: user });
   } catch (error) {
     return res.status(500).json({
-      ok: false,
       message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
     });
   }
 };
 
 const updateInfoUser = async (req, res) => {
-  try {
-    const data = req.body;
+  const data = req.body;
+  const user_id = req.user_id;
 
-    const user = await UserModel.findEditInfo(
-      data.email,
-      data.phone,
-      data.user_id
-    );
+  try {
+    const user = await UserModel.findEditInfo(data.email, data.phone, user_id);
 
     if (user) {
-      return res
-        .status(400)
-        .json({ message: "User (email or phone) already exists", ok: false });
+      return res.status(400).json({
+        message: "User (email or phone) already exists",
+        error: [{ message: "User (email or phone) already exists" }],
+        info: null,
+      });
     }
 
-    const userInfoUpdated = await UserModel.editInfoPersonal(data);
+    const userInfoUpdated = await UserModel.editInfoPersonal(data, user_id);
 
-    return res.json(userInfoUpdated);
+    return res.json({
+      message: "Personal information successfully updated",
+      error: [],
+      info: userInfoUpdated,
+    });
   } catch (error) {
     return res.status(500).json({
-      ok: false,
       message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
     });
   }
 };
@@ -186,37 +221,50 @@ const updateInfoUser = async (req, res) => {
 const updateSettingUser = async (req, res) => {
   try {
     const data = req.body;
+    const user_id = req.user_id;
 
-    const user = await UserModel.findEditSetting(data.user_name, data.user_id);
+    const user = await UserModel.findEditSetting(data.user_name, user_id);
 
     if (user) {
-      return res.status(400).json({ message: "Username already exists" });
+      return res.status(400).json({
+        message: "Username already exists",
+        error: [{ message: "Username already exists" }],
+        info: null,
+      });
     }
 
-    const usersettingUpdated = await UserModel.editSettingPersonal(data);
+    const usersettingUpdated = await UserModel.editSettingPersonal(
+      data,
+      user_id
+    );
 
     // insertar categorias si no existen
     for (let i = 0; i < data.categoriesOn.length; i++) {
       const categorie = await CategorieModel.findCategorie(
-        data.user_id,
+        user_id,
         data.categoriesOn[i]
       );
 
       if (!categorie) {
-        await CategorieModel.create(data.user_id, data.categoriesOn[i]);
+        await CategorieModel.create(user_id, data.categoriesOn[i]);
       }
     }
 
     // eliminar categorias si existen
     for (let i = 0; i < data.categoriesOff.length; i++) {
-      CategorieModel.update(data.user_id, data.categoriesOff[i]);
+      CategorieModel.update(user_id, data.categoriesOff[i]);
     }
 
-    return res.json(usersettingUpdated);
+    return res.json({
+      message: "Settings updated successfully",
+      error: [],
+      info: usersettingUpdated,
+    });
   } catch (error) {
     return res.status(500).json({
-      ok: false,
       message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
     });
   }
 };
@@ -224,22 +272,32 @@ const updateSettingUser = async (req, res) => {
 const updatePasswordUser = async (req, res) => {
   try {
     const data = req.body;
+    const user_id = req.user_id;
 
     const user = await UserModel.editPassword(
       data.new_password,
-      data.user_id,
+      user_id,
       data.password
     );
 
     if (!user) {
-      return res.json({ ok: false, message: "Contraseña incorrecta" });
+      return res.json({
+        message: "Incorrect password",
+        error: [{ message: "Incorrect password" }],
+        info: null,
+      });
     }
 
-    return res.json({ ok: true, message: "Contraseña actualizada con éxito" });
+    return res.json({
+      message: "Password successfully updated",
+      error: [],
+      info: null,
+    });
   } catch (error) {
     return res.status(500).json({
-      ok: false,
       message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
     });
   }
 };
@@ -251,11 +309,16 @@ const restorePassword = async (req, res) => {
 
     await UserModel.retorePassword(password, id);
 
-    return res.json({ ok: true, message: "Contraseña actualizada con éxito" });
+    return res.json({
+      message: "Password successfully updated",
+      error: [],
+      info: null,
+    });
   } catch (error) {
     return res.status(500).json({
-      ok: false,
       message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
     });
   }
 };
@@ -291,8 +354,9 @@ const forgotPassword = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      ok: false,
       message: "ERROR SERVER",
+      error: [{ message: "ERROR SERVER" }],
+      info: null,
     });
   }
 };
@@ -302,6 +366,7 @@ export const UserController = {
   validateUser,
   getUsers,
   loginUser,
+  whoami,
   profileUser,
   updateInfoUser,
   updateSettingUser,

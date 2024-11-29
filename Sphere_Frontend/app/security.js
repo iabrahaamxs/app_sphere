@@ -37,17 +37,17 @@ export default function Security() {
     }
 
     try {
-      const id = await getItem("id");
-      const res = await UserApi.updatePassword(newPassword, id, password);
+      const jwt = await getItem("jwt");
+      const res = await UserApi.updatePassword(newPassword, password, jwt);
 
-      if (!res) {
-        setErrorMessage("Contraseña incorrecta");
+      if (res.error[0]) {
+        setErrorMessage(res.error[0].message);
         setLoading(false);
         return;
       }
 
       setErrorMessage("");
-      setSuccessMessage("Contraseña actualizada con éxito");
+      setSuccessMessage(res.message);
     } catch (error) {
       // Captura de cualquier error en la petición
       setErrorMessage("Ocurrió un error. Inténtalo de nuevo más tarde.");
