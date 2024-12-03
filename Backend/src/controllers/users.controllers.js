@@ -33,7 +33,7 @@ const createUser = async (req, res) => {
     const token = await jwtConstructor
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setIssuedAt()
-      .setExpirationTime("5h")
+      .setExpirationTime("30d")
       .sign(encoder.encode(JWT_PRIVATE_KEY));
 
     return res.status(201).json({
@@ -137,7 +137,7 @@ const loginUser = async (req, res) => {
     const token = await jwtConstructor
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setIssuedAt()
-      .setExpirationTime("5h")
+      .setExpirationTime("30d")
       .sign(encoder.encode(JWT_PRIVATE_KEY));
 
     return res.json({
