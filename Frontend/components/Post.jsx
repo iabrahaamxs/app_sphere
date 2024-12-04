@@ -81,6 +81,7 @@ const Post = ({ item }) => {
               onCancel={() => setIsPostOptionsMenu(false)}
               isOwner={isOwner}
               isEditableDeletable={isEditableDeletable} // Nueva propiedad
+              user={item.user}
             />
           )}
         </Pressable>

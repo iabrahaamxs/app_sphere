@@ -75,8 +75,8 @@ export default function MyProfile() {
 
   const [Profile, setProfile] = useState({});
   const [categories, setCategories] = useState([]);
-  const [follows, setFollows] = useState([]);
-  const [followed, setFollowed] = useState([]);
+  const [follows, setFollows] = useState(null);
+  const [followed, setFollowed] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -88,14 +88,12 @@ export default function MyProfile() {
 
   const fetchData = async () => {
     const jwt = await getItem("jwt");
-    const id = await getItem("id");
-    //const user_name = await getItem("user_name");
     const profileData = await UserApi.whoami(jwt);
-    const categoriesData = await CategorieApi.getCategories(id);
-    const followsData = await UserApi.getFollows(id);
-    const followedData = await UserApi.getFollowed(id);
-    const postsData = await PostApi.getPosts(id);
+    const categoriesData = await CategorieApi.getMyCategories(jwt);
+    const postsData = await PostApi.getMyPosts(jwt);
     const favoritesData = await PostApi.getFavorites(jwt);
+    const followsData = await UserApi.countMyFollows(jwt);
+    const followedData = await UserApi.countMyFollowed(jwt);
 
     setProfile(profileData);
     setCategories(categoriesData);

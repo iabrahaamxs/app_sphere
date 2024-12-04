@@ -29,6 +29,8 @@ import { PostApi } from "../../api/postsApi";
 import CardFollows from "../../components/CardFollows";
 import Categories from "../../components/Categories";
 import CoverPhoto from "../../components/CoverPhoto";
+import { FollowApi } from "../../api/followApi";
+import { getItem } from "../../utils/AsyncStorage";
 
 export default function UserProfile() {
   const { userProfile } = useLocalSearchParams();
@@ -37,28 +39,70 @@ export default function UserProfile() {
   const [categories, setCategories] = useState([]);
   const [follows, setFollows] = useState([]);
   const [followed, setFollowed] = useState([]);
-  const [follow, setFollow] = useState(false);
+  const [follow, setFollow] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [loadingFollow, setLoadingFollow] = useState(false);
 
   useEffect(() => {
     if (userProfile) {
       const fetchData = async () => {
-        const userData = await UserApi.getProfile(userProfile);
-        const categoriesData = await CategorieApi.getCategories(userProfile);
-        const followsData = await UserApi.getFollows(userProfile);
-        const followedData = await UserApi.getFollowed(userProfile);
-        const postsData = await PostApi.getPosts(userProfile);
+        const jwt = await getItem("jwt");
+
+        const [
+          userData,
+          categoriesData,
+          followsData,
+          followedData,
+          postsData,
+          isFollowData,
+        ] = await Promise.all([
+          UserApi.getProfile(userProfile),
+          CategorieApi.getCategories(userProfile),
+          UserApi.countFollows(userProfile),
+          UserApi.countFollowed(userProfile),
+          PostApi.getPosts(userProfile),
+          FollowApi.isfollow(jwt, userProfile),
+        ]);
 
         setUser(userData);
         setCategories(categoriesData);
         setFollows(followsData);
         setFollowed(followedData);
         setPosts(postsData);
+        setFollow(isFollowData);
       };
 
       fetchData();
     }
   }, [userProfile]);
+
+  const pressFollow = async () => {
+    if (loadingFollow) return;
+    setLoadingFollow(true);
+    try {
+      const jwt = await getItem("jwt");
+      const newFollow = await FollowApi.createFollow(jwt, userProfile);
+      setFollow(newFollow);
+    } catch (error) {
+      console.error("Error al seguir:", error.message);
+    } finally {
+      setLoadingFollow(false);
+    }
+  };
+
+  const pressUnfollow = async () => {
+    if (loadingFollow) return;
+    setLoadingFollow(true);
+    try {
+      const jwt = await getItem("jwt");
+      await FollowApi.deleteFollow(jwt, userProfile);
+      setFollow(null);
+    } catch (error) {
+      console.error("Error al dejar de seguir:", error.message);
+    } finally {
+      setLoadingFollow(false);
+    }
+  };
 
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
@@ -106,25 +150,26 @@ export default function UserProfile() {
             <Pressable
               className=" flex-row p-1.5 rounded-lg "
               onPress={() => {
-                follow ? setFollow(false) : setFollow(true);
+                follow ? pressUnfollow() : pressFollow();
               }}
+              disabled={loadingFollow}
               style={{
                 backgroundColor: follow ? "#BBBBBB" : "#462E84",
               }}
             >
-              {follow ? (
+              {loadingFollow ? (
+                <ActivityIndicator color="white" className="px-9 py-1" />
+              ) : follow ? (
                 <>
                   <UserUnfollow className="ml-2" color="white" />
-                  <Text className="text-white ml-3 mr-2 text-base ">
+                  <Text className="text-white ml-3 mr-2 text-base">
                     Dejar de seguir
                   </Text>
                 </>
               ) : (
                 <>
                   <UserFollow className="ml-2" color="white" />
-                  <Text className="text-white ml-3 mr-2 text-base ">
-                    Seguir
-                  </Text>
+                  <Text className="text-white ml-3 mr-2 text-base">Seguir</Text>
                 </>
               )}
             </Pressable>

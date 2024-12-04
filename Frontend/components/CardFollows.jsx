@@ -6,14 +6,14 @@ const CardFollows = ({ followed, follows, asChild }) => {
     <View style={styles.containerCards}>
       <Link href={`/userFollower/0`} asChild={asChild}>
         <Pressable style={styles.card}>
-          <Text style={styles.number}>{followed.length}</Text>
+          <Text style={styles.number}>{followed}</Text>
           <Text style={styles.label}>Seguidos</Text>
         </Pressable>
       </Link>
 
       <Link href={`/userFollower/1`} asChild={asChild}>
         <Pressable style={styles.card}>
-          <Text style={styles.number}>{follows.length}</Text>
+          <Text style={styles.number}>{follows}</Text>
           <Text style={styles.label}>Seguidores</Text>
         </Pressable>
       </Link>

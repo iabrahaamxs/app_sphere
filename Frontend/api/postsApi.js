@@ -1,12 +1,19 @@
 import axiosManager from "./apiManager";
 
-const create = async (post_user, description, photo) => {
+const create = async (jwt, description, photo) => {
   try {
-    const res = await axiosManager.post("/posts", {
-      post_user,
-      description,
-      photo,
-    });
+    const res = await axiosManager.post(
+      "/private/post/posts",
+      {
+        description,
+        photo,
+      },
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
   } catch (error) {
     console.log("error createPost");
   }
@@ -14,7 +21,7 @@ const create = async (post_user, description, photo) => {
 
 const getPosts = async (id) => {
   try {
-    const res = await axiosManager.get(`/posts/${id}`);
+    const res = await axiosManager.get(`/public/post/posts/${id}`);
     return res.data;
   } catch (error) {
     console.log('{ msg: "error getPosts" }');
@@ -23,9 +30,25 @@ const getPosts = async (id) => {
   }
 };
 
+const getMyPosts = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/private/post/my-posts", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log('{ msg: "error getMyPosts" }');
+
+    return [];
+  }
+};
+
 const getFavorites = async (jwt) => {
   try {
-    const res = await axiosManager.get("/favorites", {
+    const res = await axiosManager.get("/private/favorite/favorites", {
       headers: {
         Authorization: jwt,
       },
@@ -40,7 +63,7 @@ const getFavorites = async (jwt) => {
 
 const getFollowersPosts = async (jwt) => {
   try {
-    const res = await axiosManager.get("/followersposts", {
+    const res = await axiosManager.get("/private/post/followersposts", {
       headers: {
         Authorization: jwt,
       },
@@ -53,9 +76,13 @@ const getFollowersPosts = async (jwt) => {
   }
 };
 
-const getHashtags = async (tag) => {
+const getHashtags = async (jwt, tag) => {
   try {
-    const res = await axiosManager.get(`/search/hashtag/${tag}`);
+    const res = await axiosManager.get(`/private/post/search/hashtag/${tag}`, {
+      headers: {
+        Authorization: jwt,
+      },
+    });
     return res.data;
   } catch (error) {
     console.log('{ msg: "error getHashtags" }');
@@ -64,9 +91,16 @@ const getHashtags = async (tag) => {
   }
 };
 
-const getPostsByTag = async (tag) => {
+const getPostsByTag = async (jwt, tag) => {
   try {
-    const res = await axiosManager.get(`/search/hashtag/posts/${tag}`);
+    const res = await axiosManager.get(
+      `/private/post/search/hashtag/posts/${tag}`,
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
     return res.data;
   } catch (error) {
     console.log('{ msg: "error getPostsByTag" }');
@@ -75,9 +109,13 @@ const getPostsByTag = async (tag) => {
   }
 };
 
-const getPostsByDescription = async (txt) => {
+const getPostsByDescription = async (jwt, txt) => {
   try {
-    const res = await axiosManager.get(`/search/posts/${txt}`);
+    const res = await axiosManager.get(`/private/post/search/posts/${txt}`, {
+      headers: {
+        Authorization: jwt,
+      },
+    });
     return res.data;
   } catch (error) {
     console.log('{ msg: "error getPostsByDescription" }');
@@ -89,6 +127,7 @@ const getPostsByDescription = async (txt) => {
 export const PostApi = {
   create,
   getPosts,
+  getMyPosts,
   getFavorites,
   getFollowersPosts,
   getHashtags,

@@ -4,14 +4,16 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import Post from "../components/Post";
 import { PostApi } from "../api/postsApi";
+import { getItem } from "../utils/AsyncStorage";
 
 export default function PostsTag() {
   const { tag } = useLocalSearchParams();
   const [filteredPosts, setFilteredPosts] = useState([]);
 
   const fetchData = async () => {
-    if (tag) {
-      const postsData = await PostApi.getPostsByTag(tag);
+    const jwt = await getItem("jwt");
+    if (tag && jwt) {
+      const postsData = await PostApi.getPostsByTag(jwt, tag);
       setFilteredPosts(postsData);
     }
   };

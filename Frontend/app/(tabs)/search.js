@@ -62,15 +62,16 @@ export default function Search() {
 
     // Establecer un nuevo temporizador para esperar 500ms antes de realizar la búsqueda
     debounceTimer.current = setTimeout(async () => {
+      const jwt = await getItem("jwt");
+
       if (type === "account" && txt) {
-        const jwt = await getItem("jwt");
         const users = await UserApi.searchUsers(txt, jwt);
         setFilteredUsers(users);
       } else if (type === "tag" && txt) {
-        const tags = await PostApi.getHashtags(txt);
+        const tags = await PostApi.getHashtags(jwt, txt);
         setFilteredTags(tags);
       } else if (type === "post" && txt) {
-        const posts = await PostApi.getPostsByDescription(txt);
+        const posts = await PostApi.getPostsByDescription(jwt, txt);
         setFilteredPosts(posts);
       } else {
         setFilteredUsers([]);

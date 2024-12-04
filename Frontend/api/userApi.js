@@ -47,9 +47,13 @@ const getProfile = async (id) => {
   }
 };
 
-const getFollows = async (id) => {
+const getFollows = async (jwt) => {
   try {
-    const res = await axiosManager.get(`/follows/${id}`);
+    const res = await axiosManager.get("/private/follow/follows", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
     return res.data;
   } catch (error) {
     console.log('{ msg: "error getFollows" }');
@@ -58,12 +62,68 @@ const getFollows = async (id) => {
   }
 };
 
-const getFollowed = async (id) => {
+const getFollowed = async (jwt) => {
   try {
-    const res = await axiosManager.get(`/followed/${id}`);
+    const res = await axiosManager.get("/private/follow/followed", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
     return res.data;
   } catch (error) {
     console.log('{ msg: "error getFollowed" }');
+
+    return [];
+  }
+};
+
+const countMyFollows = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/private/follow/followers/count", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+    return res.data.followers_count;
+  } catch (error) {
+    console.log('{ msg: "error countMyFollows" }');
+
+    return [];
+  }
+};
+
+const countMyFollowed = async (jwt) => {
+  try {
+    const res = await axiosManager.get("/private/follow/followed/count", {
+      headers: {
+        Authorization: jwt,
+      },
+    });
+    return res.data.followed_count;
+  } catch (error) {
+    console.log('{ msg: "error countMyFollowed" }');
+
+    return [];
+  }
+};
+
+const countFollowed = async (id) => {
+  try {
+    const res = await axiosManager.get(`/public/follow/followed/count/${id}`);
+    return res.data.followed_count;
+  } catch (error) {
+    console.log('{ msg: "error countFollowed" }');
+
+    return [];
+  }
+};
+
+const countFollows = async (id) => {
+  try {
+    const res = await axiosManager.get(`/public/follow/followers/count/${id}`);
+    return res.data.followers_count;
+  } catch (error) {
+    console.log('{ msg: "error countFollows" }');
 
     return [];
   }
@@ -231,6 +291,10 @@ export const UserApi = {
   getProfile,
   getFollows,
   getFollowed,
+  countMyFollowed,
+  countMyFollows,
+  countFollowed,
+  countFollows,
   searchUsers,
   updateInformation,
   updateSettings,

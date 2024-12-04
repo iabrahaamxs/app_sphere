@@ -44,11 +44,11 @@ export default function CreatePost() {
     try {
       setSending(true);
       Keyboard.dismiss();
-      const id = await getItem("id");
+      const jwt = await getItem("jwt");
 
       const response = await uploadImage(photo);
 
-      await PostApi.create(id, description, response.secure_url);
+      await PostApi.create(jwt, description, response.secure_url);
 
       router.replace("/");
     } catch (error) {
