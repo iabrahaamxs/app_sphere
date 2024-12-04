@@ -20,12 +20,12 @@ export const getfollowers = async (req, res) => {
 
 // crear seguidor
 export const createFollower = async (req, res) => {
+  const { follower, followed } = req.body;
+
   try {
-    const data = req.body;
+    const newFollower = await FollowModel.follow(follower, followed);
 
-    const follower = await FollowModel.follow(data);
-
-    return res.json(follower);
+    return res.json(newFollower);
   } catch (error) {
     return res.status(500).json({ menssage: "Internal server error" });
   }
@@ -33,10 +33,10 @@ export const createFollower = async (req, res) => {
 
 // dejar de seguir a usuario
 export const deleteFollower = async (req, res) => {
-  const data = req.body;
+  const { follower, followed } = req.body;
 
   try {
-    const unfollower = await FollowModel.unfollowfollow(data);
+    const unfollower = await FollowModel.unfollow(follower, followed);
 
     return res.json(unfollower);
   } catch (error) {

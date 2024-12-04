@@ -41,15 +41,15 @@ const getfollowers = async (id) => {
   return rows;
 };
 
-const follow = async (data) => {
+const follow = async (follower, followed) => {
   const { rows } = await poll.query(
     "INSERT INTO followers (follower_user, followed_user) VALUES ($1, $2) RETURNING *",
-    [data.follower_user, data.followed_user]
+    [follower, followed]
   );
   return rows;
 };
 
-const unfollow = async (data) => {
+const unfollow = async (follower, followed) => {
   const { rows } = await poll.query(
     `UPDATE followers 
         SET deleted_at = CURRENT_TIMESTAMP 
@@ -57,7 +57,7 @@ const unfollow = async (data) => {
         AND followed_user = $2 
         AND deleted_at IS NULL 
         RETURNING *`,
-    [data.follower_user, data.followed_user]
+    [follower, followed]
   );
   return rows;
 };
