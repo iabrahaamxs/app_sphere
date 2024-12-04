@@ -43,7 +43,7 @@ const getFollowersPosts = async (user_id) => {
                 p.updated_at
 FROM posts p
 JOIN users u ON p."user" = u.id
-LEFT JOIN followers f ON p."user" = f.followed_user AND f.follower_user = $1
+LEFT JOIN followers f ON p."user" = f.followed_user AND f.follower_user = $1 AND f.deleted_at IS NULL
 LEFT JOIN (
     SELECT post, COUNT(*) AS like_count
     FROM likes

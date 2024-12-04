@@ -10,7 +10,7 @@ const getFollowed = async (req, res) => {
 };
 
 // personas que siguen a un usuario
-export const getfollowers = async (req, res) => {
+const getfollowers = async (req, res) => {
   const id = req.user_id;
 
   const followers = await FollowModel.getfollowers(id);
@@ -19,11 +19,12 @@ export const getfollowers = async (req, res) => {
 };
 
 // crear seguidor
-export const createFollower = async (req, res) => {
-  const { follower, followed } = req.body;
+const createFollower = async (req, res) => {
+  const id = req.user_id;
+  const { followed } = req.body;
 
   try {
-    const newFollower = await FollowModel.follow(follower, followed);
+    const newFollower = await FollowModel.follow(id, followed);
 
     return res.json(newFollower);
   } catch (error) {
@@ -32,11 +33,12 @@ export const createFollower = async (req, res) => {
 };
 
 // dejar de seguir a usuario
-export const deleteFollower = async (req, res) => {
-  const { follower, followed } = req.body;
+const deleteFollower = async (req, res) => {
+  const id = req.user_id;
+  const { followed } = req.body;
 
   try {
-    const unfollower = await FollowModel.unfollow(follower, followed);
+    const unfollower = await FollowModel.unfollow(id, followed);
 
     return res.json(unfollower);
   } catch (error) {
@@ -44,8 +46,21 @@ export const deleteFollower = async (req, res) => {
   }
 };
 
+const isFollowed = async (req, res) => {
+  const id = req.user_id;
+  const { followed } = req.query;
+
+  try {
+    const follow = await FollowModel.isFollowed(id, followed);
+
+    return res.json(follow);
+  } catch (error) {
+    return res.status(500).json({ menssage: "Internal server error" });
+  }
+};
+
 // contar mis seguidores
-export const countMyFollowers = async (req, res) => {
+const countMyFollowers = async (req, res) => {
   const id = req.user_id;
 
   try {
@@ -58,7 +73,7 @@ export const countMyFollowers = async (req, res) => {
 };
 
 // contar mis seguidos
-export const countMyFollowed = async (req, res) => {
+const countMyFollowed = async (req, res) => {
   const id = req.user_id;
 
   try {
@@ -71,7 +86,7 @@ export const countMyFollowed = async (req, res) => {
 };
 
 // contar seguidores de usuarios
-export const countFollowers = async (req, res) => {
+const countFollowers = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -84,7 +99,7 @@ export const countFollowers = async (req, res) => {
 };
 
 // contar seguidos de usuarios
-export const countFollowed = async (req, res) => {
+const countFollowed = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -103,6 +118,7 @@ export const FollowController = {
   deleteFollower,
   countFollowed,
   countFollowers,
+  isFollowed,
   countMyFollowed,
   countMyFollowers,
 };

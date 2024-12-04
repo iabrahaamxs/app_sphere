@@ -1,10 +1,10 @@
 import axiosManager from "./apiManager";
 
-const createFollow = async (jwt, follower, followed) => {
+const createFollow = async (jwt, followed) => {
   try {
     const { data } = await axiosManager.post(
       "/private/follow/follows",
-      { follower, followed },
+      { followed },
       {
         headers: {
           Authorization: jwt,
@@ -19,11 +19,11 @@ const createFollow = async (jwt, follower, followed) => {
   }
 };
 
-const deleteFollow = async (jwt, follower, followed) => {
+const deleteFollow = async (jwt, followed) => {
   try {
     const { data } = await axiosManager.put(
       "/private/follow/follows",
-      { follower, followed },
+      { followed },
       {
         headers: {
           Authorization: jwt,
@@ -38,7 +38,25 @@ const deleteFollow = async (jwt, follower, followed) => {
   }
 };
 
+const isfollow = async (jwt, followed) => {
+  try {
+    const { data } = await axiosManager.get("/private/follow/isfollow", {
+      headers: {
+        Authorization: jwt,
+      },
+      params: {
+        followed,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log("error isfollow");
+    return;
+  }
+};
+
 export const FollowApi = {
   createFollow,
   deleteFollow,
+  isfollow,
 };

@@ -41,6 +41,18 @@ const getfollowers = async (id) => {
   return rows;
 };
 
+const isFollowed = async (id, user) => {
+  const { rows } = await poll.query(
+    `SELECT * 
+        FROM followers 
+        WHERE follower_user = $1
+          AND followed_user = $2
+          AND deleted_at IS NULL`,
+    [id, user]
+  );
+  return rows[0];
+};
+
 const follow = async (follower, followed) => {
   const { rows } = await poll.query(
     "INSERT INTO followers (follower_user, followed_user) VALUES ($1, $2) RETURNING *",
@@ -87,6 +99,7 @@ const countFollowers = async (id) => {
 export const FollowModel = {
   getFollowed,
   getfollowers,
+  isFollowed,
   follow,
   unfollow,
   countFollowed,

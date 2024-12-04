@@ -7,6 +7,7 @@ router.get("/followed", FollowController.getFollowed);
 router.get("/follows", FollowController.getfollowers);
 router.get("/followed/count", FollowController.countMyFollowed);
 router.get("/followers/count", FollowController.countMyFollowers);
+router.get("/isfollow", FollowController.isFollowed);
 
 router.post("/follows", FollowController.createFollower);
 router.put("/follows", FollowController.deleteFollower);
