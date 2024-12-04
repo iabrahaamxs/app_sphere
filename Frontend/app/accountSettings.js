@@ -76,12 +76,11 @@ export default function AccountSettings() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const id = await getItem("id");
       const jwt = await getItem("jwt");
       const [{ bio, user_name, photo, user_id }, categoriesData] =
         await Promise.all([
           UserApi.whoami(jwt),
-          CategorieApi.getCategories(id),
+          CategorieApi.getMyCategories(jwt),
         ]);
       const newArray = categoriesData.map((item) => item.value.toString());
 

@@ -36,9 +36,10 @@ export default function Follower() {
   };
   const fetchData = async () => {
     const id = await getItem("id");
+    const jwt = await getItem("jwt");
     const profileData = await UserApi.getProfile(id);
-    const followsData = await UserApi.getFollows(id);
-    const followedData = await UserApi.getFollowed(id);
+    const followsData = await UserApi.getFollows(jwt);
+    const followedData = await UserApi.getFollowed(jwt);
 
     setProfile(profileData);
     setFollows(followsData);

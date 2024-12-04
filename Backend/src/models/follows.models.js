@@ -62,9 +62,33 @@ const unfollow = async (data) => {
   return rows;
 };
 
+const countFollowed = async (id) => {
+  const { rows } = await poll.query(
+    `SELECT COUNT(*) AS followed_count
+     FROM followers f
+     WHERE f.follower_user = $1
+       AND f.deleted_at IS NULL`,
+    [id]
+  );
+  return rows[0];
+};
+
+const countFollowers = async (id) => {
+  const { rows } = await poll.query(
+    `SELECT COUNT(*) AS followers_count
+     FROM followers f
+     WHERE f.followed_user = $1
+       AND f.deleted_at IS NULL`,
+    [id]
+  );
+  return rows[0];
+};
+
 export const FollowModel = {
   getFollowed,
   getfollowers,
   follow,
   unfollow,
+  countFollowed,
+  countFollowers,
 };

@@ -45,27 +45,36 @@ const getCategories = async (req, res) => {
   res.json(categories);
 };
 
-const updateCategories = async (req, res) => {
-  try {
-    const data = req.body;
+const getMyCategories = async (req, res) => {
+  const userid = req.user_id;
 
+  const categories = await CategorieModel.getCategories(userid);
+
+  res.json(categories);
+};
+
+const updateCategories = async (req, res) => {
+  const userid = req.user_id;
+  const data = req.body;
+
+  try {
     // insertar categorias si no existen
     for (let i = 0; i < data.categoriesOn.length; i++) {
       const categorie = await CategorieModel.findCategorie(
-        data.user_id,
+        userid,
         data.categoriesOn[i]
       );
       if (!categorie) {
-        await CategorieModel.create(data.user_id, data.categoriesOn[i]);
+        await CategorieModel.create(userid, data.categoriesOn[i]);
       }
     }
 
     // eliminar categorias si existen
     for (let i = 0; i < data.categoriesOff.length; i++) {
-      await CategorieModel.update(data.user_id, data.categoriesOff[i]);
+      await CategorieModel.update(userid, data.categoriesOff[i]);
     }
 
-    const categories = await CategorieModel.getCategories(data.user_id);
+    const categories = await CategorieModel.getCategories(userid);
 
     return res.json(categories);
   } catch (error) {
@@ -75,7 +84,8 @@ const updateCategories = async (req, res) => {
 };
 
 export const CategorieController = {
-  createUserCategorie,
   getCategories,
+  getMyCategories,
+  createUserCategorie,
   updateCategories,
 };

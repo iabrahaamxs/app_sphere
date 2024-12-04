@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PhotoController } from "../controllers/photos.controllers.js";
+import { PhotoController } from "../../controllers/photos.controllers.js";
 
 const router = Router();
 

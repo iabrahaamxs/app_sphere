@@ -45,8 +45,8 @@ export default function UserProfile() {
       const fetchData = async () => {
         const userData = await UserApi.getProfile(userProfile);
         const categoriesData = await CategorieApi.getCategories(userProfile);
-        const followsData = await UserApi.getFollows(userProfile);
-        const followedData = await UserApi.getFollowed(userProfile);
+        const followsData = await UserApi.countFollows(userProfile);
+        const followedData = await UserApi.countFollowed(userProfile);
         const postsData = await PostApi.getPosts(userProfile);
 
         setUser(userData);

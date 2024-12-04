@@ -2,7 +2,7 @@ import axiosManager from "./apiManager";
 
 export const getCountries = async () => {
   try {
-    const res = await axiosManager.get("/countries");
+    const res = await axiosManager.get("/public/country/countries");
     //console.log(res.data)
 
     return res.data;
