@@ -278,14 +278,12 @@ const updateSettingUser = async (req, res) => {
 
 const updatePasswordUser = async (req, res) => {
   try {
-    // Extraer datos del cuerpo de la solicitud
-    const { new_password, password } = req.body;
-    const user_id = req.user_id; // ID del usuario (obtenido del token o sesión)
 
-    // Llamar al modelo para manejar la lógica de cambio de contraseña
+    const { new_password, password } = req.body;
+    const user_id = req.user_id; 
+
     const user = await UserModel.editPassword(new_password, user_id, password);
 
-    // Verificar si la contraseña actual es incorrecta
     if (!user) {
       return res.status(400).json({
         message: "Incorrect password",
@@ -294,14 +292,13 @@ const updatePasswordUser = async (req, res) => {
       });
     }
 
-    // Responder con éxito si la contraseña fue actualizada
     return res.json({
       message: "Password successfully updated",
       error: [],
       info: null,
     });
   } catch (error) {
-    // Manejar errores del servidor
+
     return res.status(500).json({
       message: "ERROR SERVER",
       error: [{ message: error.message || "Unexpected server error" }],
