@@ -1,7 +1,7 @@
 import { LikeModel } from "../models/likes.models.js";
 
 const getLikes = async (req, res) => {
-  const { post } = req.body;
+  const { post } = req.query;
 
   try {
     const likes = await LikeModel.getLikes(post);
@@ -13,7 +13,7 @@ const getLikes = async (req, res) => {
 };
 
 const countLikes = async (req, res) => {
-  const { post } = req.body;
+  const { post } = req.query;
 
   try {
     const count = await LikeModel.countLikes(post);

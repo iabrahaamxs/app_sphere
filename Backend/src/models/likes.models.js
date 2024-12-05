@@ -4,7 +4,8 @@ const getLikes = async (post_id) => {
   const { rows } = await poll.query(
     `
       SELECT * FROM likes 
-        WHERE post = $1`,
+        WHERE post = $1
+        AND deleted_at IS NULL;`,
     [post_id]
   );
   return rows;
