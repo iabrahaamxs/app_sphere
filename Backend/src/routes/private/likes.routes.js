@@ -7,5 +7,6 @@ router.get("/likes", LikeController.getLikes);
 router.get("/count", LikeController.countLikes);
 router.post("/create", LikeController.createLike);
 router.put("/delete", LikeController.deleteLike);
+router.get("/isliked", LikeController.isLiked);
 
 export default router;

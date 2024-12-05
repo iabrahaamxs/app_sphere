@@ -27,7 +27,7 @@ const count = async (jwt, post) => {
         post,
       },
     });
-    return data;
+    return data.likes_count;
   } catch (error) {
     console.log("error count");
     return;
@@ -72,9 +72,27 @@ const deleteLike = async (jwt, post) => {
   }
 };
 
+const isliked = async (jwt, post) => {
+  try {
+    const { data } = await axiosManager.get("/private/like/isliked", {
+      headers: {
+        Authorization: jwt,
+      },
+      params: {
+        post,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log("error isliked");
+    return;
+  }
+};
+
 export const LikeApi = {
   getLikes,
   count,
   createLike,
   deleteLike,
+  isliked,
 };

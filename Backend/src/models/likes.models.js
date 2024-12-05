@@ -47,9 +47,22 @@ const deleteLike = async (user, post) => {
   return rows[0];
 };
 
+const findLike = async (user, post) => {
+  const { rows } = await poll.query(
+    `SELECT * 
+      FROM likes
+      WHERE "user" = $1 
+        AND post = $2
+        AND deleted_at IS NULL`,
+    [user, post]
+  );
+  return rows.length > 0;
+};
+
 export const LikeModel = {
   getLikes,
   countLikes,
   createLike,
   deleteLike,
+  findLike,
 };

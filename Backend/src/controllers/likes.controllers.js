@@ -50,9 +50,23 @@ const deleteLike = async (req, res) => {
   }
 };
 
+const isLiked = async (req, res) => {
+  const user = req.user_id;
+  const { post } = req.query;
+
+  try {
+    const like = await LikeModel.findLike(user, post);
+
+    return res.json(like);
+  } catch (error) {
+    return res.status(500).json({ menssage: "Internal server error" });
+  }
+};
+
 export const LikeController = {
   getLikes,
   countLikes,
   createLike,
   deleteLike,
+  isLiked,
 };
