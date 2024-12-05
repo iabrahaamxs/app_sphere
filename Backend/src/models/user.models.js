@@ -1,6 +1,9 @@
 import { poll } from "../db.js";
+import  bcrypt  from "bcryptjs";
 
 const create = async (data) => {
+  const passwordHash = await bcrypt.hash(data.password, 10);
+  
   const { rows } = await poll.query(
     `
     INSERT INTO users (name, last_name, user_name, phone, email, password, photo, bio, birthdate, gender, country) 
@@ -12,7 +15,7 @@ const create = async (data) => {
       data.user_name.toLowerCase(),
       data.phone,
       data.email.toLowerCase(),
-      data.password,
+      passwordHash,
       data.user_photo,
       data.bio,
       data.birthdate,
@@ -107,6 +110,7 @@ const findByUserId = async (user_id) => {
 };
 
 const loginValidation = async (email, password) => {
+
   const { rows } = await poll.query(
     `
     SELECT * FROM users

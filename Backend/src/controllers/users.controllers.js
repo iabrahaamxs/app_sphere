@@ -3,6 +3,7 @@ import { JWT_PRIVATE_KEY } from "../config.js";
 import { UserModel } from "../models/user.models.js";
 import { CategorieModel } from "../models/categories.models.js";
 import { emailHelper } from "../middlewares/send.email.js";
+import bcrypt from "bcryptjs";
 
 const createUser = async (req, res) => {
   try {
@@ -21,6 +22,7 @@ const createUser = async (req, res) => {
         message: "User (email, user_name, phone) already exists",
       });
     }
+
 
     const newUser = await UserModel.create(data);
 
@@ -120,7 +122,7 @@ const loginUser = async (req, res) => {
 
     //aqui hacer validaciones
 
-    const user = await UserModel.loginValidation(
+    const user = await UserModel.loginValidation(      
       data.email.toLowerCase(),
       data.password
     );
