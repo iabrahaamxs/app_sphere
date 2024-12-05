@@ -17,16 +17,21 @@ const Post = ({ item }) => {
   const postDate = new Date(item.created_at);
   const isEditableDeletable = !isOlderThan24Hours(postDate);
 
+  const refresh = async () => {
+    const jwt = await getItem("jwt");
+    const count = await LikeApi.count(jwt, item.id);
+    const isliked = await LikeApi.isliked(jwt, item.id);
+
+    setLikesCount(parseInt(count));
+    setLiked(isliked);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const jwt = await getItem("jwt");
       const id = await getItem("id");
-      const count = await LikeApi.count(jwt, item.id);
-      const isliked = await LikeApi.isliked(jwt, item.id);
-
       setId(id);
-      setLikesCount(parseInt(count));
-      setLiked(isliked);
+
+      await refresh();
     };
     fetchData();
   }, []);
@@ -52,7 +57,10 @@ const Post = ({ item }) => {
   };
 
   const handleCommentPress = () => {
-    router.push(`../createComment`);
+    router.push({
+      pathname: "../createComment",
+      params: { post: item.id },
+    });
   };
 
   const handlePostOptionsMenuPress = () => {
