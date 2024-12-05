@@ -1,9 +1,6 @@
 import { poll } from "../db.js";
-import  bcrypt  from "bcryptjs";
 
 const create = async (data) => {
-  const passwordHash = await bcrypt.hash(data.password, 10);
-  
   const { rows } = await poll.query(
     `
     INSERT INTO users (name, last_name, user_name, phone, email, password, photo, bio, birthdate, gender, country) 
@@ -15,7 +12,7 @@ const create = async (data) => {
       data.user_name.toLowerCase(),
       data.phone,
       data.email.toLowerCase(),
-      passwordHash,
+      data.password,
       data.user_photo,
       data.bio,
       data.birthdate,
@@ -109,20 +106,6 @@ const findByUserId = async (user_id) => {
   return rows[0];
 };
 
-const loginValidation = async (email) => {
-  
-  const { rows } = await poll.query(
-    `
-    SELECT * FROM users
-      WHERE email = $1
-    `,
-    [email]
-  );
-
-  return rows[0]; 
-};
-
-
 const findEditInfo = async (email, phone, user_id) => {
   const { rows } = await poll.query(
     `
@@ -183,39 +166,19 @@ const editSettingPersonal = async (data, id) => {
   return rows[0];
 };
 
-
-const editPassword = async (new_password, user_id, password) => {
-
+const editPassword = async (new_password, user_id) => {
   const { rows } = await poll.query(
-    `
-    SELECT password 
-      FROM users 
-      WHERE id = $1
-    `,
-    [user_id]
-  );
-
-  const user = rows[0];
-
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return null; 
-  }
-
-  const newPasswordHash = await bcrypt.hash(new_password, 10);
-
-  const { rows: updatedRows } = await poll.query(
     `
     UPDATE users 
       SET password = $1, updated_at = CURRENT_TIMESTAMP
       WHERE id = $2
       RETURNING *
     `,
-    [newPasswordHash, user_id]
+    [new_password, user_id]
   );
 
-  return updatedRows[0];
+  return rows[0];
 };
-
 
 const retorePassword = async (new_password, user_id) => {
   const { rows } = await poll.query(
@@ -263,13 +226,23 @@ const findUserName = async (user_name) => {
   return rows[0];
 };
 
+const findPassword = async (id) => {
+  const { rows } = await poll.query(
+    `
+    SELECT * FROM users 
+      WHERE id = $1 `,
+    [id]
+  );
+
+  return rows[0];
+};
+
 export const UserModel = {
   create,
   getUsers,
   findUser,
   findByUserName,
   findByUserId,
-  loginValidation,
   findEditInfo,
   editInfoPersonal,
   findEditSetting,
@@ -279,4 +252,5 @@ export const UserModel = {
   findEmail,
   findPhone,
   findUserName,
+  findPassword,
 };
