@@ -121,14 +121,19 @@ const loginUser = async (req, res) => {
     const data = req.body;
 
     //aqui hacer validaciones
+    
+    const user = await UserModel.loginValidation(data.email.toLowerCase());
 
-    const user = await UserModel.loginValidation(      
-      data.email.toLowerCase(),
-      data.password
-    );
     if (!user) {
       return res.status(404).json({ message: "Incorrect email or password" });
     }
+
+    const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(404).json({ message: "Incorrect email or password" });
+    }
+    
 
     const jwtConstructor = new SignJWT({
       user_name: user.user_name,

@@ -109,18 +109,19 @@ const findByUserId = async (user_id) => {
   return rows[0];
 };
 
-const loginValidation = async (email, password) => {
-
+const loginValidation = async (email) => {
+  
   const { rows } = await poll.query(
     `
     SELECT * FROM users
-      WHERE email = $1 
-      AND password = $2`,
-    [email, password]
+      WHERE email = $1
+    `,
+    [email]
   );
 
-  return rows[0];
+  return rows[0]; 
 };
+
 
 const findEditInfo = async (email, phone, user_id) => {
   const { rows } = await poll.query(
