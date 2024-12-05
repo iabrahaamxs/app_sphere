@@ -183,18 +183,39 @@ const editSettingPersonal = async (data, id) => {
   return rows[0];
 };
 
+
 const editPassword = async (new_password, user_id, password) => {
+
   const { rows } = await poll.query(
+    `
+    SELECT password 
+      FROM users 
+      WHERE id = $1
+    `,
+    [user_id]
+  );
+
+  const user = rows[0];
+
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return null; 
+  }
+
+  const newPasswordHash = await bcrypt.hash(new_password, 10);
+
+  const { rows: updatedRows } = await poll.query(
     `
     UPDATE users 
       SET password = $1, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $2 AND password = $3
-      RETURNING *`,
-    [new_password, user_id, password]
+      WHERE id = $2
+      RETURNING *
+    `,
+    [newPasswordHash, user_id]
   );
 
-  return rows[0];
+  return updatedRows[0];
 };
+
 
 const retorePassword = async (new_password, user_id) => {
   const { rows } = await poll.query(
