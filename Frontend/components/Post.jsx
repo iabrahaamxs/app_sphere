@@ -6,11 +6,12 @@ import { useState, useEffect } from "react";
 import { getItem } from "../utils/AsyncStorage";
 import PostOptionsMenu from "./PostOptionsMenu";
 import { isOlderThan24Hours } from "../utils/DateUtils";
+import { LikeApi } from "../api/likeApi";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
   const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(item.likes);
+  const [likesCount, setLikesCount] = useState(0);
   const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false);
 
   const postDate = new Date(item.created_at);
@@ -18,17 +19,36 @@ const Post = ({ item }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const jwt = await getItem("jwt");
       const id = await getItem("id");
+      const count = await LikeApi.count(jwt, item.id);
+      const isliked = await LikeApi.isliked(jwt, item.id);
+
       setId(id);
+      setLikesCount(parseInt(count));
+      setLiked(isliked);
     };
     fetchData();
   }, []);
 
   const isOwner = item.user === id;
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikesCount(liked ? likesCount - 1 : likesCount + 1);
+  const handleLike = async () => {
+    try {
+      const jwt = await getItem("jwt");
+
+      if (liked) {
+        await LikeApi.deleteLike(jwt, item.id);
+        setLikesCount((prev) => Math.max(prev - 1, 0));
+      } else {
+        await LikeApi.createLike(jwt, item.id);
+        setLikesCount((prev) => prev + 1);
+      }
+
+      setLiked((prev) => !prev);
+    } catch (error) {
+      console.error("Error handling like:", error);
+    }
   };
 
   const handleCommentPress = () => {
@@ -104,6 +124,7 @@ const Post = ({ item }) => {
           <HeartIcon liked={liked} color="black" />
           {likesCount > 0 && <Text className="ml-2">{likesCount}</Text>}
         </Pressable>
+
         <Pressable
           className="w-[33%] justify-center items-center"
           onPress={handleCommentPress}

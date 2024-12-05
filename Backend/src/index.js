@@ -12,6 +12,7 @@ import categoriesRoutesPublic from "./routes/public/categories.routes.js";
 import photosRoutes from "./routes/private/photos.routes.js";
 import countriesRoutesPublic from "./routes/public/countries.routes.js";
 import FavoritesRoutes from "./routes/private/favorites.routes.js";
+import likeRoutes from "./routes/private/likes.routes.js";
 import morgan from "morgan";
 
 const app = express();
@@ -28,6 +29,7 @@ app.use("/private/post", postsRoutes);
 app.use("/private/photo", photosRoutes);
 app.use("/private/follow", followsRoutes);
 app.use("/private/categorie", categoriesRoutes);
+app.use("/private/like", likeRoutes);
 
 // public
 app.use("/public/user", userRoutesPublic);
