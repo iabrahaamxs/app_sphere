@@ -180,7 +180,7 @@ const editPassword = async (new_password, user_id) => {
   return rows[0];
 };
 
-const retorePassword = async (new_password, user_id) => {
+const restorePassword = async (new_password, user_id) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
@@ -248,7 +248,7 @@ export const UserModel = {
   findEditSetting,
   editSettingPersonal,
   editPassword,
-  retorePassword,
+  restorePassword,
   findEmail,
   findPhone,
   findUserName,
