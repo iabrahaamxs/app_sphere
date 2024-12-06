@@ -106,18 +106,6 @@ const findByUserId = async (user_id) => {
   return rows[0];
 };
 
-const loginValidation = async (email, password) => {
-  const { rows } = await poll.query(
-    `
-    SELECT * FROM users
-      WHERE email = $1 
-      AND password = $2`,
-    [email, password]
-  );
-
-  return rows[0];
-};
-
 const findEditInfo = async (email, phone, user_id) => {
   const { rows } = await poll.query(
     `
@@ -178,14 +166,15 @@ const editSettingPersonal = async (data, id) => {
   return rows[0];
 };
 
-const editPassword = async (new_password, user_id, password) => {
+const editPassword = async (new_password, user_id) => {
   const { rows } = await poll.query(
     `
     UPDATE users 
       SET password = $1, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $2 AND password = $3
-      RETURNING *`,
-    [new_password, user_id, password]
+      WHERE id = $2
+      RETURNING *
+    `,
+    [new_password, user_id]
   );
 
   return rows[0];
@@ -237,13 +226,23 @@ const findUserName = async (user_name) => {
   return rows[0];
 };
 
+const findPassword = async (id) => {
+  const { rows } = await poll.query(
+    `
+    SELECT * FROM users 
+      WHERE id = $1 `,
+    [id]
+  );
+
+  return rows[0];
+};
+
 export const UserModel = {
   create,
   getUsers,
   findUser,
   findByUserName,
   findByUserId,
-  loginValidation,
   findEditInfo,
   editInfoPersonal,
   findEditSetting,
@@ -253,4 +252,5 @@ export const UserModel = {
   findEmail,
   findPhone,
   findUserName,
+  findPassword,
 };

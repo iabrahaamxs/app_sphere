@@ -3,6 +3,7 @@ import { JWT_PRIVATE_KEY } from "../config.js";
 import { UserModel } from "../models/user.models.js";
 import { CategorieModel } from "../models/categories.models.js";
 import { emailHelper } from "../middlewares/send.email.js";
+import bcrypt from "bcryptjs";
 
 const createUser = async (req, res) => {
   try {
@@ -22,7 +23,12 @@ const createUser = async (req, res) => {
       });
     }
 
-    const newUser = await UserModel.create(data);
+    const passwordHash = await bcrypt.hash(data.password, 10);
+
+    const newUser = await UserModel.create({
+      ...data,
+      password: passwordHash,
+    });
 
     const jwtConstructor = new SignJWT({
       user_name: newUser.user_name,
@@ -120,11 +126,15 @@ const loginUser = async (req, res) => {
 
     //aqui hacer validaciones
 
-    const user = await UserModel.loginValidation(
-      data.email.toLowerCase(),
-      data.password
-    );
+    const user = await UserModel.findEmail(data.email.toLowerCase());
+
     if (!user) {
+      return res.status(404).json({ message: "Incorrect email or password" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
+    if (!isPasswordValid) {
       return res.status(404).json({ message: "Incorrect email or password" });
     }
 
@@ -271,32 +281,44 @@ const updateSettingUser = async (req, res) => {
 
 const updatePasswordUser = async (req, res) => {
   try {
-    const data = req.body;
+    const { new_password, password } = req.body;
     const user_id = req.user_id;
 
-    const user = await UserModel.editPassword(
-      data.new_password,
-      user_id,
-      data.password
-    );
+    const user = await UserModel.findPassword(user_id);
 
     if (!user) {
-      return res.json({
-        message: "Incorrect password",
-        error: [{ message: "Incorrect password" }],
+      return res.status(404).json({
+        message: "User not found",
+        error: [{ message: "User not found" }],
         info: null,
       });
     }
 
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Incorrect current password",
+        error: [{ message: "Incorrect current password" }],
+        info: null,
+      });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(new_password, 10);
+
+    const updatedUser = await UserModel.editPassword(
+      hashedNewPassword,
+      user_id
+    );
+
     return res.json({
       message: "Password successfully updated",
       error: [],
-      info: null,
+      info: updatedUser,
     });
   } catch (error) {
     return res.status(500).json({
       message: "ERROR SERVER",
-      error: [{ message: "ERROR SERVER" }],
+      error: [{ message: error.message || "Unexpected server error" }],
       info: null,
     });
   }
