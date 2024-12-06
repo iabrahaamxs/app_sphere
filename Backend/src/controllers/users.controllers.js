@@ -329,7 +329,9 @@ const restorePassword = async (req, res) => {
     const id = req.user_id;
     const { password } = req.body;
 
-    await UserModel.retorePassword(password, id);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await UserModel.retorePassword(hashedPassword, id);
 
     return res.json({
       message: "Password successfully updated",
