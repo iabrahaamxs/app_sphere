@@ -329,7 +329,9 @@ const restorePassword = async (req, res) => {
     const id = req.user_id;
     const { password } = req.body;
 
-    await UserModel.retorePassword(password, id);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await UserModel.restorePassword(hashedPassword, id);
 
     return res.json({
       message: "Password successfully updated",
@@ -357,7 +359,7 @@ const forgotPassword = async (req, res) => {
 
     const jwtConstructor = new SignJWT({
       user_name: user.user_name,
-      user_id: user.user_id,
+      user_id: user.id,
     });
 
     const encoder = new TextEncoder();
