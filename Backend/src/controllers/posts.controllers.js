@@ -197,6 +197,28 @@ const searchPostsByDescription = async (req, res) => {
   }
 };
 
+const deletePost = async (req, res) => {
+  const { id } = req.params; 
+
+  try {
+    // Intentar eliminar el post
+    const deletedPost = await PostModel.deletePost(id);
+
+    // Verificar si el post fue realmente eliminado
+    if (!deletedPost) {
+      return res.status(404).json({ ok: false, message: "Post not found or already deleted" });
+    }
+
+    return res.json({ ok: true, message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error); 
+    return res.status(500).json({ ok: false, message: "Internal server error" });
+  }
+};
+
+
+
+
 export const PostController = {
   createPost,
   getPosts,
@@ -205,4 +227,5 @@ export const PostController = {
   searchTagPosts,
   searchPostsByTag,
   searchPostsByDescription,
+  deletePost,
 };
