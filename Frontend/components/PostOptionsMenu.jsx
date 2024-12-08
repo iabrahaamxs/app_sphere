@@ -21,6 +21,9 @@ const PostOptionsMenu = ({
   isFollowing,
   isEditableDeletable,
   user,
+  postId,
+  description,
+  photo
 }) => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isTimeLimitModalVisible, setIsTimeLimitModalVisible] = useState(false);
@@ -64,7 +67,15 @@ const PostOptionsMenu = ({
       );
       setIsTimeLimitModalVisible(true);
     } else {
-      router.push("/editPost");
+      router.push({
+        pathname: "/editPost",
+        params: { 
+          postId: postId, 
+          userId: user,
+          postDescription : description,
+          photo: photo,
+        },
+      });      
     }
   };
 
