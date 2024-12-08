@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal, ActivityIndicator } from 'react-native';
-import { getItem } from "../utils/AsyncStorage"; // Para obtener el JWT
-import { PostApi } from "../api/postsApi";  // Lógica de la API
+import { getItem } from "../utils/AsyncStorage"; 
+import { PostApi } from "../api/postsApi";  
 
 const DeletePost = ({ isVisible, onCancel, onDelete, postId }) => {
     const [cancelButtonColor, setCancelButtonColor] = useState('rgba(221, 221, 221, 0.2)');
