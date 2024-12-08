@@ -124,8 +124,26 @@ const getPostsByDescription = async (jwt, txt) => {
   }
 };
 
+const update = async (jwt, id, description) => {
+  try {
+    const res = await axiosManager.put(
+      `/private/post/update/${id}`,
+      { description },
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.log("error updatePost", error);
+    return { ok: false, message: "Error updating post" };
+  }
+};
 export const PostApi = {
   create,
+  update,
   getPosts,
   getMyPosts,
   getFavorites,
