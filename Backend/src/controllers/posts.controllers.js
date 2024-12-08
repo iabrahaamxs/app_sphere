@@ -216,6 +216,28 @@ const deletePost = async (req, res) => {
   }
 };
 
+const updatePost = async (req, res) => {
+  const { id } = req.params;
+  const { description } = req.body; // Nueva descripción
+
+  if (!description) {
+    return res.status(400).json({ ok: false, message: "Description is required" });
+  }
+
+  try {
+    const updatedPost = await PostModel.updateDescription(id, description);
+
+    if (!updatedPost) {
+      return res.status(404).json({ ok: false, message: "Post not found or already deleted" });
+    }
+
+    return res.json({ ok: true, post: updatedPost });
+  } catch (error) {
+    console.error("Error updating post:", error);
+    return res.status(500).json({ ok: false, message: "Internal server error" });
+  }
+};
+
 
 
 
@@ -228,4 +250,5 @@ export const PostController = {
   searchPostsByTag,
   searchPostsByDescription,
   deletePost,
+  updatePost,
 };

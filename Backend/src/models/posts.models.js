@@ -147,6 +147,20 @@ const deletePost = async (post_id) => {
 return rows[0];
 };
 
+const updateDescription = async (post_id, description) => {
+  const { rows } = await poll.query(
+    `
+    UPDATE posts
+    SET description = $1, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $2 AND deleted_at IS NULL
+    RETURNING *;
+    `,
+    [description, post_id]
+  );
+  return rows[0];
+};
+
+
 
 export const PostModel = {
   create,
@@ -155,5 +169,6 @@ export const PostModel = {
   getPostsTag,
   getPostsByTag,
   getPostsByDescription,
-  deletePost
+  deletePost,
+  updateDescription
 };
