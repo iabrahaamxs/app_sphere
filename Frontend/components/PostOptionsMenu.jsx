@@ -85,7 +85,6 @@ const PostOptionsMenu = ({
 
   const handleDeletePost = () => {
     setIsDeleteModalVisible(false);
-    console.log("Publicación eliminada");
     onCancel();
   };
 
@@ -198,6 +197,7 @@ const PostOptionsMenu = ({
           isVisible={isDeleteModalVisible}
           onCancel={handleCancelDelete}
           onDelete={handleDeletePost}
+          postId={postId}
         />
       )}
       {isTimeLimitModalVisible && (
