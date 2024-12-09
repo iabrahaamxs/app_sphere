@@ -1,5 +1,5 @@
 import { Image, Pressable, Text, View } from "react-native";
-import { Bookmark, Bookmarkb, Comment, Ellipsis, HeartIcon } from "./Icons";
+import { Bookmark,Bookmarkb, Comment, Ellipsis, HeartIcon } from "./Icons";
 import { Link, router } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
@@ -7,7 +7,6 @@ import { getItem } from "../utils/AsyncStorage";
 import PostOptionsMenu from "./PostOptionsMenu";
 import { isOlderThan24Hours } from "../utils/DateUtils";
 import { LikeApi } from "../api/likeApi";
-import { FavoriteApi } from "../api/favoriteApi";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
@@ -29,9 +28,6 @@ const Post = ({ item }) => {
       setId(id);
       setLikesCount(parseInt(count));
       setLiked(isliked);
-
-      const isFavorited = await FavoriteApi.addFavorite(jwt, item.id);
-      setIsFavorite(isFavorited);
     };
     fetchData();
   }, []);
@@ -53,22 +49,6 @@ const Post = ({ item }) => {
       setLiked((prev) => !prev);
     } catch (error) {
       console.error("Error handling like:", error);
-    }
-  };
-
-  const handleFavorite = async () => {
-    try {
-      const jwt = await getItem("jwt");
-
-      if (isFavorite) {
-        await FavoriteApi.deleteFavorite(jwt, item.id); 
-      } else {
-        await FavoriteApi.addFavorite(jwt, item.id);
-      }
-
-      setIsFavorite((prev) => !prev);
-    } catch (error) {
-      console.error("Error handling favorite:", error);
     }
   };
 
@@ -121,7 +101,7 @@ const Post = ({ item }) => {
               isVisible={isPostOptionsMenu}
               onCancel={() => setIsPostOptionsMenu(false)}
               isOwner={isOwner}
-              isEditableDeletable={isEditableDeletable} 
+              isEditableDeletable={isEditableDeletable}
               user={item.user}
               postId={item.id}
               description={item.description}
@@ -156,10 +136,9 @@ const Post = ({ item }) => {
           <Comment />
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center"
-          onPress={handleFavorite}>          
+          >          
           {isFavorite ? <Bookmarkb /> : <Bookmark />}
         </Pressable>
-
       </View>
     </View>
   );
