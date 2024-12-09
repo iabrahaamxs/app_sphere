@@ -46,14 +46,14 @@ const createFavorite = async (userId, postId) => {
 const findFavorite = async (user, post) => {
   const { rows } = await poll.query(
     `SELECT * 
-      FROM favorites
-      WHERE "user" = $1 
-        AND post = $2
-        AND deleted_at IS NULL`, // Verifica que no esté marcado como eliminado
+     FROM favorites
+     WHERE "user" = $1 
+       AND post = $2
+       AND deleted_at IS NULL`, 
     [user, post]
   );
 
-  return rows.length > 0;  // Si el resultado tiene registros, significa que el post es un favorito
+  return rows.length > 0; 
 };
 
 

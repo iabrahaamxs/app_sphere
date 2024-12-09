@@ -46,15 +46,15 @@ const addFavorite = async (req, res) => {
 };
 
 const isFavorite = async (req, res) => {
-  const user = req.user_id;  
+  const user = req.user_id; 
   const { post } = req.query; 
 
   try {
-    
-    const favorite = await FavoriteModel.findFavorite(user, post);
+    const isFavorited = await FavoriteModel.findFavorite(user, post); 
 
-    return res.json({ isFavorite: favorite });
+    return res.json({ isFavorited }); 
   } catch (error) {
+    console.error("Error en isFavorite:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
