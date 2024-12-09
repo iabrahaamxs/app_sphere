@@ -35,13 +35,36 @@ const PostOptionsMenu = ({
   const [favorite, setFavorite] = useState(false); 
   const router = useRouter();
 
+
+  useEffect(() => {
+    setFollow(isFollowing);
+  }, [isFollowing]);
+
+  useEffect(() => {
+    if (user) {
+      const fetchFollowStatus = async () => {
+        try {
+          const jwt = await getItem("jwt");
+          const isFollowData = await FollowApi.isfollow(jwt, user);
+          setFollow(!!isFollowData);
+        } catch (error) {
+          console.error("Error al obtener el estado de seguimiento:", error.message);
+        }
+      };
+      fetchFollowStatus();
+    }
+  }, [user]);
+
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
-      const jwt = await getItem("jwt");
-      const response = await FavoriteApi.isFavorite(jwt, postId); 
-      setFavorite(response.isFavorited); 
+      try {
+        const jwt = await getItem("jwt");
+        const response = await FavoriteApi.isFavorite(jwt, postId); 
+        setFavorite(response.isFavorited); 
+      } catch (error) {
+        console.error("Error al obtener favoritos:", error.message);
+      }
     };
-
     fetchFavoriteStatus();
   }, [postId]);
 
@@ -112,7 +135,6 @@ const PostOptionsMenu = ({
     }
   };
 
-  // Manejo del botón de favoritos
   const handleFavoriteToggle = async () => {
     try {
       const jwt = await getItem("jwt");
