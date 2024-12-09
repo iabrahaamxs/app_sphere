@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { timeElapsed } from "../utils/FormatDate";
 import { SendIcon, HeartIcon } from "./Icons";
-import { useRouter } from "expo-router";
 import {
   View,
   TextInput,
@@ -23,7 +22,6 @@ const MAX_CHARACTERS = 1000; // Máximo de caracteres permitidos
 const MAX_NEWLINES = 10; // Máximo de saltos de línea permitidos
 
 const Comment = ({ comments, onSendComment, postId, refresh }) => {
-  const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const insets = useSafeAreaInsets();
   const [liked, setLiked] = useState(false);

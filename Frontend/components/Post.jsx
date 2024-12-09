@@ -1,6 +1,6 @@
-import { Image, Modal, Pressable, StatusBar, Text, View } from "react-native";
+import { Image, Modal, Pressable, Text, View } from "react-native";
 import { Bookmark, CommentIcon, Ellipsis, HeartIcon } from "./Icons";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
 import { getItem } from "../utils/AsyncStorage";
