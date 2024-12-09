@@ -3,9 +3,18 @@ import { poll } from "../db.js";
 const getLikes = async (post_id) => {
   const { rows } = await poll.query(
     `
-      SELECT * FROM likes 
-        WHERE post = $1
-        AND deleted_at IS NULL;`,
+    SELECT 
+      l.id,
+      l.created_at,
+      u.id AS user_id,
+      u.name,
+      u.last_name,
+      u.photo,
+      u.user_name
+        FROM likes l
+        JOIN users u ON l."user" = u.id
+        WHERE l.post = $1
+        AND l.deleted_at IS NULL`,
     [post_id]
   );
   return rows;

@@ -1,53 +1,65 @@
-import { Image, Pressable, Text, View } from "react-native";
-import { Bookmark, Bookmarkb, Comment, Ellipsis, HeartIcon } from "./Icons";
-import { Link, router } from "expo-router";
+import { Image, Modal, Pressable, Text, View } from "react-native";
+import { Bookmark, Bookmarkb, CommentIcon, Ellipsis, HeartIcon } from "./Icons";
+import { Link } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
 import { getItem } from "../utils/AsyncStorage";
 import PostOptionsMenu from "./PostOptionsMenu";
 import { isOlderThan24Hours } from "../utils/DateUtils";
 import { LikeApi } from "../api/likeApi";
+import Comment from "./Comment";
+import { CommentApi } from "../api/commentApi";
 import { FavoriteApi } from "../api/favoriteApi";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false); 
+  const [commentsCount, setCommentsCount] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const postDate = new Date(item.created_at);
   const isEditableDeletable = !isOlderThan24Hours(postDate);
 
+  const refresh = async (jwt) => {
+    const count = await LikeApi.count(jwt, item.id);
+    const isliked = await LikeApi.isliked(jwt, item.id);
+
+    setLikesCount(parseInt(count));
+    setLiked(isliked);
+  };
+
+  const refreshComments = async (jwt) => {
+    const commentsData = await CommentApi.count(jwt, item.id);
+    setCommentsCount(parseInt(commentsData));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const jwt = await getItem("jwt");
       const id = await getItem("id");
+      const jwt = await getItem("jwt");
 
-      const count = await LikeApi.count(jwt, item.id);
-      const isliked = await LikeApi.isliked(jwt, item.id);
+      if (jwt) {
+        const favoriteStatus = await FavoriteApi.isFavorite(jwt, item.id);
 
-      const favoriteStatus = await FavoriteApi.isFavorite(jwt, item.id);
+        await refresh(jwt);
+        await refreshComments(jwt);
 
-      // Actualizar los estados
-      setId(id);
-      setLikesCount(parseInt(count));
-      setLiked(isliked);
-
-
-      if (favoriteStatus && favoriteStatus.isFavorited !== undefined) {
-        setIsFavorite(favoriteStatus.isFavorited); 
-      } else {
-        setIsFavorite(false); 
+        if (favoriteStatus && favoriteStatus.isFavorited !== undefined) {
+          setIsFavorite(favoriteStatus.isFavorited);
+        } else {
+          setIsFavorite(false);
+        }
       }
+      setId(id);
     };
 
     fetchData();
-  }, []); 
+  }, []);
 
   const isOwner = item.user === id;
-
 
   const handleLike = async () => {
     try {
@@ -67,28 +79,29 @@ const Post = ({ item }) => {
     }
   };
 
-
   const favoriteIcon = async () => {
     try {
       const jwt = await getItem("jwt");
 
       if (isFavorite) {
-        await FavoriteApi.deleteFavorite(jwt, item.id); 
+        await FavoriteApi.deleteFavorite(jwt, item.id);
       } else {
-        await FavoriteApi.addFavorite(jwt, item.id); 
+        await FavoriteApi.addFavorite(jwt, item.id);
       }
 
-      setIsFavorite((prev) => !prev); 
+      setIsFavorite((prev) => !prev);
     } catch (error) {
       console.error("Error handling bookmark:", error);
     }
   };
 
-
   const handleCommentPress = () => {
-    router.push(`../createComment`);
+    // router.push({
+    //   pathname: "../createComment",
+    //   params: { post: item.id },
+    // });
+    setModalVisible(true);
   };
-
 
   const handlePostOptionsMenuPress = () => {
     setIsPostOptionsMenu(true);
@@ -164,10 +177,11 @@ const Post = ({ item }) => {
         </Pressable>
 
         <Pressable
-          className="w-[33%] justify-center items-center"
+          className="w-[33%] justify-center items-center flex-row"
           onPress={handleCommentPress}
         >
-          <Comment />
+          <CommentIcon />
+          {commentsCount > 0 && <Text className="ml-2">{commentsCount}</Text>}
         </Pressable>
         <Pressable
           className="w-[33%] justify-center items-center"
@@ -175,6 +189,22 @@ const Post = ({ item }) => {
         >
           {isFavorite ? <Bookmarkb /> : <Bookmark />}
         </Pressable>
+
+        <Modal
+          animationType="slide"
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View className="flex-1 ">
+            <Comment
+              postId={item.id}
+              refresh={refresh}
+              refreshComments={refreshComments}
+            />
+          </View>
+        </Modal>
       </View>
     </View>
   );
