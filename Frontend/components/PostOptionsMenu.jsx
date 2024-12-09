@@ -13,6 +13,7 @@ import { Bookmark, Trash, Edit, UserFollow, UserUnfollow } from "./Icons";
 import { useRouter } from "expo-router";
 import { getItem } from "../utils/AsyncStorage";
 import { FollowApi } from "../api/followApi";
+import { FavoriteApi } from "../api/favoriteApi"; 
 
 const PostOptionsMenu = ({
   isVisible,
@@ -23,31 +24,26 @@ const PostOptionsMenu = ({
   user,
   postId,
   description,
-  photo
+  photo,
+  onFavoriteToggle, // Callback para informar al padre cuando se cambia el estado de favorito
 }) => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isTimeLimitModalVisible, setIsTimeLimitModalVisible] = useState(false);
   const [timeLimitMessage, setTimeLimitMessage] = useState("");
   const [follow, setFollow] = useState(isFollowing);
   const [loadingFollow, setLoadingFollow] = useState(false);
+  const [favorite, setFavorite] = useState(false); // Estado para el favorito
   const router = useRouter();
 
   useEffect(() => {
-    setFollow(isFollowing);
-  }, [isFollowing]);
+    const fetchFavoriteStatus = async () => {
+      const jwt = await getItem("jwt");
+      const isFavorited = await FavoriteApi.isFavorite(jwt, postId); // Aquí verificamos si está en favoritos
+      setFavorite(isFavorited);
+    };
 
-  useEffect(() => {
-    if (user) {
-      const fetchData = async () => {
-        const jwt = await getItem("jwt");
-
-        const isFollowData = await FollowApi.isfollow(jwt, user);
-        setFollow(!!isFollowData);
-      };
-
-      fetchData();
-    }
-  }, [user]);
+    fetchFavoriteStatus();
+  }, [postId]);
 
   const handleDeletePress = () => {
     if (!isEditableDeletable) {
@@ -116,6 +112,24 @@ const PostOptionsMenu = ({
     }
   };
 
+  // Manejo del botón de favoritos
+  const handleFavoriteToggle = async () => {
+    try {
+      const jwt = await getItem("jwt");
+      if (favorite) {
+        await FavoriteApi.deleteFavorite(jwt, postId); // Eliminar de favoritos
+      } else {
+        await FavoriteApi.addFavorite(jwt, postId); // Agregar a favoritos
+      }
+      setFavorite((prev) => !prev); // Alternar el estado de favorito
+      if (onFavoriteToggle) {
+        onFavoriteToggle(); // Notificar al componente padre si es necesario
+      }
+    } catch (error) {
+      console.error("Error al manejar favoritos:", error);
+    }
+  };
+
   const handleCloseTimeLimitModal = () => {
     setIsTimeLimitModalVisible(false);
   };
@@ -152,11 +166,13 @@ const PostOptionsMenu = ({
                     </View>
                     <Text style={styles.optionText}>{"Editar"}</Text>
                   </Pressable>
-                  <Pressable style={styles.optionButton}>
+                  <Pressable style={styles.optionButton} onPress={handleFavoriteToggle}>
                     <View style={styles.iconContainer}>
                       <Bookmark size={24} color="black" />
                     </View>
-                    <Text style={styles.optionText}>Agregar a favoritos</Text>
+                    <Text style={styles.optionText}>
+                      {favorite ? "Eliminar de favoritos" : "Agregar a favoritos"}
+                    </Text>
                   </Pressable>
                 </>
               ) : (
@@ -179,11 +195,13 @@ const PostOptionsMenu = ({
                       {follow ? "Dejar de seguir" : "Seguir"}
                     </Text>
                   </Pressable>
-                  <Pressable style={styles.optionButton}>
+                  <Pressable style={styles.optionButton} onPress={handleFavoriteToggle}>
                     <View style={styles.iconContainer}>
                       <Bookmark size={24} color="black" />
                     </View>
-                    <Text style={styles.optionText}>Agregar a favoritos</Text>
+                    <Text style={styles.optionText}>
+                      {favorite ? "Eliminar de favoritos" : "Agregar a favoritos"}
+                    </Text>
                   </Pressable>
                 </>
               )}
