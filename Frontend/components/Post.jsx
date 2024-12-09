@@ -110,6 +110,9 @@ const Post = ({ item }) => {
               isOwner={isOwner}
               isEditableDeletable={isEditableDeletable} // Nueva propiedad
               user={item.user}
+              postId={item.id}
+              description={item.description}
+              photo={item.photos[0].photo}
             />
           )}
         </Pressable>

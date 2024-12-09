@@ -197,6 +197,50 @@ const searchPostsByDescription = async (req, res) => {
   }
 };
 
+const deletePost = async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    // Intentar eliminar el post
+    const deletedPost = await PostModel.deletePost(id);
+
+    // Verificar si el post fue realmente eliminado
+    if (!deletedPost) {
+      return res.status(404).json({ ok: false, message: "Post not found or already deleted" });
+    }
+
+    return res.json({ ok: true, message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error); 
+    return res.status(500).json({ ok: false, message: "Internal server error" });
+  }
+};
+
+const updatePost = async (req, res) => {
+  
+  const { id, description } = req.body;
+
+  if (!description) {
+    return res.status(400).json({ ok: false, message: "Description is required" });
+  }
+
+  try {
+    const updatedPost = await PostModel.updateDescription(id, description);
+
+    if (!updatedPost) {
+      return res.status(404).json({ ok: false, message: "Post not found or already deleted" });
+    }
+
+    return res.json({ ok: true, post: updatedPost });
+  } catch (error) {
+    console.error("Error updating post:", error);
+    return res.status(500).json({ ok: false, message: "Internal server error" });
+  }
+};
+
+
+
+
 export const PostController = {
   createPost,
   getPosts,
@@ -205,4 +249,6 @@ export const PostController = {
   searchTagPosts,
   searchPostsByTag,
   searchPostsByDescription,
+  deletePost,
+  updatePost,
 };

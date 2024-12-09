@@ -9,5 +9,8 @@ router.get("/followersposts", PostController.getFollowersPosts);
 router.get("/search/hashtag/:tag", PostController.searchTagPosts);
 router.get("/search/hashtag/posts/:tag", PostController.searchPostsByTag);
 router.get("/search/posts/:txt", PostController.searchPostsByDescription);
+router.put("/delete/", PostController.deletePost);
+router.put("/update/", PostController.updatePost);
+
 
 export default router;
