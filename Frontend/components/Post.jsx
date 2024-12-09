@@ -23,8 +23,7 @@ const Post = ({ item }) => {
   const postDate = new Date(item.created_at);
   const isEditableDeletable = !isOlderThan24Hours(postDate);
 
-  const refresh = async () => {
-    const jwt = await getItem("jwt");
+  const refresh = async (jwt) => {
     const count = await LikeApi.count(jwt, item.id);
     const isliked = await LikeApi.isliked(jwt, item.id);
 
@@ -32,25 +31,29 @@ const Post = ({ item }) => {
     setLiked(isliked);
   };
 
+  const refreshComments = async (jwt) => {
+    const commentsData = await CommentApi.count(jwt, item.id);
+    setCommentsCount(parseInt(commentsData));
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const id = await getItem("id");
       const jwt = await getItem("jwt");
-      const commentsData = await CommentApi.count(jwt, item.id);
 
-      const favoriteStatus = await FavoriteApi.isFavorite(jwt, item.id);
+      if (jwt) {
+        const favoriteStatus = await FavoriteApi.isFavorite(jwt, item.id);
 
-      // Actualizar los estados
-      setId(id);
-      setCommentsCount(commentsData);
+        await refresh(jwt);
+        await refreshComments(jwt);
 
-      await refresh();
-
-      if (favoriteStatus && favoriteStatus.isFavorited !== undefined) {
-        setIsFavorite(favoriteStatus.isFavorited);
-      } else {
-        setIsFavorite(false);
+        if (favoriteStatus && favoriteStatus.isFavorited !== undefined) {
+          setIsFavorite(favoriteStatus.isFavorited);
+        } else {
+          setIsFavorite(false);
+        }
       }
+      setId(id);
     };
 
     fetchData();
@@ -195,7 +198,11 @@ const Post = ({ item }) => {
           }}
         >
           <View className="flex-1 ">
-            <Comment postId={item.id} refresh={refresh} />
+            <Comment
+              postId={item.id}
+              refresh={refresh}
+              refreshComments={refreshComments}
+            />
           </View>
         </Modal>
       </View>

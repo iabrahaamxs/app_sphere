@@ -32,9 +32,19 @@ const countComments = async (post) => {
 
 const createComments = async (user, post, text) => {
   const { rows } = await poll.query(
-    `INSERT INTO comments ("user", post, text)
+    `WITH inserted_comment AS (
+      INSERT INTO comments ("user", post, text)
       VALUES ($1, $2, $3)
-      RETURNING *`,
+      RETURNING *
+    )
+    SELECT 
+      ic.id,
+      ic.text,
+      ic.created_at,
+      u.user_name,
+      u.photo
+    FROM inserted_comment ic
+    INNER JOIN users u ON ic."user" = u.id`,
     [user, post, text]
   );
   return rows[0];

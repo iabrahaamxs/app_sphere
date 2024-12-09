@@ -17,25 +17,29 @@ import {
 import { getItem } from "../utils/AsyncStorage";
 import { LikeApi } from "../api/likeApi";
 import ModalLikes from "./ModalLikes";
+import { CommentApi } from "../api/commentApi";
 
 const MAX_CHARACTERS = 1000; // Máximo de caracteres permitidos
 const MAX_NEWLINES = 10; // Máximo de saltos de línea permitidos
 
-const Comment = ({ comments, onSendComment, postId, refresh }) => {
+const Comment = ({ postId, refresh, refreshComments }) => {
   const [newComment, setNewComment] = useState("");
   const insets = useSafeAreaInsets();
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [likeModalVisible, setLikeModalVisible] = useState(false);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const jwt = await getItem("jwt");
       const isliked = await LikeApi.isliked(jwt, postId);
       const count = await LikeApi.count(jwt, postId);
+      const commentsData = await CommentApi.getComments(jwt, postId);
 
       setLiked(isliked);
       setLikesCount(parseInt(count));
+      setComments(commentsData);
     };
     fetchData();
   }, []);
@@ -55,12 +59,21 @@ const Comment = ({ comments, onSendComment, postId, refresh }) => {
     setNewComment(text);
   };
 
-  const handleSendComment = () => {
-    if (newComment.trim()) {
-      onSendComment(postId, newComment);
+  const handleSendComment = async () => {
+    const jwt = await getItem("jwt");
+    if (newComment.trim() && jwt) {
+      const commentData = await CommentApi.createComment(
+        jwt,
+        postId,
+        newComment
+      );
+
+      setComments([...comments, commentData]);
       setNewComment("");
+      refreshComments(jwt);
     }
   };
+
   const handleLike = async () => {
     try {
       const jwt = await getItem("jwt");
@@ -74,29 +87,25 @@ const Comment = ({ comments, onSendComment, postId, refresh }) => {
       }
 
       setLiked((prev) => !prev);
-      await refresh();
+      await refresh(jwt);
     } catch (error) {
       console.error("Error handling like:", error);
     }
   };
 
   const goToLikesScreen = () => {
-    // router.push({
-    //   pathname: "/likesScreen",
-    //   params: { postId },
-    // });
     setLikeModalVisible(true);
   };
 
   const renderComment = ({ item }) => (
     <View style={styles.commentContainer}>
-      <Image source={{ uri: item.userPhoto }} style={styles.userPhoto} />
+      <Image source={{ uri: item.photo }} style={styles.userPhoto} />
       <View style={styles.commentContent}>
         <View style={styles.commentBox}>
           <View style={styles.commentHeader}>
-            <Text style={styles.commentUsername}>{item.username} ·</Text>
+            <Text style={styles.commentUsername}>{item.user_name} ·</Text>
             <Text style={styles.commentTime}>
-              {timeElapsed(item.createdAt)}
+              {timeElapsed(item.created_at)}
             </Text>
           </View>
           <Text style={styles.commentText}>{item.text}</Text>
