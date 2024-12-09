@@ -141,7 +141,7 @@ export const Guitar = (props) => (
   <FontAwesome6 name="guitar" size={24} color="black" {...props} />
 );
 
-export const Comment = (props) => (
+export const CommentIcon = (props) => (
   <FontAwesome6 name="comment-alt" size={24} color="black" {...props} />
 );
 
