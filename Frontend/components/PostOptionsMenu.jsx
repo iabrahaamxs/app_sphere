@@ -13,7 +13,7 @@ import { Bookmark, Trash, Edit, UserFollow, UserUnfollow } from "./Icons";
 import { useRouter } from "expo-router";
 import { getItem } from "../utils/AsyncStorage";
 import { FollowApi } from "../api/followApi";
-import { FavoriteApi } from "../api/favoriteApi"; 
+import { FavoriteApi } from "../api/favoriteApi";
 
 const PostOptionsMenu = ({
   isVisible,
@@ -25,21 +25,21 @@ const PostOptionsMenu = ({
   postId,
   description,
   photo,
-  onFavoriteToggle, // Callback para informar al padre cuando se cambia el estado de favorito
+  onFavoriteToggle, 
 }) => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isTimeLimitModalVisible, setIsTimeLimitModalVisible] = useState(false);
   const [timeLimitMessage, setTimeLimitMessage] = useState("");
   const [follow, setFollow] = useState(isFollowing);
   const [loadingFollow, setLoadingFollow] = useState(false);
-  const [favorite, setFavorite] = useState(false); // Estado para el favorito
+  const [favorite, setFavorite] = useState(false); 
   const router = useRouter();
 
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       const jwt = await getItem("jwt");
-      const isFavorited = await FavoriteApi.isFavorite(jwt, postId); // Aquí verificamos si está en favoritos
-      setFavorite(isFavorited);
+      const response = await FavoriteApi.isFavorite(jwt, postId); 
+      setFavorite(response.isFavorited); 
     };
 
     fetchFavoriteStatus();
@@ -65,13 +65,13 @@ const PostOptionsMenu = ({
     } else {
       router.push({
         pathname: "/editPost",
-        params: { 
-          postId: postId, 
+        params: {
+          postId: postId,
           userId: user,
-          postDescription : description,
+          postDescription: description,
           photo: photo,
         },
-      });      
+      });
     }
   };
 
@@ -117,13 +117,13 @@ const PostOptionsMenu = ({
     try {
       const jwt = await getItem("jwt");
       if (favorite) {
-        await FavoriteApi.deleteFavorite(jwt, postId); // Eliminar de favoritos
+        await FavoriteApi.deleteFavorite(jwt, postId); 
       } else {
-        await FavoriteApi.addFavorite(jwt, postId); // Agregar a favoritos
+        await FavoriteApi.addFavorite(jwt, postId); 
       }
-      setFavorite((prev) => !prev); // Alternar el estado de favorito
+      setFavorite((prev) => !prev); 
       if (onFavoriteToggle) {
-        onFavoriteToggle(); // Notificar al componente padre si es necesario
+        onFavoriteToggle(); 
       }
     } catch (error) {
       console.error("Error al manejar favoritos:", error);
