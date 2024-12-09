@@ -8,11 +8,13 @@ import PostOptionsMenu from "./PostOptionsMenu";
 import { isOlderThan24Hours } from "../utils/DateUtils";
 import { LikeApi } from "../api/likeApi";
 import Comment from "./Comment";
+import { CommentApi } from "../api/commentApi";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
   const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -31,7 +33,11 @@ const Post = ({ item }) => {
   useEffect(() => {
     const fetchData = async () => {
       const id = await getItem("id");
+      const jwt = await getItem("jwt");
+      const commentsData = await CommentApi.count(jwt, item.id);
+
       setId(id);
+      setCommentsCount(commentsData);
 
       await refresh();
     };
@@ -140,10 +146,11 @@ const Post = ({ item }) => {
         </Pressable>
 
         <Pressable
-          className="w-[33%] justify-center items-center"
+          className="w-[33%] justify-center items-center flex-row"
           onPress={handleCommentPress}
         >
           <CommentIcon />
+          {commentsCount > 0 && <Text className="ml-2">{commentsCount}</Text>}
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center">
           <Bookmark />
