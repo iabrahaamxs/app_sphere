@@ -1,5 +1,5 @@
-import { Image, Pressable, Text, View } from "react-native";
-import { Bookmark, Comment, Ellipsis, HeartIcon } from "./Icons";
+import { Image, Modal, Pressable, StatusBar, Text, View } from "react-native";
+import { Bookmark, CommentIcon, Ellipsis, HeartIcon } from "./Icons";
 import { Link, router } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
@@ -7,12 +7,14 @@ import { getItem } from "../utils/AsyncStorage";
 import PostOptionsMenu from "./PostOptionsMenu";
 import { isOlderThan24Hours } from "../utils/DateUtils";
 import { LikeApi } from "../api/likeApi";
+import Comment from "./Comment";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const postDate = new Date(item.created_at);
   const isEditableDeletable = !isOlderThan24Hours(postDate);
@@ -57,10 +59,11 @@ const Post = ({ item }) => {
   };
 
   const handleCommentPress = () => {
-    router.push({
-      pathname: "../createComment",
-      params: { post: item.id },
-    });
+    // router.push({
+    //   pathname: "../createComment",
+    //   params: { post: item.id },
+    // });
+    setModalVisible(true);
   };
 
   const handlePostOptionsMenuPress = () => {
@@ -140,11 +143,23 @@ const Post = ({ item }) => {
           className="w-[33%] justify-center items-center"
           onPress={handleCommentPress}
         >
-          <Comment />
+          <CommentIcon />
         </Pressable>
         <Pressable className="w-[33%] justify-center items-center">
           <Bookmark />
         </Pressable>
+
+        <Modal
+          animationType="slide"
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View className="flex-1 ">
+            <Comment postId={item.id} refresh={refresh} />
+          </View>
+        </Modal>
       </View>
     </View>
   );

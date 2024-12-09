@@ -12,19 +12,23 @@ import {
   Pressable,
   KeyboardAvoidingView,
   StyleSheet,
+  StatusBar,
+  Modal,
 } from "react-native";
 import { getItem } from "../utils/AsyncStorage";
 import { LikeApi } from "../api/likeApi";
+import ModalLikes from "./ModalLikes";
 
 const MAX_CHARACTERS = 1000; // Máximo de caracteres permitidos
 const MAX_NEWLINES = 10; // Máximo de saltos de línea permitidos
 
-const CommentBox = ({ comments, onSendComment, postId }) => {
+const Comment = ({ comments, onSendComment, postId, refresh }) => {
   const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const insets = useSafeAreaInsets();
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [likeModalVisible, setLikeModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,16 +76,18 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
       }
 
       setLiked((prev) => !prev);
+      await refresh();
     } catch (error) {
       console.error("Error handling like:", error);
     }
   };
 
   const goToLikesScreen = () => {
-    router.push({
-      pathname: "/likesScreen",
-      params: { postId },
-    });
+    // router.push({
+    //   pathname: "/likesScreen",
+    //   params: { postId },
+    // });
+    setLikeModalVisible(true);
   };
 
   const renderComment = ({ item }) => (
@@ -106,6 +112,7 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
       style={[styles.container, { paddingBottom: insets.bottom }]}
       behavior="padding"
     >
+      <StatusBar style="auto" backgroundColor="#fff" />
       <View style={styles.likeIconContainer}>
         <View style={{ flex: 1 }}>
           {likesCount > 0 && (
@@ -139,11 +146,26 @@ const CommentBox = ({ comments, onSendComment, postId }) => {
           <SendIcon color="gray" />
         </Pressable>
       </View>
+      <Modal
+        animationType="slide"
+        visible={likeModalVisible}
+        onRequestClose={() => {
+          <StatusBar style="auto" />;
+          setLikeModalVisible(!likeModalVisible);
+        }}
+      >
+        <View className="flex-1 ">
+          <ModalLikes
+            postId={postId}
+            setLikeModalVisible={setLikeModalVisible}
+          />
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
 
-export default CommentBox;
+export default Comment;
 
 const styles = StyleSheet.create({
   container: {
@@ -153,7 +175,7 @@ const styles = StyleSheet.create({
   commentsList: {
     flex: 1,
     paddingHorizontal: 10,
-    marginTop: 90,
+    marginTop: 70,
     borderTopWidth: 1,
     borderTopColor: "rgba(0, 0, 0, 0.2)",
     marginBottom: 10,
@@ -219,7 +241,7 @@ const styles = StyleSheet.create({
   },
   likeIconContainer: {
     position: "absolute",
-    top: 55,
+    top: 35,
     right: 10,
     left: 10,
     flexDirection: "row",
