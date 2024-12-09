@@ -23,6 +23,32 @@ const getFavorites = async (req, res) => {
   }
 };
 
+const addFavorite = async (req, res) => {
+  const { postId } = req.body;
+  const userId = req.user_id; // Obtener el userId desde la autenticación
+
+  if (!postId) {
+    return res.status(400).json({ message: "Post ID is required" });
+  }
+
+  try {
+    const favorite = await FavoriteModel.createFavorite(userId, postId);
+
+    return res.status(201).json({
+      ok: true,
+      message: "Favorite created successfully",
+      favorite,
+    });
+  } catch (error) {
+    console.error("Error creating favorite:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+
 export const FavoriteController = {
   getFavorites,
+  addFavorite,
 };

@@ -30,7 +30,21 @@ const getFavorite = async (id) => {
   return rows;
 };
 
+const createFavorite = async (userId, postId) => {
+  const { rows } = await poll.query(
+    `
+    INSERT INTO favorites ("user", post)
+      VALUES ($1, $2)
+      RETURNING *
+    `,
+    [userId, postId]
+  );
+
+  return rows[0]; 
+};
+
 export const FavoriteModel = {
   create,
   getFavorite,
+  createFavorite,
 };
