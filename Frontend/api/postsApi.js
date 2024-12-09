@@ -127,8 +127,8 @@ const getPostsByDescription = async (jwt, txt) => {
 const update = async (jwt, id, description) => {
   try {
     const res = await axiosManager.put(
-      `/private/post/update/${id}`,
-      { description },
+      `/private/post/update`, 
+      { id, description },    
       {
         headers: {
           Authorization: jwt,
@@ -137,7 +137,7 @@ const update = async (jwt, id, description) => {
     );
     return res.data;
   } catch (error) {
-    console.log("error updatePost", error);
+    console.log("Error updatePost", error);
     return { ok: false, message: "Error updating post" };
   }
 };
@@ -145,8 +145,8 @@ const update = async (jwt, id, description) => {
 const deletePost = async (jwt, id) => {
   try {
     const res = await axiosManager.put(
-      `/private/post/delete/${id}`, 
-      {},
+      `/private/post/delete`,
+      { id },                
       {
         headers: {
           Authorization: jwt,
