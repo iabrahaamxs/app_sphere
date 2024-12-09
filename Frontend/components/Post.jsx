@@ -1,5 +1,5 @@
 import { Image, Modal, Pressable, Text, View } from "react-native";
-import { Bookmark, CommentIcon, Ellipsis, HeartIcon } from "./Icons";
+import { Bookmark, Bookmarkb, CommentIcon, Ellipsis, HeartIcon } from "./Icons";
 import { Link } from "expo-router";
 import { timeElapsed } from "../utils/FormatDate";
 import { useState, useEffect } from "react";
@@ -9,12 +9,14 @@ import { isOlderThan24Hours } from "../utils/DateUtils";
 import { LikeApi } from "../api/likeApi";
 import Comment from "./Comment";
 import { CommentApi } from "../api/commentApi";
+import { FavoriteApi } from "../api/favoriteApi";
 
 const Post = ({ item }) => {
   const [id, setId] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [commentsCount, setCommentsCount] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [isPostOptionsMenu, setIsPostOptionsMenu] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -36,11 +38,21 @@ const Post = ({ item }) => {
       const jwt = await getItem("jwt");
       const commentsData = await CommentApi.count(jwt, item.id);
 
+      const favoriteStatus = await FavoriteApi.isFavorite(jwt, item.id);
+
+      // Actualizar los estados
       setId(id);
       setCommentsCount(commentsData);
 
       await refresh();
+
+      if (favoriteStatus && favoriteStatus.isFavorited !== undefined) {
+        setIsFavorite(favoriteStatus.isFavorited);
+      } else {
+        setIsFavorite(false);
+      }
     };
+
     fetchData();
   }, []);
 
@@ -61,6 +73,22 @@ const Post = ({ item }) => {
       setLiked((prev) => !prev);
     } catch (error) {
       console.error("Error handling like:", error);
+    }
+  };
+
+  const favoriteIcon = async () => {
+    try {
+      const jwt = await getItem("jwt");
+
+      if (isFavorite) {
+        await FavoriteApi.deleteFavorite(jwt, item.id);
+      } else {
+        await FavoriteApi.addFavorite(jwt, item.id);
+      }
+
+      setIsFavorite((prev) => !prev);
+    } catch (error) {
+      console.error("Error handling bookmark:", error);
     }
   };
 
@@ -117,7 +145,7 @@ const Post = ({ item }) => {
               isVisible={isPostOptionsMenu}
               onCancel={() => setIsPostOptionsMenu(false)}
               isOwner={isOwner}
-              isEditableDeletable={isEditableDeletable} // Nueva propiedad
+              isEditableDeletable={isEditableDeletable}
               user={item.user}
               postId={item.id}
               description={item.description}
@@ -152,8 +180,11 @@ const Post = ({ item }) => {
           <CommentIcon />
           {commentsCount > 0 && <Text className="ml-2">{commentsCount}</Text>}
         </Pressable>
-        <Pressable className="w-[33%] justify-center items-center">
-          <Bookmark />
+        <Pressable
+          className="w-[33%] justify-center items-center"
+          onPress={favoriteIcon}
+        >
+          {isFavorite ? <Bookmarkb /> : <Bookmark />}
         </Pressable>
 
         <Modal

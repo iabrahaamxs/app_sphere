@@ -180,3 +180,7 @@ export const BackIcon = () => (
 export const ImageIcon = ({ size = 24, color = 'black' }) => (
   <Entypo name="image" size={size} color={color} />
 );
+
+export const Bookmarkb = (props) => (
+  <FontAwesome name="bookmark" size={24} color="#462E84" {...props} />
+);
