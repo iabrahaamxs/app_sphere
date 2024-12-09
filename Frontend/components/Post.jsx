@@ -153,6 +153,7 @@ const Post = ({ item }) => {
               postId={item.id}
               description={item.description}
               photo={item.photos[0].photo}
+              onFavoriteToggle={() => setIsFavorite((prev) => !prev)}
             />
           )}
         </Pressable>
