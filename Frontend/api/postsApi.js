@@ -124,8 +124,47 @@ const getPostsByDescription = async (jwt, txt) => {
   }
 };
 
+const update = async (jwt, id, description) => {
+  try {
+    const res = await axiosManager.put(
+      `/private/post/update`, 
+      { id, description },    
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.log("Error updatePost", error);
+    return { ok: false, message: "Error updating post" };
+  }
+};
+
+const deletePost = async (jwt, id) => {
+  try {
+    const res = await axiosManager.put(
+      `/private/post/delete`,
+      { id },                
+      {
+        headers: {
+          Authorization: jwt,
+        },
+      }
+    );
+    return { ok: true, data: res.data };
+  } catch (error) {
+    console.error("Error deletePost", error);
+    return { ok: false, message: error.response?.data?.message || "Error deleting post" };
+  }
+};
+
+
 export const PostApi = {
   create,
+  update,
+  deletePost,
   getPosts,
   getMyPosts,
   getFavorites,

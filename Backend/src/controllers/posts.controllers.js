@@ -198,7 +198,7 @@ const searchPostsByDescription = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const { id } = req.params; 
+  const { id } = req.body;
 
   try {
     // Intentar eliminar el post
@@ -217,8 +217,8 @@ const deletePost = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-  const { id } = req.params;
-  const { description } = req.body; // Nueva descripción
+  
+  const { id, description } = req.body;
 
   if (!description) {
     return res.status(400).json({ ok: false, message: "Description is required" });
