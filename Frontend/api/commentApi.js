@@ -1,6 +1,6 @@
 import axiosManager from "./apiManager";
 
-const getComments = async (jwt, post) => {
+const getComments = async (jwt, post, page, limit) => {
   try {
     const { data } = await axiosManager.get("/private/comment/comments", {
       headers: {
@@ -8,6 +8,8 @@ const getComments = async (jwt, post) => {
       },
       params: {
         post,
+        page,
+        limit,
       },
     });
     return data;

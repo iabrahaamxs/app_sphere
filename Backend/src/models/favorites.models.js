@@ -11,7 +11,7 @@ const create = async (post_id, url_photo) => {
   return rows;
 };
 
-const getFavorite = async (id) => {
+const getFavorite = async (id, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT f.id, f.post, p."user", p.description, p.created_at, u.name, u.photo, f.created_at AS favorite_created_at
@@ -24,8 +24,9 @@ const getFavorite = async (id) => {
       WHERE 
         f."user" = $1
         AND f.deleted_at IS NULL
-      ORDER BY f.created_at DESC`,
-    [id]
+      ORDER BY f.created_at DESC
+      LIMIT $2 OFFSET $3`,
+    [id, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };
@@ -40,7 +41,7 @@ const createFavorite = async (userId, postId) => {
     [userId, postId]
   );
 
-  return rows[0]; 
+  return rows[0];
 };
 
 const findFavorite = async (user, post) => {
@@ -49,13 +50,12 @@ const findFavorite = async (user, post) => {
      FROM favorites
      WHERE "user" = $1 
        AND post = $2
-       AND deleted_at IS NULL`, 
+       AND deleted_at IS NULL`,
     [user, post]
   );
 
-  return rows.length > 0; 
+  return rows.length > 0;
 };
-
 
 const deleteFavorite = async (userId, postId) => {
   const { rows } = await poll.query(
@@ -68,9 +68,8 @@ const deleteFavorite = async (userId, postId) => {
     `,
     [userId, postId]
   );
-  return rows.length > 0; 
+  return rows.length > 0;
 };
-
 
 export const FavoriteModel = {
   create,

@@ -1,18 +1,20 @@
 import { poll } from "../db.js";
 
-const getComments = async (post_id) => {
+const getComments = async (post_id, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT c.id,
-      u.user_name,
-      u.photo,
-      c.text,
-      c.created_at
+       u.user_name,
+       u.photo,
+       c.text,
+       c.created_at
         FROM comments AS c
         INNER JOIN users AS u ON c."user" = u.id
         WHERE c.post = $1
-        AND c.deleted_at IS NULL`,
-    [post_id]
+          AND c.deleted_at IS NULL
+        ORDER BY c.created_at DESC -- Ordena los comentarios por fecha (descendente)
+        LIMIT $2 OFFSET $3;`,
+    [post_id, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };
