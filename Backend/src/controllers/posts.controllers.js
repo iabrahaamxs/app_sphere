@@ -33,18 +33,6 @@ const getMyPosts = async (req, res) => {
     rows[index].photos = photos;
   }
 
-  //obtener comentarios de cada post
-  for (let index = 0; index < rows.length; index++) {
-    let comments = await CommentModel.getComments(rows[index].id);
-    rows[index].comments = comments;
-  }
-
-  //obtener likes de cada post
-  for (let index = 0; index < rows.length; index++) {
-    let likes = await LikeModel.getLikes(rows[index].id);
-    rows[index].likes = likes;
-  }
-
   return res.json(rows);
 };
 
@@ -64,18 +52,6 @@ const getPosts = async (req, res) => {
     rows[index].photos = photos;
   }
 
-  //obtener comentarios de cada post
-  for (let index = 0; index < rows.length; index++) {
-    let comments = await CommentModel.getComments(rows[index].id);
-    rows[index].comments = comments;
-  }
-
-  //obtener likes de cada post
-  for (let index = 0; index < rows.length; index++) {
-    let likes = await LikeModel.getLikes(rows[index].id);
-    rows[index].likes = likes;
-  }
-
   return res.json(rows);
 };
 
@@ -93,18 +69,6 @@ const getFollowersPosts = async (req, res) => {
     for (let index = 0; index < rows.length; index++) {
       let photos = await PhotoModel.getPhotos(rows[index].id);
       rows[index].photos = photos;
-    }
-
-    //obtener comentarios de cada post
-    for (let index = 0; index < rows.length; index++) {
-      let comments = await CommentModel.getComments(rows[index].id);
-      rows[index].comments = comments;
-    }
-
-    //obtener likes de cada post
-    for (let index = 0; index < rows.length; index++) {
-      let likes = await LikeModel.getLikes(rows[index].id);
-      rows[index].likes = likes;
     }
 
     return res.json(rows);
@@ -143,18 +107,6 @@ const searchPostsByTag = async (req, res) => {
       rows[index].photos = photos;
     }
 
-    //obtener comentarios de cada post
-    for (let index = 0; index < rows.length; index++) {
-      let comments = await CommentModel.getComments(rows[index].id);
-      rows[index].comments = comments;
-    }
-
-    //obtener likes de cada post
-    for (let index = 0; index < rows.length; index++) {
-      let likes = await LikeModel.getLikes(rows[index].id);
-      rows[index].likes = likes;
-    }
-
     return res.json(rows);
   } catch (error) {
     return res.status(500).json({
@@ -176,18 +128,6 @@ const searchPostsByDescription = async (req, res) => {
       rows[index].photos = photos;
     }
 
-    //obtener comentarios de cada post
-    for (let index = 0; index < rows.length; index++) {
-      let comments = await CommentModel.getComments(rows[index].id);
-      rows[index].comments = comments;
-    }
-
-    //obtener likes de cada post
-    for (let index = 0; index < rows.length; index++) {
-      let likes = await LikeModel.getLikes(rows[index].id);
-      rows[index].likes = likes;
-    }
-
     return res.json(rows);
   } catch (error) {
     return res.status(500).json({
@@ -206,40 +146,46 @@ const deletePost = async (req, res) => {
 
     // Verificar si el post fue realmente eliminado
     if (!deletedPost) {
-      return res.status(404).json({ ok: false, message: "Post not found or already deleted" });
+      return res
+        .status(404)
+        .json({ ok: false, message: "Post not found or already deleted" });
     }
 
     return res.json({ ok: true, message: "Post deleted successfully" });
   } catch (error) {
-    console.error("Error deleting post:", error); 
-    return res.status(500).json({ ok: false, message: "Internal server error" });
+    console.error("Error deleting post:", error);
+    return res
+      .status(500)
+      .json({ ok: false, message: "Internal server error" });
   }
 };
 
 const updatePost = async (req, res) => {
-  
   const { id, description } = req.body;
 
   if (!description) {
-    return res.status(400).json({ ok: false, message: "Description is required" });
+    return res
+      .status(400)
+      .json({ ok: false, message: "Description is required" });
   }
 
   try {
     const updatedPost = await PostModel.updateDescription(id, description);
 
     if (!updatedPost) {
-      return res.status(404).json({ ok: false, message: "Post not found or already deleted" });
+      return res
+        .status(404)
+        .json({ ok: false, message: "Post not found or already deleted" });
     }
 
     return res.json({ ok: true, post: updatedPost });
   } catch (error) {
     console.error("Error updating post:", error);
-    return res.status(500).json({ ok: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ ok: false, message: "Internal server error" });
   }
 };
-
-
-
 
 export const PostController = {
   createPost,

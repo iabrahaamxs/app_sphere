@@ -1,10 +1,11 @@
 import { CommentModel } from "../models/comments.models.js";
 
 const getComments = async (req, res) => {
-  const { post } = req.query;
+  const { post, page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
   try {
-    const comments = await CommentModel.getComments(post);
+    const comments = await CommentModel.getComments(post, limit, offset);
 
     return res.json(comments);
   } catch (error) {

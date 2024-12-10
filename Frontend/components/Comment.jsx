@@ -13,6 +13,7 @@ import {
   StyleSheet,
   StatusBar,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { getItem } from "../utils/AsyncStorage";
 import { LikeApi } from "../api/likeApi";
@@ -29,20 +30,40 @@ const Comment = ({ postId, refresh, refreshComments }) => {
   const [likesCount, setLikesCount] = useState(0);
   const [likeModalVisible, setLikeModalVisible] = useState(false);
   const [comments, setComments] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(8);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadComments = async () => {
+    if (loading || !hasMore) return; // Previene que se carguen comentarios repetidamente mientras se está cargando.
+    setLoading(true);
+    const jwt = await getItem("jwt");
+    const commentsData = await CommentApi.getComments(jwt, postId, page, limit);
+
+    if (commentsData.length < limit) {
+      setHasMore(false);
+    }
+
+    setComments((prev) => [...prev, ...commentsData]); // Actualiza de manera segura con el estado anterior
+    setLoading(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       const jwt = await getItem("jwt");
       const isliked = await LikeApi.isliked(jwt, postId);
       const count = await LikeApi.count(jwt, postId);
-      const commentsData = await CommentApi.getComments(jwt, postId);
 
       setLiked(isliked);
       setLikesCount(parseInt(count));
-      setComments(commentsData);
     };
     fetchData();
-  }, []);
+  }, [postId]);
+
+  useEffect(() => {
+    loadComments(); // Solo ejecuta cuando cambia la página
+  }, [page]);
 
   const handleTextChange = (text) => {
     // Limita los caracteres
@@ -139,6 +160,15 @@ const Comment = ({ postId, refresh, refreshComments }) => {
         renderItem={renderComment}
         style={styles.commentsList}
         showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          loading ? <ActivityIndicator size="small" color="gray" /> : null
+        }
+        onEndReached={() => {
+          if (hasMore && !loading) {
+            setPage((prevPage) => prevPage + 1);
+          }
+        }}
+        onEndReachedThreshold={0.2}
       />
 
       <View style={styles.inputContainer}>
