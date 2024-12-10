@@ -4,8 +4,10 @@ import { PhotoModel } from "../models/photos.models.js";
 const getFavorites = async (req, res) => {
   try {
     const id = req.user_id;
+    const { page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
 
-    const favorites = await FavoriteModel.getFavorite(id);
+    const favorites = await FavoriteModel.getFavorite(id, limit, offset);
 
     if (!favorites.length > 0) {
       return res.json(favorites);
@@ -46,26 +48,24 @@ const addFavorite = async (req, res) => {
 };
 
 const isFavorite = async (req, res) => {
-  const user = req.user_id; 
-  const { post } = req.query; 
+  const user = req.user_id;
+  const { post } = req.query;
 
   try {
-    const isFavorited = await FavoriteModel.findFavorite(user, post); 
+    const isFavorited = await FavoriteModel.findFavorite(user, post);
 
-    return res.json({ isFavorited }); 
+    return res.json({ isFavorited });
   } catch (error) {
     console.error("Error en isFavorite:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-
 const deleteFavorite = async (req, res) => {
-  const user = req.user_id;  
-  const { postId } = req.body;  
+  const user = req.user_id;
+  const { postId } = req.body;
 
   try {
-
     const result = await FavoriteModel.deleteFavorite(user, postId);
 
     if (result) {
@@ -77,10 +77,6 @@ const deleteFavorite = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
-
-
 
 export const FavoriteController = {
   getFavorites,
