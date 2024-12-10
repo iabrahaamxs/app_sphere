@@ -19,9 +19,14 @@ const create = async (jwt, description, photo) => {
   }
 };
 
-const getPosts = async (id) => {
+const getPosts = async (id, page, limit) => {
   try {
-    const res = await axiosManager.get(`/public/post/posts/${id}`);
+    const res = await axiosManager.get(`/public/post/posts/${id}`, {
+      params: {
+        page,
+        limit,
+      },
+    });
     return res.data;
   } catch (error) {
     console.log('{ msg: "error getPosts" }');
@@ -30,11 +35,15 @@ const getPosts = async (id) => {
   }
 };
 
-const getMyPosts = async (jwt) => {
+const getMyPosts = async (jwt, page, limit) => {
   try {
     const res = await axiosManager.get("/private/post/my-posts", {
       headers: {
         Authorization: jwt,
+      },
+      params: {
+        page,
+        limit,
       },
     });
 
@@ -46,11 +55,15 @@ const getMyPosts = async (jwt) => {
   }
 };
 
-const getFavorites = async (jwt) => {
+const getFavorites = async (jwt, page, limit) => {
   try {
     const res = await axiosManager.get("/private/favorite/favorites", {
       headers: {
         Authorization: jwt,
+      },
+      params: {
+        page,
+        limit,
       },
     });
     return res.data;
@@ -61,11 +74,15 @@ const getFavorites = async (jwt) => {
   }
 };
 
-const getFollowersPosts = async (jwt) => {
+const getFollowersPosts = async (jwt, page, limit) => {
   try {
     const res = await axiosManager.get("/private/post/followersposts", {
       headers: {
         Authorization: jwt,
+      },
+      params: {
+        page,
+        limit,
       },
     });
     return res.data;
@@ -76,11 +93,15 @@ const getFollowersPosts = async (jwt) => {
   }
 };
 
-const getHashtags = async (jwt, tag) => {
+const getHashtags = async (jwt, tag, page, limit) => {
   try {
     const res = await axiosManager.get(`/private/post/search/hashtag/${tag}`, {
       headers: {
         Authorization: jwt,
+      },
+      params: {
+        page,
+        limit,
       },
     });
     return res.data;
@@ -91,13 +112,17 @@ const getHashtags = async (jwt, tag) => {
   }
 };
 
-const getPostsByTag = async (jwt, tag) => {
+const getPostsByTag = async (jwt, tag, page, limit) => {
   try {
     const res = await axiosManager.get(
       `/private/post/search/hashtag/posts/${tag}`,
       {
         headers: {
           Authorization: jwt,
+        },
+        params: {
+          page,
+          limit,
         },
       }
     );
@@ -109,11 +134,15 @@ const getPostsByTag = async (jwt, tag) => {
   }
 };
 
-const getPostsByDescription = async (jwt, txt) => {
+const getPostsByDescription = async (jwt, txt, page, limit) => {
   try {
     const res = await axiosManager.get(`/private/post/search/posts/${txt}`, {
       headers: {
         Authorization: jwt,
+      },
+      params: {
+        page,
+        limit,
       },
     });
     return res.data;
@@ -127,8 +156,8 @@ const getPostsByDescription = async (jwt, txt) => {
 const update = async (jwt, id, description) => {
   try {
     const res = await axiosManager.put(
-      `/private/post/update`, 
-      { id, description },    
+      `/private/post/update`,
+      { id, description },
       {
         headers: {
           Authorization: jwt,
@@ -146,7 +175,7 @@ const deletePost = async (jwt, id) => {
   try {
     const res = await axiosManager.put(
       `/private/post/delete`,
-      { id },                
+      { id },
       {
         headers: {
           Authorization: jwt,
@@ -156,10 +185,12 @@ const deletePost = async (jwt, id) => {
     return { ok: true, data: res.data };
   } catch (error) {
     console.error("Error deletePost", error);
-    return { ok: false, message: error.response?.data?.message || "Error deleting post" };
+    return {
+      ok: false,
+      message: error.response?.data?.message || "Error deleting post",
+    };
   }
 };
-
 
 export const PostApi = {
   create,

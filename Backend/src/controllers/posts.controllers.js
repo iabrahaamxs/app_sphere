@@ -20,8 +20,10 @@ const createPost = async (req, res) => {
 //obtener mis posts
 const getMyPosts = async (req, res) => {
   const id = req.user_id;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
-  const rows = await PostModel.getPosts(id);
+  const rows = await PostModel.getPosts(id, limit, offset);
 
   if (rows.length === 0) {
     return res.json(rows);
@@ -39,8 +41,10 @@ const getMyPosts = async (req, res) => {
 // obtener posts de un usuario con sus respectivas fotos
 const getPosts = async (req, res) => {
   const { id } = req.params;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
-  const rows = await PostModel.getPosts(id);
+  const rows = await PostModel.getPosts(id, limit, offset);
 
   if (rows.length === 0) {
     return res.json(rows);
@@ -57,9 +61,11 @@ const getPosts = async (req, res) => {
 
 const getFollowersPosts = async (req, res) => {
   const user = req.user_id;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
   try {
-    const rows = await PostModel.getFollowersPosts(user);
+    const rows = await PostModel.getFollowersPosts(user, limit, offset);
 
     if (rows.length === 0) {
       return res.status(404).json({ menssage: "no posts to view" });
@@ -82,9 +88,11 @@ const getFollowersPosts = async (req, res) => {
 
 const searchTagPosts = async (req, res) => {
   const { tag } = req.params;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
   try {
-    const rows = await PostModel.getPostsTag(tag);
+    const rows = await PostModel.getPostsTag(tag, limit, offset);
 
     return res.json(rows);
   } catch (error) {
@@ -97,9 +105,11 @@ const searchTagPosts = async (req, res) => {
 
 const searchPostsByTag = async (req, res) => {
   const { tag } = req.params;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
   try {
-    const rows = await PostModel.getPostsByTag(tag);
+    const rows = await PostModel.getPostsByTag(tag, limit, offset);
 
     //obtiene las fotos de cada post
     for (let index = 0; index < rows.length; index++) {
@@ -118,9 +128,11 @@ const searchPostsByTag = async (req, res) => {
 
 const searchPostsByDescription = async (req, res) => {
   const { txt } = req.params;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
   try {
-    const rows = await PostModel.getPostsByDescription(txt);
+    const rows = await PostModel.getPostsByDescription(txt, limit, offset);
 
     //obtiene las fotos de cada post
     for (let index = 0; index < rows.length; index++) {

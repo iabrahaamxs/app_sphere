@@ -3,8 +3,10 @@ import { FollowModel } from "../models/follows.models.js";
 // personas que sigue un usuario
 const getFollowed = async (req, res) => {
   const id = req.user_id;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
-  const users = await FollowModel.getFollowed(id);
+  const users = await FollowModel.getFollowed(id, limit, offset);
 
   res.json(users);
 };
@@ -12,8 +14,10 @@ const getFollowed = async (req, res) => {
 // personas que siguen a un usuario
 const getfollowers = async (req, res) => {
   const id = req.user_id;
+  const { page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
-  const followers = await FollowModel.getfollowers(id);
+  const followers = await FollowModel.getfollowers(id, limit, offset);
 
   res.json(followers);
 };

@@ -47,11 +47,15 @@ const getProfile = async (id) => {
   }
 };
 
-const getFollows = async (jwt) => {
+const getFollows = async (jwt, page, limit) => {
   try {
     const res = await axiosManager.get("/private/follow/follows", {
       headers: {
         Authorization: jwt,
+      },
+      params: {
+        page,
+        limit,
       },
     });
     return res.data;
@@ -62,11 +66,15 @@ const getFollows = async (jwt) => {
   }
 };
 
-const getFollowed = async (jwt) => {
+const getFollowed = async (jwt, page, limit) => {
   try {
     const res = await axiosManager.get("/private/follow/followed", {
       headers: {
         Authorization: jwt,
+      },
+      params: {
+        page,
+        limit,
       },
     });
     return res.data;

@@ -12,7 +12,7 @@ const getComments = async (post_id, limit, offset) => {
         INNER JOIN users AS u ON c."user" = u.id
         WHERE c.post = $1
           AND c.deleted_at IS NULL
-        ORDER BY c.created_at DESC -- Ordena los comentarios por fecha (descendente)
+        ORDER BY c.created_at DESC
         LIMIT $2 OFFSET $3;`,
     [post_id, parseInt(limit), parseInt(offset)]
   );
