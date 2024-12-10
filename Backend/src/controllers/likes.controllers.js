@@ -1,10 +1,11 @@
 import { LikeModel } from "../models/likes.models.js";
 
 const getLikes = async (req, res) => {
-  const { post } = req.query;
+  const { post, page = 1, limit = 10 } = req.query;
+  const offset = (page - 1) * limit;
 
   try {
-    const likes = await LikeModel.getLikes(post);
+    const likes = await LikeModel.getLikes(post, limit, offset);
 
     return res.json(likes);
   } catch (error) {

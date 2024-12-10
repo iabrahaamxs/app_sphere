@@ -137,14 +137,16 @@ const countFollows = async (id) => {
   }
 };
 
-const searchUsers = async (txt, jwt) => {
+const searchUsers = async (txt, jwt, limit, offset) => {
   try {
     const res = await axiosManager.get("private/user/search/users", {
       headers: {
         Authorization: jwt,
       },
       params: {
-        txt: txt,
+        txt,
+        limit,
+        offset,
       },
     });
 

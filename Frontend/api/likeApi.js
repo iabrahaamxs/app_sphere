@@ -1,6 +1,6 @@
 import axiosManager from "./apiManager";
 
-const getLikes = async (jwt, post) => {
+const getLikes = async (jwt, post, limit, offset) => {
   try {
     const { data } = await axiosManager.get("/private/like/likes", {
       headers: {
@@ -8,6 +8,8 @@ const getLikes = async (jwt, post) => {
       },
       params: {
         post,
+        limit,
+        offset,
       },
     });
     return data;
