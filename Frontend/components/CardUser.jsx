@@ -1,6 +1,6 @@
 import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View, StyleSheet } from "react-native";
 import { getItem } from "../utils/AsyncStorage";
 import { FollowApi } from "../api/followApi";
 
@@ -77,7 +77,7 @@ const CardUser = ({ user }) => {
       </Pressable>
 
       <Pressable
-        className="w-[110] rounded-lg p-2 items-center mr-4"
+        className="w-[100] rounded-lg p-2 items-center"
         onPress={() => {
           follow ? pressUnfollow() : pressFollow();
         }}
@@ -86,12 +86,18 @@ const CardUser = ({ user }) => {
           backgroundColor: follow ? "#BBBBBB" : "#462E84",
         }}
       >
-        <Text className="text-white font-semibold">
+        <Text style={styles.buttonText} className="text-white font-semibold">
           {follow ? "Dejar de seguir" : "Seguir"}
         </Text>
       </Pressable>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonText: {
+    fontSize: 12,
+  },
+});
 
 export default CardUser;
