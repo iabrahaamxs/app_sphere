@@ -234,14 +234,16 @@ export default function UserProfile() {
             </View>
 
             {hasMore && !loading && (
-              <Pressable
-                className="mx-auto p-2 my-4 bg-[#462E84] rounded-lg"
-                onPress={() => {
-                  setPage((prevPage) => prevPage + 1);
-                }}
-              >
-                <Text className="text-white text-center">Ver más</Text>
-              </Pressable>
+              <View className="w-[100%]">
+                <Pressable
+                  className="mx-auto p-2 my-4 bg-[#462E84] rounded-lg"
+                  onPress={() => {
+                    setPage((prevPage) => prevPage + 1);
+                  }}
+                >
+                  <Text className="text-white text-center">Ver más</Text>
+                </Pressable>
+              </View>
             )}
           </View>
         </ScrollView>

@@ -45,6 +45,9 @@ export default function MyProfile() {
   const [limit] = useState(3);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [pageFav, setPageFav] = useState(1);
+  const [loadingFav, setLoadingFav] = useState(false);
+  const [hasMoreFav, setHasMoreFav] = useState(true);
 
   const loadPosts = async () => {
     if (loading || !hasMore) return;
@@ -58,6 +61,20 @@ export default function MyProfile() {
 
     setPosts((prev) => [...prev, ...postsData]);
     setLoading(false);
+  };
+
+  const loadFavorites = async () => {
+    if (loadingFav || !hasMoreFav) return;
+    setLoadingFav(true);
+    const jwt = await getItem("jwt");
+    const favoritesData = await PostApi.getFavorites(jwt, pageFav, limit);
+
+    if (favoritesData.length < limit) {
+      setHasMoreFav(false);
+    }
+
+    setFavorites((prev) => [...prev, ...favoritesData]);
+    setLoadingFav(false);
   };
 
   const ref = useRef();
@@ -108,7 +125,6 @@ export default function MyProfile() {
     const jwt = await getItem("jwt");
     const profileData = await UserApi.whoami(jwt);
     const categoriesData = await CategorieApi.getMyCategories(jwt);
-    const favoritesData = await PostApi.getFavorites(jwt);
     const followsData = await UserApi.countMyFollows(jwt);
     const followedData = await UserApi.countMyFollowed(jwt);
 
@@ -116,7 +132,6 @@ export default function MyProfile() {
     setCategories(categoriesData);
     setFollows(followsData);
     setFollowed(followedData);
-    setFavorites(favoritesData);
   };
 
   useEffect(() => {
@@ -126,6 +141,10 @@ export default function MyProfile() {
   useEffect(() => {
     loadPosts();
   }, [page]);
+
+  useEffect(() => {
+    loadFavorites();
+  }, [pageFav]);
 
   return (
     <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
@@ -259,14 +278,16 @@ export default function MyProfile() {
                   </Pressable>
                 ))}
                 {hasMore && !loading && (
-                  <Pressable
-                    className="mx-auto p-2 my-4 bg-[#462E84] rounded-lg"
-                    onPress={() => {
-                      setPage((prevPage) => prevPage + 1);
-                    }}
-                  >
-                    <Text className="text-white text-center">Ver más</Text>
-                  </Pressable>
+                  <View className="w-[100%]">
+                    <Pressable
+                      className="mx-auto p-2 my-4 bg-[#462E84] rounded-lg"
+                      onPress={() => {
+                        setPage((prevPage) => prevPage + 1);
+                      }}
+                    >
+                      <Text className="text-white text-center">Ver más</Text>
+                    </Pressable>
+                  </View>
                 )}
               </View>
 
@@ -294,6 +315,18 @@ export default function MyProfile() {
                     />
                   </Pressable>
                 ))}
+                {hasMoreFav && !loadingFav && (
+                  <View className="w-[100%]">
+                    <Pressable
+                      className="mx-auto p-2 my-4 bg-[#462E84] rounded-lg"
+                      onPress={() => {
+                        setPageFav((prevPageFav) => prevPageFav + 1);
+                      }}
+                    >
+                      <Text className="text-white text-center">Ver más</Text>
+                    </Pressable>
+                  </View>
+                )}
               </View>
             </PagerView>
           </View>
