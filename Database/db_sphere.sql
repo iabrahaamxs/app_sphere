@@ -310,4 +310,3 @@ VALUES
 
 INSERT INTO categories ( categorie) VALUES ('Acción'),
 ('Aventura'), ('Arcade'), ('Deporte'), ('Estrategia'), ('Simulación'), ('Mesa'), ('Musicales')
-
