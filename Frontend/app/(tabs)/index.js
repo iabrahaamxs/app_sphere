@@ -1,6 +1,13 @@
 import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { FlatList, Image, RefreshControl, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  RefreshControl,
+  Text,
+  View,
+} from "react-native";
 import Post from "../../components/Post";
 import { getItem } from "../../utils/AsyncStorage";
 import { PostApi } from "../../api/postsApi";
@@ -13,6 +20,24 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadPosts = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    const jwt = await getItem("jwt");
+    const postsData = await PostApi.getFollowersPosts(jwt, page, limit);
+
+    if (postsData.length < limit) {
+      setHasMore(false);
+    }
+
+    setPosts((prev) => [...prev, ...postsData]);
+    setLoading(false);
+  };
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -20,8 +45,6 @@ export default function Home() {
         const jwt = await getItem("jwt");
         if (!jwt) {
           router.replace("/login");
-        } else {
-          await fetchData();
         }
       } catch (error) {
         console.log("Error during app initialization:", error);
@@ -33,6 +56,10 @@ export default function Home() {
     initializeApp();
   }, []);
 
+  useEffect(() => {
+    loadPosts();
+  }, [page]);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchData();
@@ -40,9 +67,10 @@ export default function Home() {
   }, [fetchData]);
 
   const fetchData = useCallback(async () => {
-    const jwt = await getItem("jwt");
-    const postsData = await PostApi.getFollowersPosts(jwt);
-    setPosts(postsData);
+    setPage(1);
+    setHasMore(true);
+    setPosts([]);
+    await loadPosts();
   }, []);
 
   if (isLoading) {
@@ -84,6 +112,15 @@ export default function Home() {
           <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
         }
         keyExtractor={(item) => item.id.toString()}
+        ListFooterComponent={
+          loading ? <ActivityIndicator size="small" color="gray" /> : null
+        }
+        onEndReached={() => {
+          if (hasMore && !loading) {
+            setPage((prevPage) => prevPage + 1);
+          }
+        }}
+        onEndReachedThreshold={0.3}
       />
     </View>
   );

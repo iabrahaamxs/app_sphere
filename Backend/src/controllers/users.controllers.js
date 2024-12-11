@@ -9,7 +9,34 @@ const createUser = async (req, res) => {
   try {
     const data = req.body;
 
-    //hacer validaciones aqui
+    if (!data.email || !data.user_name || !data.phone || !data.password) {
+      return res.status(400).json({
+        ok: false,
+        message: "All fields (email, user_name, phone, password) are required",
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      return res.status(400).json({
+        ok: false,
+        message: "Invalid email format",
+      });
+    }
+
+    if (data.password.length < 6) {
+      return res.status(400).json({
+        ok: false,
+        message: "Password must be at least 6 characters long",
+      });
+    }
+
+    if (!/^\+?\d{10,15}$/.test(data.phone)) {
+      return res.status(400).json({
+        ok: false,
+        message: "Invalid phone number format",
+      });
+    }
 
     const user = await UserModel.findUser(
       data.email.toLowerCase(),

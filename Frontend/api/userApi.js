@@ -137,7 +137,7 @@ const countFollows = async (id) => {
   }
 };
 
-const searchUsers = async (txt, jwt, limit, offset) => {
+const searchUsers = async (txt, jwt, page, limit) => {
   try {
     const res = await axiosManager.get("private/user/search/users", {
       headers: {
@@ -145,8 +145,8 @@ const searchUsers = async (txt, jwt, limit, offset) => {
       },
       params: {
         txt,
+        page,
         limit,
-        offset,
       },
     });
 

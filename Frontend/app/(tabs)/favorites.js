@@ -19,11 +19,28 @@ export default function Favorites() {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadFavorites = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    const jwt = await getItem("jwt");
+    const favoritesData = await PostApi.getFavorites(jwt, page, limit);
+
+    if (favoritesData.length < limit) {
+      setHasMore(false);
+    }
+
+    setPosts((prev) => [...prev, ...favoritesData]);
+    setLoading(false);
+  };
 
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        await fetchData();
       } catch (error) {
         console.log("Error during app initialization:", error);
       } finally {
@@ -33,6 +50,10 @@ export default function Favorites() {
     initializeApp();
   }, []);
 
+  useEffect(() => {
+    loadFavorites();
+  }, [page]);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchData();
@@ -40,9 +61,10 @@ export default function Favorites() {
   }, [fetchData]);
 
   const fetchData = useCallback(async () => {
-    const jwt = await getItem("jwt");
-    const favoritesData = await PostApi.getFavorites(jwt);
-    setPosts(favoritesData);
+    setPage(1);
+    setHasMore(true);
+    setPosts([]);
+    await loadFavorites();
   }, []);
 
   if (isLoading) {
@@ -72,6 +94,15 @@ export default function Favorites() {
           <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
         }
         keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={
+          loading ? <ActivityIndicator size="small" color="gray" /> : null
+        }
+        onEndReached={() => {
+          if (hasMore && !loading) {
+            setPage((prevPage) => prevPage + 1);
+          }
+        }}
+        onEndReachedThreshold={0.3}
       />
     </View>
   );
