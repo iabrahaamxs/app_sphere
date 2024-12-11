@@ -14,7 +14,7 @@ const create = async (post_id, url_photo) => {
 const getFavorite = async (id, limit, offset) => {
   const { rows } = await poll.query(
     `
-    SELECT f.id, f.post, p."user", p.description, p.created_at, u.name, u.photo, f.created_at AS favorite_created_at
+    SELECT p.id, f.post, p."user", p.description, p.created_at, u.name, u.photo, f.created_at AS favorite_created_at
       FROM 
         favorites f
       JOIN 
