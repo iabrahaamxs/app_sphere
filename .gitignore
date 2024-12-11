@@ -1,7 +1,9 @@
+#Backend
 Backend/node_modules
 Backend/.env
 Backend/package-lock.json
 
+#Frontend
 Frontend/node_modules
 Frontend/.expo
 Frontend/.env
