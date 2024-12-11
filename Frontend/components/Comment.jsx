@@ -36,7 +36,7 @@ const Comment = ({ postId, refresh, refreshComments }) => {
   const [hasMore, setHasMore] = useState(true);
 
   const loadComments = async () => {
-    if (loading || !hasMore) return; // Previene que se carguen comentarios repetidamente mientras se está cargando.
+    if (loading || !hasMore) return;
     setLoading(true);
     const jwt = await getItem("jwt");
     const commentsData = await CommentApi.getComments(jwt, postId, page, limit);
@@ -45,7 +45,7 @@ const Comment = ({ postId, refresh, refreshComments }) => {
       setHasMore(false);
     }
 
-    setComments((prev) => [...prev, ...commentsData]); // Actualiza de manera segura con el estado anterior
+    setComments((prev) => [...prev, ...commentsData]);
     setLoading(false);
   };
 

@@ -24,14 +24,15 @@ const create = async (data) => {
   return rows[0];
 };
 
-const getUsers = async (txt) => {
+const getUsers = async (txt, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT * FROM users 
       WHERE user_name 
       ILIKE $1
-      OR name ILIKE $1;`,
-    [`%${txt}%`]
+      OR name ILIKE $1
+      LIMIT $2 OFFSET $3`,
+    [`%${txt}%`, parseInt(limit), parseInt(offset)]
   );
 
   return rows;

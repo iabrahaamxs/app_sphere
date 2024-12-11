@@ -107,8 +107,10 @@ const validateUser = async (req, res) => {
 const getUsers = async (req, res) => {
   try {
     const data = req.query;
+    const { page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
 
-    const users = await UserModel.getUsers(data.txt);
+    const users = await UserModel.getUsers(data.txt, limit, offset);
 
     return res.json(users);
   } catch (error) {

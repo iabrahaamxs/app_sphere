@@ -1,6 +1,6 @@
 import { poll } from "../db.js";
 
-const getLikes = async (post_id) => {
+const getLikes = async (post_id, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT 
@@ -14,8 +14,9 @@ const getLikes = async (post_id) => {
         FROM likes l
         JOIN users u ON l."user" = u.id
         WHERE l.post = $1
-        AND l.deleted_at IS NULL`,
-    [post_id]
+        AND l.deleted_at IS NULL
+        LIMIT $2 OFFSET $3`,
+    [post_id, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };

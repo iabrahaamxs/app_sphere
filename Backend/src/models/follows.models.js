@@ -1,6 +1,6 @@
 import { poll } from "../db.js";
 
-const getFollowed = async (id) => {
+const getFollowed = async (id, limit, offset) => {
   const { rows } = await poll.query(
     `SELECT f.id, 
        f.follower_user, 
@@ -14,14 +14,15 @@ const getFollowed = async (id) => {
         FROM followers f
         JOIN users u ON f.followed_user = u.id
         WHERE f.follower_user = $1
-        AND f.deleted_at IS NULL`,
-    [id]
+        AND f.deleted_at IS NULL
+        LIMIT $2 OFFSET $3`,
+    [id, parseInt(limit), parseInt(offset)]
   );
 
   return rows;
 };
 
-const getfollowers = async (id) => {
+const getfollowers = async (id, limit, offset) => {
   const { rows } = await poll.query(
     `SELECT f.id, 
        u.id AS user_id, 
@@ -35,8 +36,9 @@ const getfollowers = async (id) => {
         FROM followers f
         JOIN users u ON f.follower_user = u.id
         WHERE f.followed_user = $1
-        AND f.deleted_at IS NULL`,
-    [id]
+        AND f.deleted_at IS NULL
+        LIMIT $2 OFFSET $3;`,
+    [id, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };

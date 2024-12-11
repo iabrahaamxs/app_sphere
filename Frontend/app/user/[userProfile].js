@@ -42,6 +42,23 @@ export default function UserProfile() {
   const [follow, setFollow] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loadingFollow, setLoadingFollow] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadPosts = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    const postsData = await PostApi.getPosts(userProfile, page, limit);
+
+    if (postsData.length < limit) {
+      setHasMore(false);
+    }
+
+    setPosts((prev) => [...prev, ...postsData]);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (userProfile) {
@@ -53,14 +70,12 @@ export default function UserProfile() {
           categoriesData,
           followsData,
           followedData,
-          postsData,
           isFollowData,
         ] = await Promise.all([
           UserApi.getProfile(userProfile),
           CategorieApi.getCategories(userProfile),
           UserApi.countFollows(userProfile),
           UserApi.countFollowed(userProfile),
-          PostApi.getPosts(userProfile),
           FollowApi.isfollow(jwt, userProfile),
         ]);
 
@@ -68,13 +83,16 @@ export default function UserProfile() {
         setCategories(categoriesData);
         setFollows(followsData);
         setFollowed(followedData);
-        setPosts(postsData);
         setFollow(isFollowData);
       };
 
       fetchData();
     }
   }, [userProfile]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [page]);
 
   const pressFollow = async () => {
     if (loadingFollow) return;
@@ -214,6 +232,17 @@ export default function UserProfile() {
                 </Pressable>
               ))}
             </View>
+
+            {hasMore && !loading && (
+              <Pressable
+                className="mx-auto p-2 my-4 bg-[#462E84] rounded-lg"
+                onPress={() => {
+                  setPage((prevPage) => prevPage + 1);
+                }}
+              >
+                <Text className="text-white text-center">Ver más</Text>
+              </Pressable>
+            )}
           </View>
         </ScrollView>
       )}
@@ -223,8 +252,8 @@ export default function UserProfile() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
     flex: 1,
+    marginTop: 10,
     padding: 4,
     backgroundColor: "#fff",
   },

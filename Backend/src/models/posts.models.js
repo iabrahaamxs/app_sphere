@@ -11,7 +11,7 @@ const create = async (user_id, description) => {
   return rows[0];
 };
 
-const getPosts = async (user) => {
+const getPosts = async (user, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT p.id, 
@@ -24,15 +24,14 @@ const getPosts = async (user) => {
     JOIN users u ON p."user" = u.id
     WHERE p."user" = $1 
       AND p.deleted_at IS NULL
-    ORDER BY p.created_at DESC;
-    `,
-    [user]
+    ORDER BY p.created_at DESC
+    LIMIT $2 OFFSET $3`,
+    [user, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };
 
-
-const getFollowersPosts = async (user_id) => {
+const getFollowersPosts = async (user_id, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT DISTINCT p.id, 
@@ -57,16 +56,15 @@ const getFollowersPosts = async (user_id) => {
     ) l ON p.id = l.post
     WHERE (f.follower_user = $1 OR l.like_count > 3)
       AND p.deleted_at IS NULL
-    ORDER BY p.created_at DESC;
-    `,
-    [user_id]
+    ORDER BY p.created_at DESC
+    LIMIT $2 OFFSET $3`,
+    [user_id, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };
 
-
 // Buscar los hashtag de los posts
-const getPostsTag = async (tag) => {
+const getPostsTag = async (tag, limit, offset) => {
   const { rows } = await poll.query(
     `
     WITH extracted_hashtags AS (
@@ -80,14 +78,15 @@ const getPostsTag = async (tag) => {
 	      COUNT(*) AS post_count
           FROM extracted_hashtags
           WHERE hashtag ILIKE $1
-          GROUP BY hashtag;`,
-    [`#${tag}%`]
+          GROUP BY hashtag
+          LIMIT $2 OFFSET $3;`,
+    [`#${tag}%`, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };
 
 // Buscar los posts por hashtag
-const getPostsByTag = async (tag) => {
+const getPostsByTag = async (tag, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT p.id, 
@@ -102,16 +101,15 @@ const getPostsByTag = async (tag) => {
     FROM posts p
     JOIN users u ON p."user" = u.id
     WHERE p.description ~* $1 
-      AND p.deleted_at IS NULL;
-    `,
-    [`#\\m${tag}\\M`]
+      AND p.deleted_at IS NULL
+      LIMIT $2 OFFSET $3;`,
+    [`#\\m${tag}\\M`, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };
-
 
 // Buscar post por palabras en la descripcion
-const getPostsByDescription = async (txt) => {
+const getPostsByDescription = async (txt, limit, offset) => {
   const { rows } = await poll.query(
     `
     SELECT p.id, 
@@ -126,25 +124,24 @@ const getPostsByDescription = async (txt) => {
     FROM posts p
     JOIN users u ON p."user" = u.id
     WHERE p.description ~* $1 
-      AND p.deleted_at IS NULL;
-    `,
-    [`${txt}`]
+      AND p.deleted_at IS NULL
+      LIMIT $2 OFFSET $3;`,
+    [`${txt}`, parseInt(limit), parseInt(offset)]
   );
   return rows;
 };
-
 
 const deletePost = async (post_id) => {
   const { rows } = await poll.query(
-  `
+    `
   UPDATE posts
   SET deleted_at = CURRENT_TIMESTAMP
   WHERE id = $1
   RETURNING *;
   `,
-  [post_id]
-);
-return rows[0];
+    [post_id]
+  );
+  return rows[0];
 };
 
 const updateDescription = async (post_id, description) => {
@@ -160,8 +157,6 @@ const updateDescription = async (post_id, description) => {
   return rows[0];
 };
 
-
-
 export const PostModel = {
   create,
   getPosts,
@@ -170,5 +165,5 @@ export const PostModel = {
   getPostsByTag,
   getPostsByDescription,
   deletePost,
-  updateDescription
+  updateDescription,
 };
