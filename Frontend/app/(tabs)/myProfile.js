@@ -41,6 +41,24 @@ export default function MyProfile() {
   const [viewPost, setViewPost] = useState(true);
   const [posts, setPosts] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(3);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadPosts = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    const jwt = await getItem("jwt");
+    const postsData = await PostApi.getMyPosts(jwt, page, limit);
+
+    if (postsData.length < limit) {
+      setHasMore(false);
+    }
+
+    setPosts((prev) => [...prev, ...postsData]);
+    setLoading(false);
+  };
 
   const ref = useRef();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -90,7 +108,6 @@ export default function MyProfile() {
     const jwt = await getItem("jwt");
     const profileData = await UserApi.whoami(jwt);
     const categoriesData = await CategorieApi.getMyCategories(jwt);
-    const postsData = await PostApi.getMyPosts(jwt);
     const favoritesData = await PostApi.getFavorites(jwt);
     const followsData = await UserApi.countMyFollows(jwt);
     const followedData = await UserApi.countMyFollowed(jwt);
@@ -99,13 +116,16 @@ export default function MyProfile() {
     setCategories(categoriesData);
     setFollows(followsData);
     setFollowed(followedData);
-    setPosts(postsData);
     setFavorites(favoritesData);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    loadPosts();
+  }, [page]);
 
   return (
     <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
@@ -238,6 +258,16 @@ export default function MyProfile() {
                     />
                   </Pressable>
                 ))}
+                {hasMore && !loading && (
+                  <Pressable
+                    className="mx-auto p-2 my-4 bg-[#462E84] rounded-lg"
+                    onPress={() => {
+                      setPage((prevPage) => prevPage + 1);
+                    }}
+                  >
+                    <Text className="text-white text-center">Ver más</Text>
+                  </Pressable>
+                )}
               </View>
 
               <View style={styles.grid} key="1">
