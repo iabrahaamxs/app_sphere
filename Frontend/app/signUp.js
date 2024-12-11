@@ -22,6 +22,7 @@ import {
   Gender,
 } from "../components/Icons";
 import { validateFieldsSignUp } from "../utils/Validations";
+import { UserApi } from "../api/userApi";
 
 export default function SignUp() {
   const [userData, setUserData] = useState({
@@ -64,11 +65,13 @@ export default function SignUp() {
 
   const handleNextStep = async () => {
     setLoading(true);
+    const { email, phone, user_name } = userData;
 
-    const errorMessage = await validateFieldsSignUp(userData);
-    if (errorMessage) {
+    const errorMessage = validateFieldsSignUp(userData);
+    const res = await UserApi.validateNewUser({ email, user_name, phone });
+    if (errorMessage || !res.ok) {
       setLoading(false);
-      setErrorMessage(errorMessage);
+      setErrorMessage(errorMessage || res.message);
       return;
     }
 
