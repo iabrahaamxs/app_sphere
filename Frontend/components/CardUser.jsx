@@ -51,7 +51,7 @@ const CardUser = ({ user }) => {
   };
 
   return (
-    <View className="w-[100%] flex-row justify-between	items-center px-2 mb-2">
+    <View className="w-[100%] flex-row justify-between items-center px-2 mb-2">
       <Pressable
         onPress={() => {
           router.navigate(`/user/${user_id}`);
@@ -77,7 +77,7 @@ const CardUser = ({ user }) => {
       </Pressable>
 
       <Pressable
-        className="w-[100] rounded-lg p-2 items-center"
+        className=" rounded-lg py-2 px-1 items-center basis-1/4"
         onPress={() => {
           follow ? pressUnfollow() : pressFollow();
         }}
@@ -96,7 +96,7 @@ const CardUser = ({ user }) => {
 
 const styles = StyleSheet.create({
   buttonText: {
-    fontSize: 12,
+    fontSize: 11,
   },
 });
 
