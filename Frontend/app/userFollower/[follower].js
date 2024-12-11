@@ -20,6 +20,8 @@ export default function Follower() {
   const [Profile, setProfile] = useState({});
   const [follows, setFollows] = useState([]);
   const [followed, setFollowed] = useState([]);
+  const [followsCount, setFollowsCount] = useState(0);
+  const [followedCount, setFollowedCount] = useState(0);
   const [filteredData, setFilteredData] = useState([]);
 
   const [viewFollow, setViewFollow] = useState(0);
@@ -40,10 +42,14 @@ export default function Follower() {
     const profileData = await UserApi.getProfile(id);
     const followsData = await UserApi.getFollows(jwt);
     const followedData = await UserApi.getFollowed(jwt);
+    const followsDataCount = await UserApi.countMyFollows(jwt);
+    const followedDataCount = await UserApi.countMyFollowed(jwt);
 
     setProfile(profileData);
     setFollows(followsData);
     setFollowed(followedData);
+    setFollowsCount(followsDataCount);
+    setFollowedCount(followedDataCount);
 
     parseInt(follower) === 0
       ? setFilteredData(followedData)
@@ -108,7 +114,7 @@ export default function Follower() {
                 className="w-[50%] p-1 items-center opacity-50	"
               >
                 <Text>Seguidos</Text>
-                <Text className="text-base font-bold">{followed.length}</Text>
+                <Text className="text-base font-bold">{followedCount}</Text>
               </Pressable>
               <Pressable
                 style={{ opacity: viewFollow ? 1 : 0.5 }}
@@ -119,7 +125,7 @@ export default function Follower() {
                 className="w-[50%] p-1 items-center "
               >
                 <Text>Seguidores</Text>
-                <Text className="text-base font-bold">{follows.length}</Text>
+                <Text className="text-base font-bold">{followsCount}</Text>
               </Pressable>
             </View>
             <View className="p-3">
